@@ -24,3 +24,11 @@ export const PRO_PRICES: Record<string, { amount: number; display: string }> = {
 }
 
 export const DEFAULT_CURRENCY = 'usd'
+
+// Recruiter plan prices — amounts in smallest currency unit
+export const RECRUITER_PRICES: Record<string, { amount: number; display: string }> = {
+  usd: { amount: 1999, display: '$19.99 USD' },
+  aud: { amount: 2999, display: '$29.99 AUD' },
+  gbp: { amount: 1499, display: '£14.99 GBP' },
+  eur: { amount: 1799, display: '€17.99 EUR' },
+}

@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-export { PLANS, PRO_PRICES, DEFAULT_CURRENCY } from './plans'
+export { PLANS, PRO_PRICES, RECRUITER_PRICES, DEFAULT_CURRENCY } from './plans'
 export type { PlanKey } from './plans'
 
 let _stripe: Stripe | null = null

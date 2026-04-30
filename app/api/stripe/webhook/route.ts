@@ -24,10 +24,16 @@ export async function POST(req: NextRequest) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
       const profileId = session.metadata?.profile_id
+      const planType = session.metadata?.plan_type ?? 'pro'
       const subscriptionId = session.subscription as string | null
-      if (profileId && subscriptionId) {
-        await db
-          .from('profiles')
+      if (!profileId || !subscriptionId) break
+
+      if (planType === 'recruiter') {
+        await db.from('profiles')
+          .update({ recruiter_active: true, recruiter_subscription_id: subscriptionId })
+          .eq('id', profileId)
+      } else {
+        await db.from('profiles')
           .update({ plan: 'pro', stripe_subscription_id: subscriptionId })
           .eq('id', profileId)
       }
@@ -38,20 +44,42 @@ export async function POST(req: NextRequest) {
       const sub = event.data.object as Stripe.Subscription
       const customerId = sub.customer as string
       const active = sub.status === 'active' || sub.status === 'trialing'
-      await db
-        .from('profiles')
-        .update({ plan: active ? 'pro' : 'free' })
-        .eq('stripe_customer_id', customerId)
+
+      // Determine which product this sub belongs to by checking metadata on the subscription
+      const productName = (sub.items?.data?.[0]?.price?.product as Stripe.Product | undefined)?.name ?? ''
+      const isRecruiter = productName.toLowerCase().includes('recruiter')
+        || sub.metadata?.plan_type === 'recruiter'
+
+      if (isRecruiter) {
+        await db.from('profiles')
+          .update({ recruiter_active: active })
+          .eq('recruiter_subscription_id', sub.id)
+      } else {
+        await db.from('profiles')
+          .update({ plan: active ? 'pro' : 'free' })
+          .eq('stripe_customer_id', customerId)
+      }
       break
     }
 
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
-      const customerId = sub.customer as string
-      await db
+      // Try recruiter first, then candidate pro
+      const { count: recruiterCount } = await db
         .from('profiles')
-        .update({ plan: 'free', stripe_subscription_id: null })
-        .eq('stripe_customer_id', customerId)
+        .select('id', { count: 'exact', head: true })
+        .eq('recruiter_subscription_id', sub.id)
+
+      if ((recruiterCount ?? 0) > 0) {
+        await db.from('profiles')
+          .update({ recruiter_active: false, recruiter_subscription_id: null })
+          .eq('recruiter_subscription_id', sub.id)
+      } else {
+        const customerId = sub.customer as string
+        await db.from('profiles')
+          .update({ plan: 'free', stripe_subscription_id: null })
+          .eq('stripe_customer_id', customerId)
+      }
       break
     }
   }

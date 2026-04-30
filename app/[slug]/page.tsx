@@ -1,11 +1,13 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import type { Profile, Vouch } from '@/types'
 import Stars from '@/components/Stars'
 import VouchCard from '@/components/VouchCard'
 import FlagVouchButton from './FlagVouchButton'
+import RecruiterContactButton from '@/components/RecruiterContactButton'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -70,6 +72,18 @@ export default async function PublicProfilePage({ params }: Props) {
   const { slug } = await params
   const data = await getProfileData(slug)
   if (!data) notFound()
+
+  const { userId } = await auth()
+  let isRecruiter = false
+  if (userId) {
+    const db = createServiceClient()
+    const { data: viewer } = await db
+      .from('profiles')
+      .select('recruiter_active')
+      .eq('user_id', userId)
+      .single()
+    isRecruiter = viewer?.recruiter_active ?? false
+  }
 
   const { profile, vouches, trustScore, verificationRate } = data
 
@@ -416,6 +430,14 @@ export default async function PublicProfilePage({ params }: Props) {
               </div>
             </div>
           )}
+
+          {/* Recruiter contact */}
+          <RecruiterContactButton
+            candidateSlug={profile.slug}
+            candidateName={profile.name}
+            isRecruiter={isRecruiter}
+            isSignedIn={!!userId}
+          />
 
           {/* CTA */}
           <div className="card-paper" style={{ textAlign: 'center' }}>

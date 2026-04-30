@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { getStripe, PRO_PRICES, DEFAULT_CURRENCY } from '@/lib/stripe'
+import { getStripe, PRO_PRICES, RECRUITER_PRICES, DEFAULT_CURRENCY } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase-server'
 
 export async function POST(req: NextRequest) {
@@ -9,30 +9,33 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json()
   const currency: string = (body.currency ?? DEFAULT_CURRENCY).toLowerCase()
+  const planType: 'pro' | 'recruiter' = body.planType === 'recruiter' ? 'recruiter' : 'pro'
 
-  const priceConfig = PRO_PRICES[currency]
-  if (!priceConfig) {
-    return NextResponse.json({ error: 'Unsupported currency' }, { status: 400 })
-  }
+  const priceMap = planType === 'recruiter' ? RECRUITER_PRICES : PRO_PRICES
+  const priceConfig = priceMap[currency]
+  if (!priceConfig) return NextResponse.json({ error: 'Unsupported currency' }, { status: 400 })
 
   const db = createServiceClient()
   const { data: profile } = await db
     .from('profiles')
-    .select('id, name, slug, stripe_customer_id, plan')
+    .select('id, name, slug, stripe_customer_id, plan, recruiter_active')
     .eq('user_id', userId)
     .single()
 
   if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  if (profile.plan === 'pro') return NextResponse.json({ error: 'Already on Pro plan' }, { status: 400 })
+  if (planType === 'pro' && profile.plan === 'pro') {
+    return NextResponse.json({ error: 'Already on Pro plan' }, { status: 400 })
+  }
+  if (planType === 'recruiter' && profile.recruiter_active) {
+    return NextResponse.json({ error: 'Already on Recruiter plan' }, { status: 400 })
+  }
 
   const stripe = getStripe()
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
 
   // Reuse or create Stripe customer
   let customerId = profile.stripe_customer_id ?? undefined
-
   if (!customerId) {
-    // Fetch email from Clerk
     let email: string | undefined
     try {
       const clerkRes = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
@@ -50,34 +53,30 @@ export async function POST(req: NextRequest) {
       metadata: { user_id: userId, profile_id: profile.id },
     })
     customerId = customer.id
-
-    await db
-      .from('profiles')
-      .update({ stripe_customer_id: customerId })
-      .eq('id', profile.id)
+    await db.from('profiles').update({ stripe_customer_id: customerId }).eq('id', profile.id)
   }
+
+  const productName = planType === 'recruiter' ? 'RecommeNow Recruiter' : 'RecommeNow Pro'
+  const productDesc = planType === 'recruiter'
+    ? 'Contact candidates & access full talent directory'
+    : 'Unlimited vouches + custom slug'
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: 'subscription',
     payment_method_types: ['card'],
-    line_items: [
-      {
-        price_data: {
-          currency,
-          unit_amount: priceConfig.amount,
-          recurring: { interval: 'month' },
-          product_data: {
-            name: 'RecommeNow Pro',
-            description: 'Unlimited vouches + custom slug',
-          },
-        },
-        quantity: 1,
+    line_items: [{
+      price_data: {
+        currency,
+        unit_amount: priceConfig.amount,
+        recurring: { interval: 'month' },
+        product_data: { name: productName, description: productDesc },
       },
-    ],
-    success_url: `${appUrl}/dashboard?upgraded=1`,
+      quantity: 1,
+    }],
+    success_url: `${appUrl}/dashboard?${planType === 'recruiter' ? 'recruiter=1' : 'upgraded=1'}`,
     cancel_url: `${appUrl}/pricing`,
-    metadata: { user_id: userId, profile_id: profile.id },
+    metadata: { user_id: userId, profile_id: profile.id, plan_type: planType },
   })
 
   return NextResponse.json({ url: session.url })

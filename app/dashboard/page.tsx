@@ -5,13 +5,14 @@ import { createServiceClient } from '@/lib/supabase-server'
 import type { Vouch } from '@/types'
 import Stars from '@/components/Stars'
 import UpgradedBanner from './UpgradedBanner'
+import RecruiterBanner from './RecruiterBanner'
 
 export default async function DashboardOverviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ upgraded?: string }>
+  searchParams: Promise<{ upgraded?: string; recruiter?: string }>
 }) {
-  const { upgraded } = await searchParams
+  const { upgraded, recruiter } = await searchParams
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
 
@@ -44,6 +45,7 @@ export default async function DashboardOverviewPage({
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       {upgraded === '1' && <UpgradedBanner />}
+      {recruiter === '1' && <RecruiterBanner />}
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1

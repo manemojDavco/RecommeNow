@@ -38,6 +38,7 @@ export default function DashboardShell({
   }
 
   const isPro = profile.plan === 'pro'
+  const isRecruiter = profile.recruiter_active
 
   const initials = profile.name
     .split(' ')
@@ -120,7 +121,7 @@ export default function DashboardShell({
           >
             {profile.name}
           </div>
-          {isPro ? (
+          {(isPro || isRecruiter) ? (
             <button
               onClick={openPortal}
               disabled={portalLoading}
@@ -139,7 +140,7 @@ export default function DashboardShell({
                 fontFamily: 'var(--sans)',
               }}
             >
-              ★ Pro · Manage
+              {isRecruiter ? '🔍 Recruiter' : '★ Pro'}{isPro && isRecruiter ? ' + Pro' : ''} · Manage
             </button>
           ) : (
             <Link

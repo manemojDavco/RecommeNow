@@ -16,6 +16,8 @@ export type Profile = {
   referral_code: string | null
   referred_by: string | null
   referral_count: number
+  recruiter_active: boolean
+  recruiter_subscription_id: string | null
   created_at: string
   updated_at: string
 }
