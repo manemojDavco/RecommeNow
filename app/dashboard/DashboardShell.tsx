@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useClerk } from '@clerk/nextjs'
+import { useState } from 'react'
 import type { Profile } from '@/types'
 
 const NAV_ITEMS = [
@@ -23,6 +24,20 @@ export default function DashboardShell({
 }) {
   const pathname = usePathname()
   const { signOut } = useClerk()
+  const [portalLoading, setPortalLoading] = useState(false)
+
+  async function openPortal() {
+    setPortalLoading(true)
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+    } finally {
+      setPortalLoading(false)
+    }
+  }
+
+  const isPro = profile.plan === 'pro'
 
   const initials = profile.name
     .split(' ')
@@ -105,23 +120,47 @@ export default function DashboardShell({
           >
             {profile.name}
           </div>
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '.3rem',
-              background: 'rgba(255,255,255,.08)',
-              border: '1px solid rgba(255,255,255,.12)',
-              borderRadius: 100,
-              padding: '.18rem .6rem',
-              fontSize: '.6rem',
-              fontWeight: 600,
-              color: 'rgba(255,255,255,.5)',
-              cursor: 'pointer',
-            }}
-          >
-            Free plan
-          </div>
+          {isPro ? (
+            <button
+              onClick={openPortal}
+              disabled={portalLoading}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.3rem',
+                background: 'rgba(255,255,255,.15)',
+                border: '1px solid rgba(255,255,255,.25)',
+                borderRadius: 100,
+                padding: '.18rem .6rem',
+                fontSize: '.6rem',
+                fontWeight: 700,
+                color: '#fff',
+                cursor: 'pointer',
+                fontFamily: 'var(--sans)',
+              }}
+            >
+              ★ Pro · Manage
+            </button>
+          ) : (
+            <Link
+              href="/pricing"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.3rem',
+                background: 'rgba(255,255,255,.08)',
+                border: '1px solid rgba(255,255,255,.12)',
+                borderRadius: 100,
+                padding: '.18rem .6rem',
+                fontSize: '.6rem',
+                fontWeight: 600,
+                color: 'rgba(255,255,255,.5)',
+                textDecoration: 'none',
+              }}
+            >
+              Free · Upgrade ↑
+            </Link>
+          )}
         </div>
 
         {/* Nav items */}
@@ -164,6 +203,27 @@ export default function DashboardShell({
             )
           })}
         </nav>
+
+        {/* Upgrade CTA for free users */}
+        {!isPro && (
+          <div style={{ padding: '.8rem 1rem', flexShrink: 0 }}>
+            <Link
+              href="/pricing"
+              style={{
+                display: 'block',
+                background: 'rgba(255,255,255,.1)',
+                border: '1px solid rgba(255,255,255,.15)',
+                borderRadius: 10,
+                padding: '.8rem',
+                textDecoration: 'none',
+              }}
+            >
+              <p style={{ fontSize: '.68rem', fontWeight: 700, color: '#fff', marginBottom: '.2rem' }}>Upgrade to Pro</p>
+              <p style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.4 }}>Custom slug + unlimited vouches</p>
+              <p style={{ fontSize: '.65rem', fontWeight: 600, color: 'rgba(255,255,255,.7)', marginTop: '.4rem' }}>From $6.99/mo →</p>
+            </Link>
+          </div>
+        )}
 
         {/* Bottom: view profile + sign out */}
         <div

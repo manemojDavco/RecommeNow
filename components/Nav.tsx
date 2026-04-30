@@ -33,6 +33,12 @@ export default function Nav() {
         >
           Examples
         </Link>
+        <Link
+          href="/pricing"
+          style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}
+        >
+          Pricing
+        </Link>
 
         {isSignedIn ? (
           <Link href="/dashboard" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>

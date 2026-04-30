@@ -2,14 +2,19 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import type { Profile } from '@/types'
 
 const INDUSTRIES = ['B2B SaaS', 'Fintech', 'Healthtech', 'E-commerce', 'Media', 'Agency', 'Consulting', 'Marketplace', 'Deep tech', 'Climate', 'EdTech', 'Web3']
 const STAGES = ['Pre-seed', 'Seed', 'Series A', 'Series B+', 'Growth', 'Enterprise', 'Bootstrapped', 'Non-profit']
 const REMOTE = ['Remote only', 'Hybrid', 'On-site', 'Open to all']
+const SLUG_RE = /^[a-z0-9-]{3,40}$/
 
 export default function SettingsForm({ profile }: { profile: Profile }) {
   const router = useRouter()
+  const isPro = profile.plan === 'pro'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
+
   const [form, setForm] = useState({
     title: profile.title ?? '',
     years_experience: profile.years_experience ?? '',
@@ -20,6 +25,12 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     stages: profile.stages ?? [],
   })
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+  const [slug, setSlug] = useState(profile.slug)
+  const [slugStatus, setSlugStatus] = useState<'idle' | 'saving' | 'saved' | 'error' | 'conflict'>('idle')
+  const [slugError, setSlugError] = useState('')
+
+  const [portalLoading, setPortalLoading] = useState(false)
 
   function toggleArr(key: 'industries' | 'stages', val: string) {
     setForm((f) => ({
@@ -44,6 +55,41 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     }
   }
 
+  async function saveSlug() {
+    setSlugStatus('saving')
+    setSlugError('')
+    if (!SLUG_RE.test(slug)) {
+      setSlugError('3–40 lowercase letters, numbers, or hyphens only.')
+      setSlugStatus('error')
+      return
+    }
+    const res = await fetch('/api/profile/slug', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    })
+    if (res.ok) {
+      setSlugStatus('saved')
+      router.refresh()
+      setTimeout(() => setSlugStatus('idle'), 2000)
+    } else {
+      const data = await res.json()
+      setSlugError(data.error ?? 'Failed to update slug.')
+      setSlugStatus(res.status === 409 ? 'conflict' : 'error')
+    }
+  }
+
+  async function openPortal() {
+    setPortalLoading(true)
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+    } finally {
+      setPortalLoading(false)
+    }
+  }
+
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '2rem' }}>
@@ -56,13 +102,57 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
       </div>
 
       <div style={{ maxWidth: 560, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {/* Slug (read-only) */}
+        {/* Slug */}
         <div>
           <label className="field-label">Your profile URL</label>
-          <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 8, padding: '.7rem .9rem', fontSize: '.85rem', color: 'var(--muted)' }}>
-            {process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'}/{profile.slug}
-          </div>
-          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Custom slugs available on Pro plan.</p>
+          {isPro ? (
+            <>
+              <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
+                <span style={{ fontSize: '.83rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>
+                  {appUrl}/
+                </span>
+                <input
+                  className="field-input"
+                  style={{ flex: 1 }}
+                  value={slug}
+                  onChange={(e) => { setSlug(e.target.value.toLowerCase()); setSlugStatus('idle'); setSlugError('') }}
+                  placeholder="your-name"
+                />
+                <button
+                  onClick={saveSlug}
+                  disabled={slugStatus === 'saving' || slug === profile.slug}
+                  style={{
+                    padding: '.5rem 1rem',
+                    borderRadius: 7,
+                    border: 'none',
+                    background: slugStatus === 'saved' ? 'var(--green-l)' : 'var(--green)',
+                    color: slugStatus === 'saved' ? 'var(--green2)' : '#fff',
+                    fontSize: '.78rem',
+                    fontWeight: 600,
+                    cursor: slugStatus === 'saving' || slug === profile.slug ? 'not-allowed' : 'pointer',
+                    fontFamily: 'var(--sans)',
+                    whiteSpace: 'nowrap',
+                    opacity: slug === profile.slug ? 0.5 : 1,
+                  }}
+                >
+                  {slugStatus === 'saving' ? '…' : slugStatus === 'saved' ? '✓ Saved' : 'Update'}
+                </button>
+              </div>
+              {slugError && (
+                <p style={{ fontSize: '.72rem', color: 'var(--red)', marginTop: '.3rem' }}>{slugError}</p>
+              )}
+            </>
+          ) : (
+            <>
+              <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 8, padding: '.7rem .9rem', fontSize: '.85rem', color: 'var(--muted)' }}>
+                {appUrl}/{profile.slug}
+              </div>
+              <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>
+                Custom slugs available on{' '}
+                <Link href="/pricing" style={{ color: 'var(--green)', textDecoration: 'none', fontWeight: 600 }}>Pro plan</Link>.
+              </p>
+            </>
+          )}
         </div>
 
         <div>
@@ -186,6 +276,58 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
         >
           {status === 'saving' ? 'Saving…' : status === 'saved' ? '✓ Saved!' : 'Save changes'}
         </button>
+
+        {/* Billing section */}
+        <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.5rem', marginTop: '.5rem' }}>
+          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.4rem' }}>Billing</h2>
+          {isPro ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Pro plan</p>
+                <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Unlimited vouches · Custom slug</p>
+              </div>
+              <button
+                onClick={openPortal}
+                disabled={portalLoading}
+                style={{
+                  padding: '.5rem 1rem',
+                  borderRadius: 7,
+                  border: '1.5px solid var(--rule)',
+                  background: 'var(--white)',
+                  color: 'var(--ink)',
+                  fontSize: '.78rem',
+                  fontWeight: 600,
+                  cursor: portalLoading ? 'not-allowed' : 'pointer',
+                  fontFamily: 'var(--sans)',
+                }}
+              >
+                {portalLoading ? 'Loading…' : 'Manage billing →'}
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Free plan</p>
+                <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Up to 10 approved vouches</p>
+              </div>
+              <Link
+                href="/pricing"
+                style={{
+                  padding: '.5rem 1rem',
+                  borderRadius: 7,
+                  border: 'none',
+                  background: 'var(--green)',
+                  color: '#fff',
+                  fontSize: '.78rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                }}
+              >
+                Upgrade to Pro →
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

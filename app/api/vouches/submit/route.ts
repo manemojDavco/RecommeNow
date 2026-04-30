@@ -44,12 +44,28 @@ export async function POST(req: NextRequest) {
   // Verify profile exists
   const { data: profile } = await db
     .from('profiles')
-    .select('id, name, slug, user_id')
+    .select('id, name, slug, user_id, plan')
     .eq('id', profile_id)
     .single()
 
   if (!profile) {
     return NextResponse.json({ error: 'Profile not found.' }, { status: 404 })
+  }
+
+  // Enforce free plan vouch limit
+  if (profile.plan === 'free') {
+    const { count } = await db
+      .from('vouches')
+      .select('id', { count: 'exact', head: true })
+      .eq('profile_id', profile_id)
+      .eq('status', 'approved')
+
+    if ((count ?? 0) >= 10) {
+      return NextResponse.json(
+        { error: 'This profile has reached its vouch limit. Ask them to upgrade to Pro for unlimited vouches.' },
+        { status: 403 }
+      )
+    }
   }
 
   const verification_token = nanoid(32)
