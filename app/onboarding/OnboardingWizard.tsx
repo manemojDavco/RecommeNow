@@ -44,10 +44,13 @@ export default function OnboardingWizard() {
   async function finish() {
     setStatus('loading')
     setErrorMsg('')
+    // Read referral code from cookie (set by /r/[code] redirect)
+    const refMatch = document.cookie.match(/(?:^|;\s*)ref=([^;]+)/)
+    const referral_code = refMatch ? refMatch[1] : undefined
     const res = await fetch('/api/profile/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, ...(referral_code ? { referral_code } : {}) }),
     })
     const json = await res.json()
     if (!res.ok) {

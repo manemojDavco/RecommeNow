@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { generateSlug } from '@/lib/slug'
+import { nanoid } from 'nanoid'
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { name, title, years_experience, location, remote_preference, bio, industries, stages } = body
+  const { name, title, years_experience, location, remote_preference, bio, industries, stages, referral_code: refCode } = body
 
   if (!name?.trim()) {
     return NextResponse.json({ error: 'Name is required.' }, { status: 400 })
@@ -37,6 +38,17 @@ export async function POST(req: NextRequest) {
     attempts++
   }
 
+  // Resolve referrer if a referral code was provided
+  let referredBy: string | null = null
+  if (refCode) {
+    const { data: referrer } = await db
+      .from('profiles')
+      .select('user_id')
+      .eq('referral_code', refCode)
+      .single()
+    if (referrer) referredBy = referrer.user_id
+  }
+
   const { data: profile, error } = await db
     .from('profiles')
     .insert({
@@ -50,9 +62,18 @@ export async function POST(req: NextRequest) {
       bio: bio?.trim() || null,
       industries: industries ?? [],
       stages: stages ?? [],
+      referral_code: nanoid(8),
+      referred_by: referredBy,
     })
     .select()
     .single()
+
+  // Increment referrer's referral_count
+  if (!error && referredBy) {
+    try {
+      await db.rpc('increment_referral_count', { referrer_user_id: referredBy })
+    } catch { /* non-fatal */ }
+  }
 
   if (error) {
     console.error('Profile create error:', error)

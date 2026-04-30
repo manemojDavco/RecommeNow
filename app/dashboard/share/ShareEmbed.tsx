@@ -8,6 +8,7 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
 export default function ShareEmbed({ profile }: { profile: Profile }) {
   const profileUrl = `${APP_URL}/${profile.slug}`
   const vouchUrl = `${APP_URL}/vouch/${profile.slug}`
+  const referralUrl = profile.referral_code ? `${APP_URL}/r/${profile.referral_code}` : null
   const [copied, setCopied] = useState<string | null>(null)
 
   function copy(text: string, key: string) {
@@ -66,6 +67,12 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
             desc: 'Announce your verified profile on LinkedIn.',
             value: linkedinPost,
           },
+          ...(referralUrl ? [{
+            key: 'referral',
+            title: 'Refer a colleague',
+            desc: `Share this link with colleagues. When they join RecommeNow, they'll be linked to you. You've referred ${profile.referral_count} ${profile.referral_count === 1 ? 'person' : 'people'} so far.`,
+            value: referralUrl,
+          }] : []),
         ].map((item) => (
           <div key={item.key} style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1.25rem' }}>
             <p style={{ fontSize: '.85rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.2rem' }}>{item.title}</p>
