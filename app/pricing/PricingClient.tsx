@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PRO_PRICES } from '@/lib/stripe'
+import { PRO_PRICES } from '@/lib/plans'
 
 const CURRENCY_LABELS: Record<string, string> = {
   usd: '🇺🇸 USD',
