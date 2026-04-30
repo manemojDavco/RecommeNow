@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nick Baker — RecommeNow Profile</title>
+<meta name="description" content="14 verified vouches from managers, clients and colleagues. Overall score 4.9/5. View Nick Baker's peer-verified reputation profile on RecommeNow.">
+
+<!-- OG cards — optimised for LinkedIn, Twitter, WhatsApp -->
+<meta property="og:title" content="Nick Baker · 14 verified vouches · 4.9/5">
+<meta property="og:description" content="Head of Product · 9 years · Verified by managers, clients & colleagues. See what people say about working with Nick.">
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://recommenow.com/nick-baker">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:   #faf9f7;
+  --paper:   #f4f2ee;
+  --ink:     #141210;
+  --ink2:    #2a2724;
+  --muted:   #6e6a64;
+  --faint:   #e8e4dc;
+  --rule:    #dedad2;
+  --green:   #1c3d2c;
+  --green2:  #2a5c40;
+  --green-l: #edf4f0;
+  --green-m: #d0e9da;
+  --amber:   #e8a020;
+  --serif:   'Libre Baskerville', Georgia, serif;
+  --sans:    'Manrope', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(250,249,247,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--rule);
+  padding: 1rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.nav-brand {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: .92rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.nav-brand span { color: var(--ink); }
+
+.nav-actions { display: flex; gap: .6rem; align-items: center; }
+
+.nav-btn {
+  border: 1px solid var(--rule);
+  background: var(--white);
+  border-radius: 7px;
+  padding: .5rem 1rem;
+  font-family: var(--sans);
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+}
+.nav-btn:hover { border-color: var(--faint); color: var(--ink); }
+
+.nav-btn.primary {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.nav-btn.primary:hover { background: var(--green2); border-color: var(--green2); color: #fff; }
+
+/* ── LAYOUT ── */
+.page {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 6rem;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* ── LEFT COLUMN ── */
+.left { min-width: 0; }
+
+/* Hero */
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--rule);
+  animation: fadeUp .5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.avatar-wrap { position: relative; flex-shrink: 0; }
+
+.avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--green-l);
+  border: 2px solid var(--green-m);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: var(--green2);
+}
+
+.verified-badge {
+  position: absolute;
+  bottom: 0; right: -2px;
+  width: 22px; height: 22px;
+  background: var(--green);
+  border: 2px solid var(--white);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.verified-badge svg { width: 10px; height: 10px; }
+
+.hero-info { flex: 1; min-width: 0; }
+
+.hero-name {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -.02em;
+  line-height: 1.1;
+  margin-bottom: .3rem;
+}
+
+.hero-role {
+  font-size: .86rem;
+  color: var(--muted);
+  margin-bottom: .8rem;
+  line-height: 1.5;
+}
+
+.hero-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .9rem; }
+
+.h-tag {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: .18rem .6rem;
+}
+
+.hero-bio {
+  font-size: .84rem;
+  font-weight: 300;
+  color: var(--ink2);
+  line-height: 1.7;
+  max-width: 520px;
+}
+
+.hero-score-mini {
+  display: flex; align-items: center; gap: .6rem;
+  margin-top: 1rem;
+}
+
+.stars-mini { color: var(--amber); font-size: .85rem; letter-spacing: .05em; }
+
+.score-num {
+  font-family: var(--serif);
+  font-size: .92rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.score-meta {
+  font-size: .72rem;
+  color: var(--muted);
+}
+
+/* ── TRUST BARS ── */
+.trust-section {
+  margin-bottom: 2.5rem;
+  animation: fadeUp .5s .1s ease both;
+}
+
+.section-label {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: .7rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: var(--rule);
+}
+
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.2rem;
+}
+
+.trust-cell {
+  background: var(--white);
+  padding: 1.3rem 1.4rem;
+}
+
+.tc-val {
+  font-family: var(--serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: .25rem;
+}
+
+.tc-label {
+  font-size: .68rem;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.tc-bar {
+  margin-top: .7rem;
+  height: 3px;
+  background: var(--faint);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tc-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s .4s cubic-bezier(.4,0,.2,1);
+}
+.tc-fill.go { transform: scaleX(1); }
+
+/* ── TRAIT BUBBLES ── */
+.traits-section {
+  margin-bottom: 2.5rem;
+  animation: fadeUp .5s .18s ease both;
+}
+
+.trait-bubbles {
+  display: flex; flex-wrap: wrap; gap: .5rem;
+}
+
+.t-bubble {
+  display: flex; align-items: center; gap: .45rem;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: .38rem .9rem;
+  font-size: .76rem;
+  font-weight: 500;
+  color: var(--ink2);
+  transition: border-color .18s;
+}
+.t-bubble:hover { border-color: var(--green-m); }
+
+.t-count {
+  background: var(--green);
+  color: #fff;
+  border-radius: 100px;
+  padding: .08rem .4rem;
+  font-size: .6rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* ── VOUCHES ── */
+.vouches-section { animation: fadeUp .5s .25s ease both; }
+
+.vouches-list {
+  display: flex; flex-direction: column; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.vouch-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.5rem 1.6rem;
+  transition: box-shadow .22s, transform .22s;
+}
+.vouch-card:hover {
+  box-shadow: 0 6px 24px rgba(0,0,0,.06);
+  transform: translateY(-2px);
+}
+
+.vc-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.vc-person { display: flex; align-items: center; gap: .75rem; }
+
+.vc-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .7rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.vc-name {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.vc-role {
+  font-size: .72rem;
+  font-weight: 300;
+  color: var(--muted);
+  margin-top: .1rem;
+}
+
+.vc-right { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; flex-shrink: 0; }
+
+.vc-rel {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: .2rem .65rem;
+  white-space: nowrap;
+}
+
+.vc-verify {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .6rem;
+  font-weight: 600;
+  color: var(--green2);
+}
+.vc-verify svg { flex-shrink: 0; }
+
+.vc-unverified {
+  font-size: .6rem;
+  font-weight: 600;
+  color: var(--amber);
+}
+
+.vc-stars { color: var(--amber); font-size: .78rem; letter-spacing: .05em; margin-bottom: .7rem; }
+
+.vc-quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: .93rem;
+  line-height: 1.75;
+  color: var(--ink2);
+  margin-bottom: .9rem;
+}
+
+.vc-traits { display: flex; flex-wrap: wrap; gap: .35rem; }
+
+.vc-trait {
+  font-size: .65rem;
+  font-weight: 500;
+  color: var(--green2);
+  background: var(--green-l);
+  border-radius: 100px;
+  padding: .18rem .6rem;
+}
+
+.vc-flag {
+  margin-top: .8rem;
+  font-size: .65rem;
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  padding: 0;
+  transition: color .18s;
+  display: inline-flex; align-items: center; gap: .3rem;
+}
+.vc-flag:hover { color: #c0392b; }
+
+/* load more */
+.load-more-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: .85rem;
+  font-family: var(--sans);
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  margin-top: .5rem;
+}
+.load-more-btn:hover { border-color: var(--faint); color: var(--ink); background: var(--paper); }
+
+/* ── RIGHT SIDEBAR ── */
+.sidebar { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 5rem; }
+
+/* CTA card */
+.cta-card {
+  background: var(--green);
+  border-radius: 14px;
+  padding: 1.6rem;
+  animation: fadeUp .5s .05s ease both;
+}
+
+.cta-label {
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  margin-bottom: .6rem;
+}
+
+.cta-title {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  font-style: italic;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.cta-btn {
+  width: 100%;
+  background: #fff;
+  color: var(--green);
+  border: none;
+  border-radius: 8px;
+  padding: .75rem;
+  font-family: var(--sans);
+  font-size: .8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  margin-bottom: .6rem;
+}
+.cta-btn:hover { background: var(--green-l); }
+
+.cta-note {
+  text-align: center;
+  font-size: .68rem;
+  color: rgba(255,255,255,.35);
+  line-height: 1.5;
+}
+
+/* share card */
+.share-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.4rem;
+  animation: fadeUp .5s .12s ease both;
+}
+
+.sc-title {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: .3rem;
+}
+
+.sc-sub {
+  font-size: .7rem;
+  color: var(--muted);
+  margin-bottom: .9rem;
+  line-height: 1.5;
+}
+
+.url-row {
+  display: flex;
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  overflow: hidden;
+  margin-bottom: .7rem;
+}
+
+.url-text {
+  flex: 1;
+  font-size: .72rem;
+  color: var(--green2);
+  font-weight: 500;
+  padding: .55rem .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.url-copy {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  padding: .55rem .8rem;
+  font-family: var(--sans);
+  font-size: .68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s;
+  white-space: nowrap;
+}
+.url-copy:hover { background: var(--green2); }
+.url-copy.copied { background: var(--green2); }
+
+.share-btns { display: flex; gap: .45rem; }
+
+.share-btn {
+  flex: 1;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: .5rem .4rem;
+  font-family: var(--sans);
+  font-size: .65rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  background: none;
+  display: flex; align-items: center; justify-content: center; gap: .3rem;
+}
+.share-btn:hover { border-color: var(--faint); color: var(--ink); background: var(--paper); }
+
+/* embed card */
+.embed-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.4rem;
+  animation: fadeUp .5s .18s ease both;
+}
+
+.embed-tabs {
+  display: flex; gap: .3rem;
+  background: var(--paper);
+  border-radius: 6px;
+  padding: .2rem;
+  margin-bottom: .9rem;
+}
+
+.embed-tab {
+  flex: 1;
+  padding: .35rem .5rem;
+  border-radius: 4px;
+  font-size: .64rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  text-align: center;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+}
+.embed-tab.active { background: var(--white); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+.embed-code {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: .8rem;
+  font-size: .67rem;
+  color: var(--muted);
+  word-break: break-all;
+  line-height: 1.6;
+  font-family: 'Courier New', monospace;
+  margin-bottom: .7rem;
+}
+.embed-code .accent { color: var(--green2); }
+.embed-code .str { color: var(--amber); }
+
+.embed-copy-btn {
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: .5rem;
+  font-family: var(--sans);
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  background: none;
+}
+.embed-copy-btn:hover { border-color: var(--green-m); color: var(--green2); }
+
+/* recruiter card */
+.recruiter-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.3rem;
+  animation: fadeUp .5s .22s ease both;
+}
+
+.rc-label {
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .55rem;
+}
+
+.rc-text {
+  font-size: .76rem;
+  color: var(--ink2);
+  line-height: 1.65;
+  margin-bottom: .75rem;
+}
+
+.rc-btn {
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: .55rem;
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  background: none;
+}
+.rc-btn:hover { border-color: var(--faint); color: var(--ink); }
+
+/* modal */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(20,18,16,.5);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  animation: popUp .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popUp {
+  from { opacity: 0; transform: scale(.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-title {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  color: var(--ink);
+  margin-bottom: .5rem;
+}
+.modal-sub { font-size: .8rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; }
+
+.modal-field input {
+  width: 100%;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  font-family: var(--sans);
+  font-size: .85rem;
+  color: var(--ink);
+  outline: none;
+  margin-bottom: .8rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+.modal-field input:focus { border-color: var(--green2); box-shadow: 0 0 0 3px rgba(42,92,64,.1); }
+
+.modal-reason { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1rem; }
+.modal-reason label { display: flex; gap: .6rem; font-size: .8rem; color: var(--ink2); cursor: pointer; align-items: center; }
+.modal-reason input[type="radio"] { accent-color: var(--green); }
+
+.modal-actions { display: flex; gap: .6rem; }
+.modal-cancel { flex: 1; border: 1px solid var(--rule); border-radius: 8px; padding: .7rem; font-family: var(--sans); font-size: .78rem; font-weight: 600; color: var(--muted); cursor: pointer; background: none; transition: all .18s; }
+.modal-cancel:hover { color: var(--ink); }
+.modal-submit { flex: 1; background: var(--green); color: #fff; border: none; border-radius: 8px; padding: .7rem; font-family: var(--sans); font-size: .78rem; font-weight: 600; cursor: pointer; transition: background .18s; }
+.modal-submit:hover { background: var(--green2); }
+
+/* responsive */
+@media (max-width: 820px) {
+  .page { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+  .trust-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+@media (max-width: 500px) {
+  nav { padding: .9rem 1rem; }
+  .page { padding: 1.5rem 1rem 4rem; }
+  .hero { flex-direction: column; gap: 1rem; }
+  .trust-grid { grid-template-columns: 1fr 1fr; }
+  .hero-name { font-size: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="/">Recomme<span>Now</span></a>
+  <div class="nav-actions">
+    <button class="nav-btn" onclick="openModal('flag-modal')">🚩 Flag profile</button>
+    <button class="nav-btn primary" onclick="window.location='#vouch-cta'">+ Add your vouch</button>
+  </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- ── LEFT ── -->
+  <div class="left">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="avatar-wrap">
+        <div class="avatar">NB</div>
+        <div class="verified-badge">
+          <svg viewBox="0 0 10 10" fill="none">
+            <polyline points="2.5,5 4.2,6.8 7.5,3.2" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <div class="hero-info">
+        <div class="hero-name">Nick Baker</div>
+        <div class="hero-role">Head of Product · 9 years experience · London · Remote-first</div>
+        <div class="hero-tags">
+          <span class="h-tag">SaaS</span>
+          <span class="h-tag">Fintech</span>
+          <span class="h-tag">B2B</span>
+          <span class="h-tag">0→1</span>
+          <span class="h-tag">Scale-up</span>
+        </div>
+        <div class="hero-bio">
+          I build products from 0 to 1 and grow them from 1 to many — with a bias toward shipping fast and learning faster.
+        </div>
+        <div class="hero-score-mini">
+          <div class="stars-mini">★★★★★</div>
+          <div class="score-num">4.9</div>
+          <div class="score-meta">/ 5.0 · 14 vouches</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust metrics -->
+    <div class="trust-section">
+      <div class="section-label">Trust score</div>
+      <div class="trust-grid">
+        <div class="trust-cell">
+          <div class="tc-val">4.9</div>
+          <div class="tc-label">Overall recommendation</div>
+          <div class="tc-bar"><div class="tc-fill" id="bar1" style="width:98%"></div></div>
+        </div>
+        <div class="trust-cell">
+          <div class="tc-val">7</div>
+          <div class="tc-label">Relationship types</div>
+          <div class="tc-bar"><div class="tc-fill" id="bar2" style="width:88%"></div></div>
+        </div>
+        <div class="trust-cell">
+          <div class="tc-val">12/14</div>
+          <div class="tc-label">Work email verified</div>
+          <div class="tc-bar"><div class="tc-fill" id="bar3" style="width:86%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Traits -->
+    <div class="traits-section">
+      <div class="section-label">Most mentioned traits</div>
+      <div class="trait-bubbles">
+        <div class="t-bubble">Gets things done <span class="t-count">13</span></div>
+        <div class="t-bubble">Takes ownership <span class="t-count">12</span></div>
+        <div class="t-bubble">Trusted voice <span class="t-count">11</span></div>
+        <div class="t-bubble">Problem solver <span class="t-count">10</span></div>
+        <div class="t-bubble">Clear communicator <span class="t-count">9</span></div>
+        <div class="t-bubble">Calm under pressure <span class="t-count">8</span></div>
+        <div class="t-bubble">Strategic thinker <span class="t-count">7</span></div>
+        <div class="t-bubble">Lifts others up <span class="t-count">5</span></div>
+      </div>
+    </div>
+
+    <!-- Vouches -->
+    <div class="vouches-section">
+      <div class="section-label">What people say</div>
+      <div class="vouches-list">
+
+        <!-- Vouch 1 — verified manager -->
+        <div class="vouch-card">
+          <div class="vc-top">
+            <div class="vc-person">
+              <div class="vc-avatar" style="background:#3d6b52;">SC</div>
+              <div>
+                <div class="vc-name">Sarah Chen</div>
+                <div class="vc-role">Engineering Lead · Stripe</div>
+              </div>
+            </div>
+            <div class="vc-right">
+              <div class="vc-rel">Manager</div>
+              <div class="vc-verify">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Work email verified
+              </div>
+            </div>
+          </div>
+          <div class="vc-stars">★★★★★</div>
+          <div class="vc-quote">"When a project was falling apart, Nick was the person I called. He cut through the noise, aligned everyone, and delivered on time. I'd work with him again without a second thought — one of the most reliable people I've managed."</div>
+          <div class="vc-traits">
+            <span class="vc-trait">Gets things done</span>
+            <span class="vc-trait">Calm under pressure</span>
+            <span class="vc-trait">Trusted voice</span>
+          </div>
+          <button class="vc-flag" onclick="openModal('flag-modal')">🚩 Flag this vouch</button>
+        </div>
+
+        <!-- Vouch 2 — verified client -->
+        <div class="vouch-card">
+          <div class="vc-top">
+            <div class="vc-person">
+              <div class="vc-avatar" style="background:#3a5c8a;">MR</div>
+              <div>
+                <div class="vc-name">Marco Ricci</div>
+                <div class="vc-role">Founder · Volta Commerce</div>
+              </div>
+            </div>
+            <div class="vc-right">
+              <div class="vc-rel">Client</div>
+              <div class="vc-verify">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Work email verified
+              </div>
+            </div>
+          </div>
+          <div class="vc-stars">★★★★★</div>
+          <div class="vc-quote">"What struck me about Nick was that he treated our problem like it was his own. He pushed back when something wasn't right, always had a better idea ready, and kept us moving when we were stuck. That level of ownership from someone external is rare."</div>
+          <div class="vc-traits">
+            <span class="vc-trait">Takes ownership</span>
+            <span class="vc-trait">Strategic thinker</span>
+            <span class="vc-trait">Clear communicator</span>
+          </div>
+          <button class="vc-flag" onclick="openModal('flag-modal')">🚩 Flag this vouch</button>
+        </div>
+
+        <!-- Vouch 3 — verified collaborator -->
+        <div class="vouch-card">
+          <div class="vc-top">
+            <div class="vc-person">
+              <div class="vc-avatar" style="background:#7a4a8e;">AJ</div>
+              <div>
+                <div class="vc-name">Aisha James</div>
+                <div class="vc-role">Head of Design · Monzo</div>
+              </div>
+            </div>
+            <div class="vc-right">
+              <div class="vc-rel">Cross-functional</div>
+              <div class="vc-verify">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Work email verified
+              </div>
+            </div>
+          </div>
+          <div class="vc-stars">★★★★★</div>
+          <div class="vc-quote">"Rarely do you find someone who genuinely makes the people around them better. Nick listened more than he talked, made sure everyone's contribution landed, and had a way of turning disagreements into better outcomes."</div>
+          <div class="vc-traits">
+            <span class="vc-trait">Lifts others up</span>
+            <span class="vc-trait">Trusted voice</span>
+            <span class="vc-trait">Problem solver</span>
+          </div>
+          <button class="vc-flag" onclick="openModal('flag-modal')">🚩 Flag this vouch</button>
+        </div>
+
+        <!-- Vouch 4 — unverified (yellow) -->
+        <div class="vouch-card">
+          <div class="vc-top">
+            <div class="vc-person">
+              <div class="vc-avatar" style="background:#8a6a3a;">TK</div>
+              <div>
+                <div class="vc-name">Tom Kessler</div>
+                <div class="vc-role">Product Manager · (freelance)</div>
+              </div>
+            </div>
+            <div class="vc-right">
+              <div class="vc-rel">Colleague</div>
+              <div class="vc-unverified">🟡 Self-declared</div>
+            </div>
+          </div>
+          <div class="vc-stars">★★★★★</div>
+          <div class="vc-quote">"Nick has an unusual ability to zoom out and see the strategic picture while still caring about the details. He's one of the people I'd call for a second opinion on anything important."</div>
+          <div class="vc-traits">
+            <span class="vc-trait">Strategic thinker</span>
+            <span class="vc-trait">Gets things done</span>
+          </div>
+          <button class="vc-flag" onclick="openModal('flag-modal')">🚩 Flag this vouch</button>
+        </div>
+
+      </div>
+
+      <button class="load-more-btn" onclick="loadMore(this)">
+        Show 10 more vouches (14 total)
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+
+    <!-- Add vouch CTA -->
+    <div class="cta-card" id="vouch-cta">
+      <div class="cta-label">Know Nick?</div>
+      <div class="cta-title">Add your vouch and help them land their next role.</div>
+      <button class="cta-btn" onclick="window.location='/vouch/nick-baker'">Leave a vouch →</button>
+      <div class="cta-note">60 seconds · No account needed · Your name will appear publicly</div>
+    </div>
+
+    <!-- Share -->
+    <div class="share-card">
+      <div class="sc-title">Share this profile</div>
+      <div class="sc-sub">Copy the link or share directly to LinkedIn or email.</div>
+      <div class="url-row">
+        <div class="url-text">recommenow.com/nick-baker</div>
+        <button class="url-copy" id="url-copy-btn" onclick="copyProfileUrl(this)">Copy</button>
+      </div>
+      <div class="share-btns">
+        <button class="share-btn">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="#0077b5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </button>
+        <button class="share-btn">✉️ Email</button>
+        <button class="share-btn">📋 More</button>
+      </div>
+    </div>
+
+    <!-- Embed -->
+    <div class="embed-card">
+      <div class="sc-title" style="margin-bottom:.3rem;">Embed on your site</div>
+      <div class="sc-sub">Add a live widget to your portfolio or personal site.</div>
+      <div class="embed-tabs">
+        <button class="embed-tab active" onclick="switchEmbed(this,'widget')">Widget</button>
+        <button class="embed-tab" onclick="switchEmbed(this,'badge')">Badge</button>
+        <button class="embed-tab" onclick="switchEmbed(this,'pdf')">PDF</button>
+      </div>
+      <div class="embed-code" id="embed-code"><span class="accent">&lt;script</span> src=<span class="str">"https://recommenow.com/embed.js"</span><span class="accent">&gt;&lt;/script&gt;</span>
+<span class="accent">&lt;div</span> <span class="str">data-recommenow</span>=<span class="str">"nick-baker"</span><span class="accent">&gt;&lt;/div&gt;</span></div>
+      <button class="embed-copy-btn" onclick="copyEmbed(this)">Copy embed code</button>
+    </div>
+
+    <!-- Recruiter note -->
+    <div class="recruiter-card">
+      <div class="rc-label">Are you a recruiter?</div>
+      <div class="rc-text">Search and filter verified profiles, export trust scores, and connect to your ATS. Recruiter accounts coming soon.</div>
+      <button class="rc-btn">Join the recruiter waitlist →</button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ── FLAG MODAL ── -->
+<div class="modal-overlay" id="flag-modal" onclick="closeModal('flag-modal', event)">
+  <div class="modal">
+    <div class="modal-title">Flag this vouch</div>
+    <div class="modal-sub">Tell us why you think this vouch should be reviewed. Three independent flags trigger a 48-hour review process.</div>
+    <div class="modal-reason">
+      <label><input type="radio" name="flag-reason" value="fake"> I believe this person doesn't know Nick professionally</label>
+      <label><input type="radio" name="flag-reason" value="identity"> The name or company appears to be false</label>
+      <label><input type="radio" name="flag-reason" value="inflated"> The relationship type appears to be inflated</label>
+      <label><input type="radio" name="flag-reason" value="other"> Other</label>
+    </div>
+    <div class="modal-field">
+      <input type="email" placeholder="Your email (optional — for follow-up)">
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('flag-modal')">Cancel</button>
+      <button class="modal-submit" onclick="submitFlag()">Submit flag</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Animate bars on load
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.querySelectorAll('.tc-fill').forEach(el => el.classList.add('go'));
+  }, 300);
+});
+
+// Copy profile URL
+function copyProfileUrl(btn) {
+  navigator.clipboard.writeText('https://recommenow.com/nick-baker').catch(() => {});
+  btn.textContent = 'Copied ✓';
+  btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+}
+
+// Embed tabs
+const embedCodes = {
+  widget: `<span class="accent">&lt;script</span> src=<span class="str">"https://recommenow.com/embed.js"</span><span class="accent">&gt;&lt;/script&gt;</span>\n<span class="accent">&lt;div</span> <span class="str">data-recommenow</span>=<span class="str">"nick-baker"</span><span class="accent">&gt;&lt;/div&gt;</span>`,
+  badge:  `<span class="str">https://recommenow.com/nick-baker</span>\n\n<span style="color:var(--muted)">// Paste into LinkedIn About,\n// email signature or CV header</span>`,
+  pdf:    `<span class="str">https://recommenow.com/nick-baker/pdf</span>\n\n<span style="color:var(--muted)">// Direct link to auto-generated\n// one-page reputation summary</span>`
+};
+
+function switchEmbed(btn, type) {
+  document.querySelectorAll('.embed-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('embed-code').innerHTML = embedCodes[type];
+}
+
+function copyEmbed(btn) {
+  navigator.clipboard.writeText(document.getElementById('embed-code').textContent).catch(() => {});
+  btn.textContent = 'Copied ✓';
+  setTimeout(() => { btn.textContent = 'Copy embed code'; }, 2000);
+}
+
+// Load more
+function loadMore(btn) {
+  btn.textContent = 'Loading…';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'All 14 vouches loaded';
+    btn.disabled = true;
+    btn.style.opacity = '.4';
+  }, 900);
+}
+
+// Flag modal
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id, e) {
+  if (!e || e.target === document.getElementById(id)) {
+    document.getElementById(id).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function submitFlag() {
+  closeModal('flag-modal');
+  // Show brief confirmation
+  const toast = document.createElement('div');
+  toast.style.cssText = `position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:.75rem 1.4rem;border-radius:8px;font-size:.8rem;font-weight:600;z-index:300;animation:fadeUp .3s ease;`;
+  toast.textContent = '✓ Flag submitted — we\'ll review within 48 hours';
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
+}
+</script>
+</body>
+</html>

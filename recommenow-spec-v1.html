@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecommeNow — Product Spec v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #faf8f5;
+  --paper: #ffffff;
+  --ink: #18160f;
+  --ink2: #2c2920;
+  --muted: #8a8070;
+  --faint: #ede8e0;
+  --rule: #e0dbd0;
+  --forest: #1a3d2b;
+  --forest-dim: rgba(26,61,43,.08);
+  --forest-mid: #2d6645;
+  --mint: #e8f5ee;
+  --amber: #9a5a0a;
+  --amber-dim: #fdf4e8;
+  --red: #b5291e;
+  --red-dim: #fdf0ee;
+  --sky: #1a4a7a;
+  --sky-dim: #eef4fc;
+  --gold: #b8902a;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* ── COVER ── */
+.cover {
+  min-height: 100vh;
+  background: var(--forest);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 4rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.cover-circle {
+  position: absolute;
+  bottom: -120px; right: -80px;
+  width: 500px; height: 500px;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 50%;
+}
+.cover-circle2 {
+  position: absolute;
+  bottom: -40px; right: 60px;
+  width: 300px; height: 300px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 50%;
+}
+
+.cover-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.cover-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 2rem;
+}
+
+.cover-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(4rem, 10vw, 8rem);
+  font-weight: 300;
+  line-height: .95;
+  letter-spacing: -.03em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.cover-title .now {
+  font-style: italic;
+  color: rgba(255,255,255,.45);
+}
+
+.cover-line {
+  width: 60px;
+  height: 1px;
+  background: rgba(255,255,255,.25);
+  margin-bottom: 1.5rem;
+}
+
+.cover-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,.5);
+  max-width: 480px;
+  line-height: 1.7;
+}
+
+.cover-footer {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255,255,255,.1);
+  margin-top: 4rem;
+}
+
+.cover-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.25);
+  display: flex; gap: 2.5rem;
+}
+
+.cover-domain {
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: rgba(255,255,255,.35);
+}
+
+/* ── NAV ── */
+.doc-nav {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  padding: 0 3rem;
+  display: flex;
+  position: sticky; top: 0; z-index: 50;
+  overflow-x: auto;
+  -ms-overflow-style: none; scrollbar-width: none;
+}
+.doc-nav::-webkit-scrollbar { display: none; }
+
+.nav-a {
+  display: block;
+  padding: 1rem 1.1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all .2s;
+  text-decoration: none;
+}
+.nav-a:hover { color: var(--ink); }
+.nav-a.active { color: var(--forest); border-bottom-color: var(--forest); }
+
+/* ── BODY ── */
+.doc-body {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 4rem 2.5rem 8rem;
+}
+
+/* ── SECTION ── */
+.section {
+  margin-bottom: 5rem;
+  scroll-margin-top: 56px;
+}
+
+.s-eyebrow {
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: .8rem;
+}
+
+.s-num {
+  font-family: 'Fraunces', serif;
+  font-size: 4rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--faint);
+  line-height: 1;
+}
+
+.s-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: .2rem .6rem;
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+}
+
+.s-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 300;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+  letter-spacing: -.02em;
+}
+
+.s-title em { font-style: italic; color: var(--forest-mid); }
+
+.prose {
+  font-size: .9rem;
+  line-height: 1.9;
+  color: var(--ink2);
+  max-width: 680px;
+}
+.prose strong { font-weight: 600; color: var(--ink); }
+.prose + .prose { margin-top: 1rem; }
+
+.rule { border: none; border-top: 1px solid var(--rule); margin: 2rem 0; }
+
+/* ── DECISION BLOCK ── */
+.decision {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.decision-q {
+  background: var(--bg);
+  padding: 1.4rem 1.6rem;
+}
+
+.decision-a {
+  background: var(--paper);
+  padding: 1.4rem 1.6rem;
+  border-left: 3px solid var(--forest);
+}
+
+.d-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+
+.d-label.q { color: var(--muted); }
+.d-label.a { color: var(--forest-mid); }
+
+.d-text {
+  font-size: .82rem;
+  line-height: 1.65;
+  color: var(--ink2);
+}
+
+.d-text strong { font-weight: 600; color: var(--ink); }
+
+/* ── CALLOUT ── */
+.callout {
+  padding: 1.2rem 1.6rem;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  border-left: 3px solid;
+}
+.callout.forest { background: var(--mint); border-color: var(--forest-mid); }
+.callout.amber  { background: var(--amber-dim); border-color: var(--amber); }
+.callout.red    { background: var(--red-dim); border-color: var(--red); }
+.callout.sky    { background: var(--sky-dim); border-color: var(--sky); }
+
+.c-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .4rem;
+}
+.callout p { font-size: .86rem; line-height: 1.7; color: var(--ink2); }
+.callout strong { font-weight: 600; color: var(--ink); }
+
+/* ── TRUST LAYERS ── */
+.layers { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+
+.layer { background: var(--paper); display: grid; grid-template-columns: 56px 1fr; }
+
+.ln {
+  background: var(--forest);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  color: rgba(255,255,255,.25);
+}
+
+.lb { padding: 1.2rem 1.5rem; }
+
+.lt {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: .84rem;
+  color: var(--ink);
+  margin-bottom: .25rem;
+}
+
+.ld { font-size: .77rem; color: var(--muted); line-height: 1.65; }
+
+.l-pill {
+  display: inline-block;
+  margin-top: .5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .18rem .55rem;
+  border-radius: 100px;
+}
+.l-pill.free   { background: var(--mint); color: var(--forest-mid); }
+.l-pill.auto   { background: var(--sky-dim); color: var(--sky); }
+.l-pill.social { background: var(--faint); color: var(--muted); }
+.l-pill.manual { background: var(--amber-dim); color: var(--amber); }
+
+/* ── TIERS ── */
+.tiers { display: flex; flex-direction: column; gap: .6rem; margin: 1.2rem 0; }
+.tier {
+  display: flex; align-items: center; gap: 1.2rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1rem 1.4rem;
+}
+.tier-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.td-g { background: #22c55e; }
+.td-a { background: #f59e0b; }
+.td-r { background: #ef4444; }
+.tier-lbl { font-weight: 600; font-size: .82rem; color: var(--ink); min-width: 210px; }
+.tier-desc { font-size: .77rem; color: var(--muted); line-height: 1.5; }
+
+/* ── PRODUCT SURFACES ── */
+.surfaces {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.surface { background: var(--paper); padding: 1.8rem 1.6rem; }
+.surface.featured { background: var(--forest); }
+
+.surf-num {
+  font-family: 'Fraunces', serif;
+  font-size: 2.5rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--faint);
+  line-height: 1;
+  margin-bottom: .6rem;
+}
+.surface.featured .surf-num { color: rgba(255,255,255,.15); }
+
+.surf-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--ink);
+  margin-bottom: .6rem;
+}
+.surface.featured .surf-title { color: #fff; }
+
+.surf-body { font-size: .77rem; color: var(--muted); line-height: 1.7; }
+.surface.featured .surf-body { color: rgba(255,255,255,.5); }
+
+.surf-detail {
+  margin-top: .9rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  color: var(--forest-mid);
+}
+.surface.featured .surf-detail { color: rgba(255,255,255,.3); }
+
+/* ── STACK ── */
+.stack { display: flex; flex-direction: column; gap: .5rem; margin: 1.5rem 0; }
+.stack-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: .82rem;
+}
+.sl {
+  background: var(--bg);
+  padding: .85rem 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-right: 1px solid var(--rule);
+  display: flex; align-items: center;
+}
+.sv { padding: .85rem 1.1rem; color: var(--ink2); line-height: 1.5; }
+.sv strong { font-weight: 600; color: var(--ink); }
+.sv span { font-size: .74rem; color: var(--muted); }
+
+/* ── PRICING ── */
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.price-card { background: var(--paper); padding: 1.8rem 1.6rem; }
+.price-card.mid { background: var(--forest); }
+
+.p-tier {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .5rem;
+}
+.price-card.mid .p-tier { color: rgba(255,255,255,.4); }
+
+.p-price {
+  font-family: 'Fraunces', serif;
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: .2rem;
+}
+.price-card.mid .p-price { color: #fff; }
+
+.p-cadence {
+  font-size: .7rem;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+}
+.price-card.mid .p-cadence { color: rgba(255,255,255,.35); }
+
+.p-items { list-style: none; }
+.p-items li {
+  font-size: .77rem;
+  color: var(--muted);
+  padding: .28rem 0;
+  border-bottom: 1px solid var(--faint);
+  display: flex; gap: .5rem; line-height: 1.5;
+}
+.p-items li:last-child { border-bottom: none; }
+.p-items li::before { content: '✓'; color: var(--forest-mid); font-weight: 700; flex-shrink: 0; }
+.price-card.mid .p-items li { color: rgba(255,255,255,.55); border-color: rgba(255,255,255,.08); }
+.price-card.mid .p-items li::before { color: rgba(255,255,255,.4); }
+
+/* ── SLUG EXPLAINER ── */
+.slug-examples { display: flex; flex-direction: column; gap: .5rem; margin: 1rem 0; }
+.slug-row {
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: .9rem 1.2rem;
+}
+.slug-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .18rem .6rem;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+.slug-pill.free { background: var(--faint); color: var(--muted); }
+.slug-pill.pro  { background: var(--mint); color: var(--forest-mid); }
+.slug-url {
+  font-family: 'DM Mono', monospace;
+  font-size: .78rem;
+  color: var(--ink2);
+}
+.slug-note { font-size: .75rem; color: var(--muted); margin-left: auto; }
+
+/* ── ROADMAP ── */
+.phases {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.phase { background: var(--paper); padding: 1.8rem 1.6rem; }
+
+.ph-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .5rem;
+}
+
+.ph-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: .9rem;
+}
+
+.ph-items { list-style: none; }
+.ph-items li {
+  font-size: .77rem;
+  color: var(--ink2);
+  padding: .28rem 0;
+  border-bottom: 1px solid var(--faint);
+  line-height: 1.5;
+  display: flex; gap: .5rem;
+}
+.ph-items li:last-child { border-bottom: none; }
+.ph-items li::before { content: '—'; color: var(--rule); flex-shrink: 0; }
+
+.ph-time {
+  margin-top: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── PRINCIPLES ── */
+.principles { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; margin: 1.5rem 0; }
+.principle { background: var(--paper); padding: 1.2rem 1.6rem; display: flex; gap: 1.2rem; align-items: flex-start; }
+.p-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: .1rem; }
+.p-body .p-title { font-weight: 600; font-size: .84rem; color: var(--ink); margin-bottom: .2rem; }
+.p-body .p-desc { font-size: .77rem; color: var(--muted); line-height: 1.6; }
+
+/* ── FOUNDER NOTE ── */
+.founder-note {
+  background: var(--forest);
+  border-radius: 12px;
+  padding: 3rem;
+  margin: 3rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.founder-note::before {
+  content: '"';
+  font-family: 'Fraunces', serif;
+  font-size: 12rem;
+  font-style: italic;
+  color: rgba(255,255,255,.05);
+  position: absolute;
+  top: -2rem; left: 1.5rem;
+  line-height: 1;
+  pointer-events: none;
+}
+.founder-text {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(255,255,255,.75);
+  line-height: 1.6;
+  max-width: 620px;
+  position: relative;
+}
+.founder-attr {
+  margin-top: 1.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.25);
+  position: relative;
+}
+
+/* footer */
+.doc-footer {
+  background: var(--forest);
+  color: rgba(255,255,255,.2);
+  padding: 2.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.footer-brand {
+  font-family: 'Fraunces', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: rgba(255,255,255,.35);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+@media (max-width: 700px) {
+  .cover { padding: 2.5rem 1.5rem; }
+  .doc-nav { padding: 0 1rem; }
+  .doc-body { padding: 2.5rem 1.2rem 5rem; }
+  .decision { grid-template-columns: 1fr; }
+  .surfaces { grid-template-columns: 1fr; }
+  .pricing { grid-template-columns: 1fr; }
+  .phases { grid-template-columns: 1fr; }
+  .slug-row { flex-wrap: wrap; }
+  .slug-note { margin-left: 0; }
+  .tier { flex-wrap: wrap; }
+  .tier-lbl { min-width: unset; }
+  .cover-meta { flex-direction: column; gap: .8rem; }
+  .stack-row { grid-template-columns: 90px 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-grid"></div>
+  <div class="cover-circle"></div>
+  <div class="cover-circle2"></div>
+
+  <div class="cover-content">
+    <div class="cover-label">Product Specification · Version 1.0 · Final</div>
+    <div class="cover-title">Recomme<span class="now">Now</span></div>
+    <div class="cover-line"></div>
+    <div class="cover-sub">
+      Verified peer feedback that travels with you. Let the people who've seen your work speak for you — in every application, on every platform, from the very first impression.
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    <div class="cover-meta">
+      <span>Spec v1.0</span>
+      <span>April 2026</span>
+      <span>All decisions final</span>
+      <span>Confidential</span>
+    </div>
+    <div class="cover-domain">recommenow.com</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="doc-nav">
+  <a class="nav-a active" href="#why">Why</a>
+  <a class="nav-a" href="#decisions">Decisions</a>
+  <a class="nav-a" href="#trust">Trust Model</a>
+  <a class="nav-a" href="#product">Product</a>
+  <a class="nav-a" href="#slugs">URLs & Slugs</a>
+  <a class="nav-a" href="#stack">Tech Stack</a>
+  <a class="nav-a" href="#pricing">Pricing</a>
+  <a class="nav-a" href="#roadmap">Roadmap</a>
+  <a class="nav-a" href="#principles">Principles</a>
+</nav>
+
+<div class="doc-body">
+
+  <!-- WHY -->
+  <div class="section" id="why">
+    <div class="s-eyebrow"><div class="s-num">1</div><div class="s-tag">The Problem</div></div>
+    <div class="s-title">The credential that <em>doesn't exist yet</em></div>
+
+    <p class="prose">
+      Every hiring process runs on trust. But the tools we use to establish that trust are broken — in predictable, unfair ways that disadvantage exactly the people who most need help.
+    </p>
+
+    <div class="founder-note">
+      <div class="founder-text">Two equally capable candidates apply for the same role. One has an internal referral. The other doesn't. The first gets the interview. This isn't about skill — it's about access to social proof at the right moment. RecommeNow exists to fix this asymmetry.</div>
+      <div class="founder-attr">Core thesis · RecommeNow v1.0</div>
+    </div>
+
+    <p class="prose">
+      <strong>LinkedIn recommendations</strong> are buried, unstructured, un-embeddable, and ignored after two seconds.<br><br>
+      <strong>References</strong> only get called at the end of the process — after the first impression is already made. Too late.<br><br>
+      <strong>Skill endorsements</strong> are clicked by strangers and treated as noise.<br><br>
+      <strong>CV claims</strong> are entirely self-reported, with zero external validation.<br><br>
+      <strong>RecommeNow</strong> is none of these. It's a structured, portable, peer-verified reputation profile — built from people who actually worked with you, visible from the very first moment someone looks you up.
+    </p>
+
+    <div class="callout forest" style="margin-top:1.5rem;">
+      <div class="c-label">The strategic long game</div>
+      <p>LinkedIn will not be integrated with immediately — and that's intentional. <strong>When RecommeNow is valuable enough, they will come to us.</strong> The near-term play is a URL in LinkedIn's About section and optimised Open Graph cards that create a rich preview when the link is shared. We don't need their permission to be useful. We need users.</p>
+    </div>
+  </div>
+
+  <!-- DECISIONS -->
+  <div class="section" id="decisions">
+    <div class="s-eyebrow"><div class="s-num">2</div><div class="s-tag">Founder Decisions</div></div>
+    <div class="s-title">Every open question, <em>answered</em></div>
+
+    <p class="prose" style="margin-bottom:1.5rem;">These decisions are final for v1. They are not to be relitigated during build. If circumstances change, revisit in v2 planning.</p>
+
+    <div class="decision">
+      <div class="decision-q">
+        <div class="d-label q">Question</div>
+        <div class="d-text">LinkedIn integration depth — do we build a native widget via their API?</div>
+      </div>
+      <div class="decision-a">
+        <div class="d-label a">Decision ✓</div>
+        <div class="d-text"><strong>No native integration in v1.</strong> We build audience first. When we're big enough, they come to us and open the API. Short-term: optimised OG cards + URL in About section. That's sufficient to drive traffic and demonstrate value.</div>
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="decision-q">
+        <div class="d-label q">Question</div>
+        <div class="d-text">Who moderates flagged vouches — founder-led or async queue?</div>
+      </div>
+      <div class="decision-a">
+        <div class="d-label a">Decision ✓</div>
+        <div class="d-text"><strong>Async review queue with a 48-hour SLA.</strong> All flagged vouches enter a review queue. The vouch giver is notified and asked to re-confirm. Resolution within 48 hours — either reinstated with a note or removed. Process is documented and visible in the public Trust Policy page.</div>
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="decision-q">
+        <div class="d-label q">Question</div>
+        <div class="d-text">Are custom profile slugs free or a Pro feature?</div>
+      </div>
+      <div class="decision-a">
+        <div class="d-label a">Decision ✓</div>
+        <div class="d-text"><strong>Custom slugs are Pro only.</strong> Free users get a functional auto-generated URL. Pro users can set any available slug. This creates a genuine upgrade incentive — a clean, memorable URL is worth paying for when you're actively job searching.</div>
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="decision-q">
+        <div class="d-label q">Question</div>
+        <div class="d-text">What about negative feedback — should it be allowed?</div>
+      </div>
+      <div class="decision-a">
+        <div class="d-label a">Decision ✓</div>
+        <div class="d-text"><strong>In v1, users control what's shown.</strong> You choose who you ask, and you approve what appears on your profile. This mirrors exactly how professional references work — nobody expects you to list people who'll speak against you. The FAQ addresses this transparently.</div>
+      </div>
+    </div>
+
+    <div class="decision">
+      <div class="decision-q">
+        <div class="d-label q">Question</div>
+        <div class="d-text">What's the domain?</div>
+      </div>
+      <div class="decision-a">
+        <div class="d-label a">Decision ✓</div>
+        <div class="d-text"><strong>recommenow.com</strong> — to be registered this week, before a single line of code is written. Nothing else ships before the domain is secured.</div>
+      </div>
+    </div>
+
+    <div class="callout amber" style="margin-top:.5rem;">
+      <div class="c-label">Note on negative feedback — the FAQ answer</div>
+      <p>"RecommeNow works like a professional reference. You choose who you ask, and nobody expects you to list someone who'll speak against you. What makes this more trustworthy than anonymous reviews is that <strong>every vouch giver's name and company is publicly visible</strong> — they're putting their own professional reputation on the line when they recommend you."</p>
+    </div>
+  </div>
+
+  <!-- TRUST -->
+  <div class="section" id="trust">
+    <div class="s-eyebrow"><div class="s-num">3</div><div class="s-tag">Trust Architecture</div></div>
+    <div class="s-title">How we stop <em>fake vouches</em></div>
+
+    <p class="prose">The hardest problem and the most important one to get right. A platform whose feedback can be gamed is worse than useless — it actively misleads the people we're trying to help. The trust model is layered, transparent, and honest about uncertainty.</p>
+
+    <hr class="rule">
+
+    <div class="layers">
+      <div class="layer">
+        <div class="ln">1</div>
+        <div class="lb">
+          <div class="lt">Work email domain verification</div>
+          <div class="ld">Vouch givers must verify via a work email before their vouch publishes. sarah@stripe.com confirms Stripe employment — checkable, attributable, real. Personal Gmail gets a lower trust tier, displayed transparently. This alone eliminates casual fraud and raises the cost of dishonesty significantly.</div>
+          <span class="l-pill free">Low friction · Free</span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="ln">2</div>
+        <div class="lb">
+          <div class="lt">Velocity & burst detection</div>
+          <div class="ld">More than 3 vouches from the same IP cluster, device fingerprint, or email domain within 4 hours triggers a hold. Natural vouch patterns are sparse and spread over days and weeks. Burst submissions are the clearest signal of coordinated gaming. Held vouches are queued and reviewed within 48 hours.</div>
+          <span class="l-pill auto">Automated · Always on</span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="ln">3</div>
+        <div class="lb">
+          <div class="lt">Public accountability by default — the strongest deterrent</div>
+          <div class="ld">Every vouch giver's name, job title, and company is displayed publicly on the profile. No anonymous feedback accepted — ever. This is the single most powerful fraud prevention in the system. People do not misrepresent their professional identity when their real reputation is attached to the claim.</div>
+          <span class="l-pill social">Social pressure · Most effective</span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="ln">4</div>
+        <div class="lb">
+          <div class="lt">Background plausibility scoring</div>
+          <div class="ld">A lightweight check: does the stated role + company + relationship type form a coherent picture? A "Founder" from a solo company claiming to be someone's "direct report" is incoherent. These signals weight the trust score quietly — no user-facing warnings, just honest accounting in the backend.</div>
+          <span class="l-pill auto">Automated · Background</span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="ln">5</div>
+        <div class="lb">
+          <div class="lt">Community flagging — recruiter-powered quality control</div>
+          <div class="ld">Any profile visitor can flag a vouch as suspicious. Three independent flags trigger a 48-hour hold. The vouch giver receives an email asking to re-confirm. This crowdsources quality control from exactly the audience with the most to lose if the system is gamed — recruiters and hiring managers.</div>
+          <span class="l-pill manual">Community-driven · 48h SLA</span>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="ln">6</div>
+        <div class="lb">
+          <div class="lt">Transparent trust tiers on every vouch</div>
+          <div class="ld">Rather than hiding uncertainty, every vouch shows its verification level. This honesty builds more recruiter trust than a system pretending everything is perfectly verified. A platform that acknowledges uncertainty is more credible than one making false guarantees.</div>
+          <span class="l-pill free">Transparent · Trust-building</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tiers" style="margin-top:1.5rem;">
+      <div class="tier">
+        <div class="tier-dot td-g"></div>
+        <div class="tier-lbl">🟢 Work email verified</div>
+        <div class="tier-desc">Confirmed via work domain. Highest confidence. Displayed prominently. This is what recruiters weight most.</div>
+      </div>
+      <div class="tier">
+        <div class="tier-dot td-a"></div>
+        <div class="tier-lbl">🟡 Self-declared, unverified</div>
+        <div class="tier-desc">Personal email used. Name and role self-reported. Visible on profile with a clear label — recruiter judges its weight.</div>
+      </div>
+      <div class="tier">
+        <div class="tier-dot td-r"></div>
+        <div class="tier-lbl">🔴 Flagged — under review</div>
+        <div class="tier-desc">Hidden from public profile. Vouch giver notified. Resolved within 48 hours. Outcome communicated to both parties.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT -->
+  <div class="section" id="product">
+    <div class="s-eyebrow"><div class="s-num">4</div><div class="s-tag">Product Surfaces</div></div>
+    <div class="s-title">Three surfaces, <em>one source of truth</em></div>
+
+    <p class="prose" style="margin-bottom:1.5rem;">The profile is the data model. The feedback form writes to it. The embeds read from it. Everything else is presentation.</p>
+
+    <div class="surfaces">
+      <div class="surface">
+        <div class="surf-num">01</div>
+        <div class="surf-title">Feedback Collection Form</div>
+        <div class="surf-body">Mobile-optimised. Sent by the candidate to their network. Giver states name, title, company, relationship type. Selects up to 6 traits from 16. Writes 2–4 sentences. Star rating. Work email verification before publish. No account needed to give a vouch — zero friction for givers.</div>
+        <div class="surf-detail">Target: 60 seconds to complete</div>
+      </div>
+      <div class="surface featured">
+        <div class="surf-num">02</div>
+        <div class="surf-title">Public Reputation Profile</div>
+        <div class="surf-body">A public page at recommenow.com/[slug]. Overall trust score, relationship diversity indicator, top traits ranked by mention frequency, all verified vouches with trust tier badges, and a one-click add-vouch button. This is what a recruiter lands on when the link is shared.</div>
+        <div class="surf-detail">The core product · drives all growth</div>
+      </div>
+      <div class="surface">
+        <div class="surf-num">03</div>
+        <div class="surf-title">Portable Embeds</div>
+        <div class="surf-body">Three formats: an embeddable HTML widget for portfolios and personal sites (auto-updates live), a shareable badge URL for LinkedIn About, email signatures, and CV headers, and a PDF one-pager generated on demand for applications that don't accept URLs.</div>
+        <div class="surf-detail">Pro feature — unlocks at £7/mo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLUGS -->
+  <div class="section" id="slugs">
+    <div class="s-eyebrow"><div class="s-num">5</div><div class="s-tag">URLs & Profile Slugs</div></div>
+    <div class="s-title">Every user gets a link. <em>Pro users get the clean one.</em></div>
+
+    <p class="prose" style="margin-bottom:1.2rem;">Free users receive a fully functional, shareable URL from day one — there's no barrier to sharing your profile. The Pro upgrade delivers a clean, memorable custom slug that looks better in a CV header, LinkedIn, or email signature.</p>
+
+    <div class="slug-examples">
+      <div class="slug-row">
+        <span class="slug-pill free">Free</span>
+        <span class="slug-url">recommenow.com/nick-b-a4f2</span>
+        <span class="slug-note">Auto-generated · functional · shareable</span>
+      </div>
+      <div class="slug-row">
+        <span class="slug-pill pro">Pro</span>
+        <span class="slug-url">recommenow.com/nickb</span>
+        <span class="slug-note">Custom · clean · memorable · £7/mo</span>
+      </div>
+      <div class="slug-row">
+        <span class="slug-pill pro">Pro</span>
+        <span class="slug-url">recommenow.com/nick-baker</span>
+        <span class="slug-note">Custom · any available slug</span>
+      </div>
+    </div>
+
+    <div class="callout forest">
+      <div class="c-label">Why this works as a growth mechanic</div>
+      <p>A free user who lands a job and comes back for their next search will upgrade to Pro immediately — because they've seen the profile work, they know recruiters visited it, and a clean URL is a small cost for a meaningful signal of seriousness. <strong>Job searching is high-stakes, time-limited, and people will pay to look more credible.</strong></p>
+    </div>
+  </div>
+
+  <!-- STACK -->
+  <div class="section" id="stack">
+    <div class="s-eyebrow"><div class="s-num">6</div><div class="s-tag">Tech Stack</div></div>
+    <div class="s-title">Built to launch fast, <em>scale when it works</em></div>
+
+    <p class="prose" style="margin-bottom:1.5rem;">Every tool chosen for MVP has a generous free tier. Total cost at zero-to-low traffic: <strong>~£0–30/month.</strong> Only pay when it's working.</p>
+
+    <div class="stack">
+      <div class="stack-row">
+        <div class="sl">Frontend</div>
+        <div class="sv"><strong>Next.js 14</strong> (App Router) <span>— feedback form, profile pages, dashboard. SEO-friendly for public profiles — critical for recruiter discoverability.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Auth</div>
+        <div class="sv"><strong>Clerk</strong> <span>— candidate signup via email magic link + Google OAuth. Free tier covers MVP comfortably.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Database</div>
+        <div class="sv"><strong>Supabase (Postgres)</strong> <span>— profiles, vouches, verification states, flags, review queue. Row-level security built in. Free tier covers first 1,000 users.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Email</div>
+        <div class="sv"><strong>Resend</strong> <span>— verification emails, vouch notifications, flag alerts, 48h review SLA notifications. 3,000 emails/month free.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Rate limits</div>
+        <div class="sv"><strong>Upstash Redis</strong> <span>— burst detection and velocity checks. Serverless, per-request pricing. Near-zero cost at MVP scale.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">PDF gen</div>
+        <div class="sv"><strong>React-PDF</strong> <span>— on-demand one-pager from profile data. Runs as a serverless function. Pro feature only.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Embed widget</div>
+        <div class="sv"><strong>Vanilla JS snippet</strong> <span>— single &lt;script&gt; tag, fetches profile via public API, renders inline. Zero React dependency for end users' sites.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Hosting</div>
+        <div class="sv"><strong>Vercel</strong> <span>— zero-config Next.js deployment. Edge functions for widget API. Free to start, scales automatically.</span></div>
+      </div>
+      <div class="stack-row">
+        <div class="sl">Payments</div>
+        <div class="sv"><strong>Stripe</strong> <span>— Pro subscriptions + Recruiter plan billing. Only needed for Phase 2 when monetisation begins.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section" id="pricing">
+    <div class="s-eyebrow"><div class="s-num">7</div><div class="s-tag">Business Model</div></div>
+    <div class="s-title">Free to start. <em>Worth paying for.</em></div>
+
+    <div class="pricing">
+      <div class="price-card">
+        <div class="p-tier">Free · Forever</div>
+        <div class="p-price">£0</div>
+        <div class="p-cadence">no card required</div>
+        <ul class="p-items">
+          <li>1 public profile</li>
+          <li>Up to 10 vouches</li>
+          <li>Auto-generated shareable URL</li>
+          <li>Basic trust score</li>
+          <li>Work email verification</li>
+          <li>Community flagging access</li>
+        </ul>
+      </div>
+      <div class="price-card mid">
+        <div class="p-tier">Pro · Job Seeker</div>
+        <div class="p-price">£7</div>
+        <div class="p-cadence">per month · cancel anytime</div>
+        <ul class="p-items">
+          <li>Unlimited vouches</li>
+          <li>Custom profile slug</li>
+          <li>Embeddable widget (auto-updating)</li>
+          <li>PDF one-pager on demand</li>
+          <li>Profile analytics dashboard</li>
+          <li>Priority in recruiter search</li>
+          <li>Vouch approval controls</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="p-tier">Recruiter · Teams</div>
+        <div class="p-price">£29</div>
+        <div class="p-cadence">per month per seat</div>
+        <ul class="p-items">
+          <li>Search & browse all profiles</li>
+          <li>Trust score export</li>
+          <li>Vouch verification API</li>
+          <li>Bulk candidate review tools</li>
+          <li>Team collaboration features</li>
+          <li>ATS integration (Phase 3)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout forest">
+      <div class="c-label">The network effect that funds itself</div>
+      <p>Every vouch sent is an acquisition. Every recruiter who discovers a profile is a potential £29/month customer. Every job seeker who gets hired comes back for their next search. <strong>The product markets itself through the act of being used.</strong> No paid acquisition needed to validate the core loop.</p>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section" id="roadmap">
+    <div class="s-eyebrow"><div class="s-num">8</div><div class="s-tag">Build Roadmap</div></div>
+    <div class="s-title">What ships, <em>in what order</em></div>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="ph-label">Phase 1 · Core Loop</div>
+        <div class="ph-title">Does it work?</div>
+        <ul class="ph-items">
+          <li>Domain registered (week 0)</li>
+          <li>Candidate signup & profile creation</li>
+          <li>Unique vouch link generation</li>
+          <li>Feedback form — traits, quote, stars</li>
+          <li>Work email verification flow</li>
+          <li>Public profile page (SEO-ready)</li>
+          <li>Auto-generated shareable URL</li>
+          <li>Basic trust score display</li>
+          <li>Vouch approval controls</li>
+        </ul>
+        <div class="ph-time">Weeks 1–6</div>
+      </div>
+      <div class="phase">
+        <div class="ph-label">Phase 2 · Trust & Money</div>
+        <div class="ph-title">Does it scale?</div>
+        <ul class="ph-items">
+          <li>Velocity / burst detection</li>
+          <li>Flag & 48h review queue</li>
+          <li>Trust tier display on vouches</li>
+          <li>Custom slug (Pro gate)</li>
+          <li>Embeddable widget (Pro gate)</li>
+          <li>PDF one-pager (Pro gate)</li>
+          <li>Stripe billing integration</li>
+          <li>Profile analytics dashboard</li>
+        </ul>
+        <div class="ph-time">Weeks 7–12</div>
+      </div>
+      <div class="phase">
+        <div class="ph-label">Phase 3 · Distribution</div>
+        <div class="ph-title">Does it grow?</div>
+        <ul class="ph-items">
+          <li>Recruiter search & browse</li>
+          <li>LinkedIn OG card optimisation</li>
+          <li>Refer-a-colleague viral loop</li>
+          <li>Recruiter team accounts</li>
+          <li>Email digest for candidates</li>
+          <li>Public Trust Policy page</li>
+          <li>ATS integration research</li>
+          <li>LinkedIn partnership (inbound)</li>
+        </ul>
+        <div class="ph-time">Months 4–6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINCIPLES -->
+  <div class="section" id="principles">
+    <div class="s-eyebrow"><div class="s-num">9</div><div class="s-tag">Product Principles</div></div>
+    <div class="s-title">The rules we <em>don't break</em></div>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="p-icon">⚖️</div>
+        <div class="p-body">
+          <div class="p-title">Honesty over the illusion of certainty</div>
+          <div class="p-desc">We never claim every vouch is verified. We show trust tiers honestly and let recruiters weigh the evidence themselves. A transparent system is more credible than a system that makes false guarantees.</div>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">🚪</div>
+        <div class="p-body">
+          <div class="p-title">Zero friction for givers</div>
+          <div class="p-desc">Giving a vouch must never require creating an account. Friction on the giver side kills the product. The candidate gets the account. The giver gets a 60-second form and a thank-you.</div>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">🧍</div>
+        <div class="p-body">
+          <div class="p-title">Every vouch is a real person with a name</div>
+          <div class="p-desc">No anonymous feedback. Ever. Public accountability is not a feature — it is the foundation of the trust model. If someone isn't willing to put their name to it, it doesn't belong here.</div>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">🛂</div>
+        <div class="p-body">
+          <div class="p-title">Candidates control what they show</div>
+          <div class="p-desc">You choose who you ask. You approve what appears. This mirrors real references — it's not a weakness, it's the design. The FAQ explains this plainly. We do not apologise for it.</div>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">📦</div>
+        <div class="p-body">
+          <div class="p-title">Build audience before building integrations</div>
+          <div class="p-desc">No platform integrations until the product proves its own value. LinkedIn, ATS systems, and job boards will become available to us when we have leverage. Leverage comes from users, not from API keys.</div>
+        </div>
+      </div>
+      <div class="principle">
+        <div class="p-icon">🌐</div>
+        <div class="p-body">
+          <div class="p-title">The profile is the product</div>
+          <div class="p-desc">Everything else — the form, the widgets, the PDF — exists to create and distribute the profile. If a feature doesn't make the profile more valuable or more reachable, it waits for v2.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="doc-footer">
+  <div class="footer-brand">RecommeNow</div>
+  <div>Spec v1.0 · April 2026 · All decisions final · recommenow.com</div>
+</div>
+
+<script>
+const navLinks = document.querySelectorAll('.nav-a');
+const sections = document.querySelectorAll('.section');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(n => n.classList.remove('active'));
+      const a = document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.25, rootMargin: '-56px 0px 0px 0px' });
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

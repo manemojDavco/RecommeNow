@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecommeNow — Let the people who've seen your work speak for you</title>
+<meta name="description" content="Verified peer feedback that travels with you. Build a reputation profile from real colleagues, managers and clients — and share it anywhere you apply.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:   #faf9f7;
+  --paper:   #f4f2ee;
+  --ink:     #141210;
+  --ink2:    #2a2724;
+  --muted:   #6e6a64;
+  --faint:   #e8e4dc;
+  --green:   #1c3d2c;
+  --green2:  #2a5c40;
+  --green-l: #edf4f0;
+  --rule:    #dedad2;
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --sans:  'Manrope', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 2.5rem;
+  background: rgba(250,249,247,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s;
+}
+nav.scrolled { border-bottom-color: var(--rule); }
+
+.logo {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+.logo span { color: var(--green2); }
+
+.nav-right { display: flex; align-items: center; gap: 2rem; }
+
+.nav-link {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: .02em;
+  transition: color .2s;
+}
+.nav-link:hover { color: var(--ink); }
+
+.nav-cta {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: .55rem 1.2rem;
+  font-family: var(--sans);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.nav-cta:hover { background: var(--green2); }
+.nav-cta:active { transform: scale(.98); }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 9rem 2.5rem 6rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: .6rem;
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeUp .7s .1s ease forwards;
+}
+
+.kicker-line {
+  width: 28px; height: 1px;
+  background: var(--rule);
+}
+
+.hero-h1 {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 6.5vw, 5.2rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -.025em;
+  color: var(--ink);
+  max-width: 820px;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp .7s .2s ease forwards;
+}
+
+.hero-h1 em {
+  font-style: italic;
+  color: var(--green2);
+}
+
+.hero-sub {
+  font-size: 1.05rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 520px;
+  margin-bottom: 3rem;
+  opacity: 0;
+  animation: fadeUp .7s .32s ease forwards;
+}
+
+.hero-actions {
+  display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp .7s .44s ease forwards;
+}
+
+.btn-main {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: .9rem 2rem;
+  font-family: var(--sans);
+  font-size: .88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .2s, transform .1s, box-shadow .2s;
+  letter-spacing: .01em;
+}
+.btn-main:hover {
+  background: var(--green2);
+  box-shadow: 0 6px 24px rgba(28,61,44,.2);
+  transform: translateY(-1px);
+}
+.btn-main:active { transform: scale(.98); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  font-family: var(--sans);
+  font-size: .83rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex; align-items: center; gap: .4rem;
+  transition: color .2s;
+  padding: 0;
+}
+.btn-ghost:hover { color: var(--ink); }
+.btn-ghost svg { transition: transform .2s; }
+.btn-ghost:hover svg { transform: translateX(3px); }
+
+.hero-proof {
+  margin-top: 5rem;
+  display: flex; align-items: center; gap: 1.2rem;
+  opacity: 0;
+  animation: fadeUp .7s .56s ease forwards;
+}
+
+.proof-faces {
+  display: flex;
+}
+.proof-face {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--white);
+  margin-right: -8px;
+  font-size: .65rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.pf1 { background: #4a7c59; }
+.pf2 { background: #2d5a8e; }
+.pf3 { background: #8e5a2d; }
+.pf4 { background: #5a2d8e; }
+
+.proof-text {
+  font-size: .78rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.proof-text strong { color: var(--ink); font-weight: 600; }
+
+/* ─── SECTION SCAFFOLDING ─── */
+section {
+  padding: 7rem 2.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.section-rule {
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--rule);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.s-label {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: .7rem;
+}
+.s-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+  max-width: 60px;
+}
+
+.s-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -.02em;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+.s-title em { font-style: italic; color: var(--green2); }
+
+.s-body {
+  font-size: .93rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--muted);
+  max-width: 520px;
+}
+
+/* ─── HOW IT WORKS ─── */
+#how { position: relative; }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 4rem;
+  border-top: 1px solid var(--rule);
+}
+
+.step {
+  padding: 2.5rem 1.8rem 2.5rem 0;
+  border-right: 1px solid var(--rule);
+  position: relative;
+}
+.step:last-child { border-right: none; padding-right: 0; }
+.step:not(:first-child) { padding-left: 1.8rem; }
+
+.step-num {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--faint);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.step-title {
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: .6rem;
+  letter-spacing: -.01em;
+}
+
+.step-desc {
+  font-size: .8rem;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ─── VOUCHES / SOCIAL PROOF ─── */
+#proof { background: var(--paper); max-width: 100%; padding: 7rem 0; }
+
+.proof-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+.vouch-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 4rem;
+}
+
+.vouch-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.8rem;
+  display: flex; flex-direction: column;
+  transition: transform .25s, box-shadow .25s;
+}
+.vouch-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.06);
+}
+
+.vouch-rel {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--green2);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: .4rem;
+}
+.vouch-rel::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green2);
+  border-radius: 50%;
+}
+
+.vouch-quote {
+  font-family: var(--serif);
+  font-size: .95rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--ink2);
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.vouch-person {
+  display: flex; align-items: center; gap: .75rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.v-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: .7rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.v-info .v-name {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.v-info .v-role {
+  font-size: .72rem;
+  font-weight: 300;
+  color: var(--muted);
+  margin-top: .1rem;
+}
+
+.v-badge {
+  margin-left: auto;
+  width: 20px; height: 20px;
+  background: var(--green-l);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.v-badge svg { width: 10px; height: 10px; }
+
+/* pull quote */
+.pull-quote {
+  grid-column: 2;
+  background: var(--green);
+  border: none;
+  color: #fff;
+}
+.pull-quote:hover { box-shadow: 0 12px 40px rgba(28,61,44,.25); }
+.pull-quote .vouch-rel { color: rgba(255,255,255,.45); }
+.pull-quote .vouch-rel::before { background: rgba(255,255,255,.45); }
+.pull-quote .vouch-quote { color: rgba(255,255,255,.85); font-size: 1.05rem; }
+.pull-quote .vouch-person { border-top-color: rgba(255,255,255,.12); }
+.pull-quote .v-info .v-name { color: #fff; }
+.pull-quote .v-info .v-role { color: rgba(255,255,255,.45); }
+.pull-quote .v-badge { background: rgba(255,255,255,.12); }
+
+/* ─── THREE AUDIENCES ─── */
+#audiences {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+.aud-left { padding-top: .5rem; }
+
+.audience-tabs {
+  display: flex; flex-direction: column;
+  gap: 0;
+  margin-top: 3rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.aud-tab {
+  padding: 1.4rem 1.6rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--rule);
+  transition: background .2s;
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.aud-tab:last-child { border-bottom: none; }
+.aud-tab:hover { background: var(--paper); }
+.aud-tab.active { background: var(--green); }
+
+.tab-icon {
+  font-size: 1rem;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.tab-title {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: .2rem;
+}
+.aud-tab.active .tab-title { color: #fff; }
+
+.tab-desc {
+  font-size: .77rem;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.aud-tab.active .tab-desc { color: rgba(255,255,255,.6); }
+
+.aud-right { position: sticky; top: 7rem; }
+
+.aud-panel { display: none; }
+.aud-panel.active { display: block; }
+
+.panel-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 2rem;
+}
+
+.panel-eyebrow {
+  font-size: .65rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--green2);
+  margin-bottom: 1rem;
+}
+
+.panel-title {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.4;
+  margin-bottom: 1.2rem;
+}
+
+.panel-points { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+.panel-points li {
+  display: flex; gap: .75rem; align-items: flex-start;
+  font-size: .82rem;
+  font-weight: 300;
+  color: var(--ink2);
+  line-height: 1.55;
+}
+.panel-points li::before {
+  content: '✓';
+  color: var(--green2);
+  font-weight: 700;
+  font-size: .8rem;
+  flex-shrink: 0;
+  margin-top: .05rem;
+}
+
+/* ─── TRUST ─── */
+#trust { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+
+.trust-left {}
+
+.trust-items {
+  display: flex; flex-direction: column;
+  gap: 0;
+  margin-top: 3rem;
+  border-top: 1px solid var(--rule);
+}
+
+.trust-item {
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--rule);
+  display: flex; gap: 1.2rem; align-items: flex-start;
+}
+
+.ti-icon {
+  width: 36px; height: 36px;
+  background: var(--green-l);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+
+.ti-title {
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: .2rem;
+}
+.ti-desc {
+  font-size: .77rem;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.trust-right {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 2.5rem;
+}
+
+.trust-score-block { text-align: center; margin-bottom: 2rem; }
+
+.score-ring {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  border: 3px solid var(--green);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin: 0 auto 1rem;
+}
+.score-val {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--green);
+  line-height: 1;
+}
+.score-sub { font-size: .6rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+.score-label { font-size: .75rem; color: var(--muted); }
+
+.tr-bars { display: flex; flex-direction: column; gap: .9rem; }
+
+.tr-bar-row {}
+.tr-bar-top {
+  display: flex; justify-content: space-between;
+  font-size: .72rem; color: var(--muted);
+  margin-bottom: .35rem;
+}
+.tr-bar-top span:last-child { font-weight: 600; color: var(--ink); }
+.tr-track {
+  height: 4px;
+  background: var(--faint);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.tr-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1.2s .3s cubic-bezier(.4,0,.2,1);
+}
+.tr-fill.animated { transform: scaleX(1); }
+
+.tr-chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+.tr-chip {
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: .25rem .75rem;
+  font-size: .68rem;
+  color: var(--muted);
+  display: flex; align-items: center; gap: .3rem;
+}
+.tr-chip .chip-n {
+  background: var(--green);
+  color: #fff;
+  border-radius: 100px;
+  padding: .05rem .35rem;
+  font-size: .58rem;
+  font-weight: 600;
+}
+
+/* ─── EARLY ACCESS ─── */
+#early {
+  background: var(--ink);
+  max-width: 100%;
+  padding: 7rem 2.5rem;
+}
+
+.early-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.early-label {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 1.5rem;
+}
+
+.early-h2 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.2;
+  color: #fff;
+  letter-spacing: -.02em;
+  margin-bottom: 1rem;
+}
+
+.early-sub {
+  font-size: .9rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 3rem;
+}
+
+.email-form {
+  display: flex;
+  gap: .5rem;
+  max-width: 440px;
+  margin: 0 auto 1.2rem;
+}
+
+.email-input {
+  flex: 1;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  padding: .85rem 1.1rem;
+  font-family: var(--sans);
+  font-size: .85rem;
+  color: #fff;
+  outline: none;
+  transition: border-color .2s;
+}
+.email-input::placeholder { color: rgba(255,255,255,.3); }
+.email-input:focus { border-color: rgba(255,255,255,.3); }
+
+.email-btn {
+  background: #fff;
+  color: var(--ink);
+  border: none;
+  border-radius: 8px;
+  padding: .85rem 1.4rem;
+  font-family: var(--sans);
+  font-size: .83rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s, transform .1s;
+}
+.email-btn:hover { background: var(--faint); }
+.email-btn:active { transform: scale(.98); }
+
+.form-note {
+  font-size: .7rem;
+  color: rgba(255,255,255,.25);
+  letter-spacing: .02em;
+}
+
+.success-msg {
+  display: none;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-size: .84rem;
+  color: rgba(255,255,255,.7);
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-logo {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: .95rem;
+  color: rgba(255,255,255,.3);
+}
+
+.footer-links {
+  display: flex; gap: 2rem;
+}
+.footer-links a {
+  font-size: .72rem;
+  color: rgba(255,255,255,.2);
+  text-decoration: none;
+  letter-spacing: .04em;
+  transition: color .2s;
+}
+.footer-links a:hover { color: rgba(255,255,255,.5); }
+
+.footer-right {
+  font-size: .7rem;
+  color: rgba(255,255,255,.2);
+  letter-spacing: .04em;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-link { display: none; }
+  .hero { padding: 8rem 1.5rem 5rem; }
+  section { padding: 5rem 1.5rem; }
+  #proof { padding: 5rem 0; }
+  .proof-inner { padding: 0 1.5rem; }
+  .vouch-grid { grid-template-columns: 1fr; }
+  .pull-quote { grid-column: auto; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  .step { border-right: none; border-bottom: 1px solid var(--rule); padding: 2rem 0; }
+  .step:not(:first-child) { padding-left: 0; }
+  .step:last-child { border-bottom: none; }
+  #audiences { grid-template-columns: 1fr; gap: 3rem; }
+  .aud-right { position: static; }
+  #trust { grid-template-columns: 1fr; gap: 3rem; }
+  #early { padding: 5rem 1.5rem; }
+  .email-form { flex-direction: column; }
+  footer { padding: 1.5rem; }
+  .footer-links { display: none; }
+}
+
+@media (max-width: 560px) {
+  .hero-h1 { font-size: 2.4rem; }
+  .steps { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">Recomme<span>Now</span></div>
+  <div class="nav-right">
+    <a class="nav-link" href="#how">How it works</a>
+    <a class="nav-link" href="#trust">Trust</a>
+    <a class="nav-link" href="#audiences">Who it's for</a>
+    <button class="nav-cta" onclick="document.getElementById('email-input').focus(); document.getElementById('early').scrollIntoView({behavior:'smooth'})">Get early access</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">
+    <div class="kicker-line"></div>
+    Verified peer reputation
+    <div class="kicker-line"></div>
+  </div>
+
+  <h1 class="hero-h1">
+    Let the people who've<br>
+    seen your work<br>
+    <em>speak for you.</em>
+  </h1>
+
+  <p class="hero-sub">
+    RecommeNow turns real feedback from colleagues, managers, and clients into a verified reputation profile — shareable anywhere, trusted by everyone.
+  </p>
+
+  <div class="hero-actions">
+    <button class="btn-main" onclick="document.getElementById('early').scrollIntoView({behavior:'smooth'})">
+      Get early access →
+    </button>
+    <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">
+      See how it works
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+
+  <div class="hero-proof">
+    <div class="proof-faces">
+      <div class="proof-face pf1">SC</div>
+      <div class="proof-face pf2">MR</div>
+      <div class="proof-face pf3">AJ</div>
+      <div class="proof-face pf4">TK</div>
+    </div>
+    <div class="proof-text">
+      <strong>Trusted by people who've worked hard.</strong><br>
+      Be first — early access open now.
+    </div>
+  </div>
+</div>
+
+<hr class="section-rule">
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="s-label">How it works</div>
+  <div class="s-title">Four steps.<br><em>One profile that travels.</em></div>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <div class="step-title">You share a link</div>
+      <div class="step-desc">Send your unique RecommeNow link to anyone you've worked with — colleagues, managers, clients, vendors, collaborators. No account needed on their end.</div>
+    </div>
+    <div class="step reveal" style="transition-delay:.1s">
+      <div class="step-num">2</div>
+      <div class="step-title">They fill 60 seconds</div>
+      <div class="step-desc">A focused form — they state who they are, how they know you, what traits stand out, and write two to four sentences in their own words. Then verify with a work email.</div>
+    </div>
+    <div class="step reveal" style="transition-delay:.2s">
+      <div class="step-num">3</div>
+      <div class="step-title">Your profile builds</div>
+      <div class="step-desc">Every vouch stacks into a live reputation profile — a trust score, your top traits ranked by how often they're mentioned, and real quotes from real people with their names attached.</div>
+    </div>
+    <div class="step reveal" style="transition-delay:.3s">
+      <div class="step-num">4</div>
+      <div class="step-title">It goes everywhere you go</div>
+      <div class="step-desc">Share a link. Embed a widget on your portfolio. Generate a PDF for your application. Paste a badge into your LinkedIn About. Your reputation travels with you.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- SOCIAL PROOF -->
+<div id="proof">
+  <div class="proof-inner">
+    <div class="s-label reveal">What a profile looks like</div>
+    <div class="s-title reveal">Real people. Real words.<br><em>Real weight.</em></div>
+
+    <div class="vouch-grid">
+
+      <div class="vouch-card reveal" style="transition-delay:.05s">
+        <div class="vouch-rel">Direct Manager</div>
+        <div class="vouch-quote">"When a project was falling apart, this was the person I called. Cut through the noise, aligned the team, and delivered. I'd hire them again without a second thought."</div>
+        <div class="vouch-person">
+          <div class="v-avatar" style="background:#4a7c59;">SC</div>
+          <div class="v-info">
+            <div class="v-name">Sarah Chen</div>
+            <div class="v-role">Engineering Lead · Stripe</div>
+          </div>
+          <div class="v-badge">
+            <svg viewBox="0 0 10 10" fill="none">
+              <circle cx="5" cy="5" r="4.5" stroke="#1c3d2c" stroke-width="1"/>
+              <polyline points="3,5 4.2,6.3 7,3.5" stroke="#1c3d2c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="vouch-card pull-quote reveal" style="transition-delay:.1s">
+        <div class="vouch-rel">Client</div>
+        <div class="vouch-quote">"What struck me was that they treated our problem like it was their own. They pushed back when something wasn't right, and always had a better idea ready. That's rare."</div>
+        <div class="vouch-person">
+          <div class="v-avatar" style="background:#3a6e8a;">MR</div>
+          <div class="v-info">
+            <div class="v-name">Marco Ricci</div>
+            <div class="v-role">Founder · Volta Commerce</div>
+          </div>
+          <div class="v-badge">
+            <svg viewBox="0 0 10 10" fill="none">
+              <circle cx="5" cy="5" r="4.5" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+              <polyline points="3,5 4.2,6.3 7,3.5" stroke="rgba(255,255,255,.4)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="vouch-card reveal" style="transition-delay:.15s">
+        <div class="vouch-rel">Cross-functional collaborator</div>
+        <div class="vouch-quote">"Rarely do you find someone who genuinely makes the people around them better. They listened more than they talked, and made sure everyone's contribution landed."</div>
+        <div class="vouch-person">
+          <div class="v-avatar" style="background:#7a4a8e;">AJ</div>
+          <div class="v-info">
+            <div class="v-name">Aisha James</div>
+            <div class="v-role">Head of Design · Monzo</div>
+          </div>
+          <div class="v-badge">
+            <svg viewBox="0 0 10 10" fill="none">
+              <circle cx="5" cy="5" r="4.5" stroke="#1c3d2c" stroke-width="1"/>
+              <polyline points="3,5 4.2,6.3 7,3.5" stroke="#1c3d2c" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<hr class="section-rule">
+
+<!-- AUDIENCES -->
+<section id="audiences">
+  <div class="aud-left">
+    <div class="s-label reveal">Who it's for</div>
+    <div class="s-title reveal">Built for everyone<br><em>who applies.</em></div>
+    <p class="s-body reveal">Whether you're actively searching, thinking ahead, or evaluating a candidate — RecommeNow gives you something real to go on.</p>
+
+    <div class="audience-tabs reveal" style="transition-delay:.1s">
+      <div class="aud-tab active" onclick="switchTab(0)">
+        <div class="tab-icon">🔍</div>
+        <div>
+          <div class="tab-title">Job seekers — searching now</div>
+          <div class="tab-desc">You need to stand out. You have the experience but not the internal referral.</div>
+        </div>
+      </div>
+      <div class="aud-tab" onclick="switchTab(1)">
+        <div class="tab-icon">📅</div>
+        <div>
+          <div class="tab-title">Professionals — planning ahead</div>
+          <div class="tab-desc">You're not looking yet, but you want your reputation ready when you are.</div>
+        </div>
+      </div>
+      <div class="aud-tab" onclick="switchTab(2)">
+        <div class="tab-icon">🧑‍💼</div>
+        <div>
+          <div class="tab-title">Recruiters & hiring managers</div>
+          <div class="tab-desc">You received a RecommeNow link and want to understand what you're looking at.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aud-right reveal" style="transition-delay:.15s">
+    <div class="aud-panel active" id="panel-0">
+      <div class="panel-card">
+        <div class="panel-eyebrow">For active job seekers</div>
+        <div class="panel-title">"I have the experience. Now I need people to back it up."</div>
+        <ul class="panel-points">
+          <li>Send your vouch link to past managers, colleagues, and clients today — takes them 60 seconds.</li>
+          <li>Your profile builds automatically. Share the URL in every application, from day one.</li>
+          <li>Stand out at the moment a recruiter first encounters your name — before any interview.</li>
+          <li>Every vouch comes with the giver's name, company, and relationship — verified. Not anonymous noise.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="aud-panel" id="panel-1">
+      <div class="panel-card">
+        <div class="panel-eyebrow">For professionals planning ahead</div>
+        <div class="panel-title">"I want my reputation to be ready before I need it."</div>
+        <ul class="panel-points">
+          <li>The best time to collect feedback is while you're still working with someone — not after you've left.</li>
+          <li>Build your profile now while the relationships are warm and the work is fresh in people's minds.</li>
+          <li>When you're ready to move, your reputation profile is already built and ready to travel with you.</li>
+          <li>No rush, no pressure — your profile lives at your URL and updates whenever new vouches come in.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="aud-panel" id="panel-2">
+      <div class="panel-card">
+        <div class="panel-eyebrow">For recruiters & hiring managers</div>
+        <div class="panel-title">"A candidate sent me a RecommeNow link. What am I looking at?"</div>
+        <ul class="panel-points">
+          <li>You're looking at verified peer feedback — structured, attributed, and transparency-rated.</li>
+          <li>Every vouch shows the giver's name, title, company, and relationship type. Nothing is anonymous.</li>
+          <li>Work email verification confirms the giver works where they say they do.</li>
+          <li>The trust score reflects source diversity and verification depth — not just volume. You can read it in 10 seconds.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- TRUST -->
+<section id="trust">
+  <div class="trust-left">
+    <div class="s-label reveal">Why trust it</div>
+    <div class="s-title reveal">Built for<br><em>sceptical recruiters.</em></div>
+    <p class="s-body reveal">We don't pretend everything is perfectly verified. We show exactly how confident we are about each vouch — and let you judge.</p>
+
+    <div class="trust-items">
+      <div class="trust-item reveal" style="transition-delay:.05s">
+        <div class="ti-icon">✉️</div>
+        <div>
+          <div class="ti-title">Work email verification</div>
+          <div class="ti-desc">Vouch givers confirm via their work domain. sarah@stripe.com confirms Stripe employment — checkable and attributable.</div>
+        </div>
+      </div>
+      <div class="trust-item reveal" style="transition-delay:.1s">
+        <div class="ti-icon">👤</div>
+        <div>
+          <div class="ti-title">No anonymous feedback — ever</div>
+          <div class="ti-desc">Every vouch giver's name, title, and company is publicly displayed. People don't lie when their own professional reputation is attached.</div>
+        </div>
+      </div>
+      <div class="trust-item reveal" style="transition-delay:.15s">
+        <div class="ti-icon">⚡</div>
+        <div>
+          <div class="ti-title">Burst detection</div>
+          <div class="ti-desc">Unusual submission patterns trigger an automatic hold and 48-hour review. Natural reputation-building takes time. Gaming patterns don't look natural.</div>
+        </div>
+      </div>
+      <div class="trust-item reveal" style="transition-delay:.2s">
+        <div class="ti-icon">🚩</div>
+        <div>
+          <div class="ti-title">Community flagging</div>
+          <div class="ti-desc">Any visitor can flag a suspicious vouch. Three flags trigger a review. You can help keep the platform honest.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trust-right reveal" style="transition-delay:.15s">
+    <div class="trust-score-block">
+      <div class="score-ring">
+        <div class="score-val">4.9</div>
+        <div class="score-sub">/ 5.0</div>
+      </div>
+      <div class="score-label">Overall recommendation score · 14 vouches</div>
+    </div>
+
+    <div class="tr-bars">
+      <div class="tr-bar-row">
+        <div class="tr-bar-top"><span>Recommendation strength</span><span>98%</span></div>
+        <div class="tr-track"><div class="tr-fill" style="width:98%"></div></div>
+      </div>
+      <div class="tr-bar-row">
+        <div class="tr-bar-top"><span>Source diversity</span><span>7 relationship types</span></div>
+        <div class="tr-track"><div class="tr-fill" style="width:88%"></div></div>
+      </div>
+      <div class="tr-bar-row">
+        <div class="tr-bar-top"><span>Work email verified</span><span>12 of 14</span></div>
+        <div class="tr-track"><div class="tr-fill" style="width:86%"></div></div>
+      </div>
+      <div class="tr-bar-row">
+        <div class="tr-bar-top"><span>Vouch depth</span><span>Avg 4.3 traits cited</span></div>
+        <div class="tr-track"><div class="tr-fill" style="width:82%"></div></div>
+      </div>
+    </div>
+
+    <div class="tr-chips">
+      <div class="tr-chip">Gets things done <span class="chip-n">13</span></div>
+      <div class="tr-chip">Takes ownership <span class="chip-n">11</span></div>
+      <div class="tr-chip">Trusted voice <span class="chip-n">10</span></div>
+      <div class="tr-chip">Problem solver <span class="chip-n">9</span></div>
+      <div class="tr-chip">Clear communicator <span class="chip-n">8</span></div>
+      <div class="tr-chip">Calm under pressure <span class="chip-n">7</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EARLY ACCESS -->
+<div id="early">
+  <div class="early-inner">
+    <div class="early-label">Early access</div>
+    <h2 class="early-h2">Be among the first<br>to build your profile.</h2>
+    <p class="early-sub">
+      RecommeNow launches soon. Leave your email and we'll let you know the moment doors open — plus you'll get early access before anyone else.
+    </p>
+
+    <div class="email-form" id="email-form">
+      <input class="email-input" id="email-input" type="email" placeholder="your@email.com">
+      <button class="email-btn" onclick="submitEmail()">Notify me</button>
+    </div>
+    <div class="success-msg" id="success-msg">
+      ✓ &nbsp;You're on the list. We'll be in touch soon.
+    </div>
+    <p class="form-note">No spam. No noise. Just a single email when we're ready.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">RecommeNow</div>
+  <div class="footer-links">
+    <a href="#">How it works</a>
+    <a href="#">Trust & safety</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="footer-right">© 2026 RecommeNow</div>
+</footer>
+
+<script>
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // animate bars if trust section
+      e.target.querySelectorAll && e.target.querySelectorAll('.tr-fill').forEach(f => f.classList.add('animated'));
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Also trigger bars when trust section enters
+const trustSection = document.getElementById('trust');
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.tr-fill').forEach(f => f.classList.add('animated'));
+    }
+  });
+}, { threshold: 0.2 });
+if (trustSection) barObserver.observe(trustSection);
+
+// Tab switching
+function switchTab(idx) {
+  document.querySelectorAll('.aud-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  document.querySelectorAll('.aud-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+}
+
+// Email submit
+function submitEmail() {
+  const val = document.getElementById('email-input').value.trim();
+  if (!val || !val.includes('@')) {
+    document.getElementById('email-input').style.borderColor = 'rgba(255,80,80,.5)';
+    return;
+  }
+  document.getElementById('email-form').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+}
+
+document.getElementById('email-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') submitEmail();
+  e.target.style.borderColor = '';
+});
+</script>
+</body>
+</html>

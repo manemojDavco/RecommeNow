@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecommeNow — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --white:    #faf9f7;
+  --paper:    #f4f2ee;
+  --paper2:   #eeeae2;
+  --ink:      #141210;
+  --ink2:     #2a2724;
+  --muted:    #6e6a64;
+  --faint:    #e8e4dc;
+  --rule:     #dedad2;
+  --green:    #1c3d2c;
+  --green2:   #2a5c40;
+  --green-l:  #edf4f0;
+  --green-m:  #d0e9da;
+  --amber:    #e8a020;
+  --amber-l:  #fdf4e7;
+  --red:      #c0392b;
+  --red-l:    #fdf0ee;
+  --blue:     #1a4a7a;
+  --blue-l:   #eef4fc;
+  --serif:    'Libre Baskerville', Georgia, serif;
+  --sans:     'Manrope', sans-serif;
+  --nav-w:    220px;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ── SHELL ── */
+.shell {
+  display: grid;
+  grid-template-columns: var(--nav-w) 1fr;
+  height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  background: var(--green);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sb-brand {
+  padding: 1.4rem 1.4rem 1rem;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(255,255,255,.5);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  flex-shrink: 0;
+}
+.sb-brand span { color: rgba(255,255,255,.9); }
+
+/* user info */
+.sb-user {
+  padding: 1.2rem 1.2rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  flex-shrink: 0;
+}
+
+.sb-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 1.5px solid rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: .85rem;
+  color: rgba(255,255,255,.85);
+  margin-bottom: .6rem;
+}
+
+.sb-name {
+  font-size: .82rem;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
+  margin-bottom: .1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sb-plan {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
+
+.sb-plan-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 100px;
+  padding: .18rem .6rem;
+  font-size: .6rem;
+  font-weight: 600;
+  color: rgba(255,255,255,.5);
+  margin-top: .3rem;
+  cursor: pointer;
+  transition: all .18s;
+}
+.sb-plan-pill:hover { background: rgba(255,255,255,.14); color: rgba(255,255,255,.8); }
+
+/* nav items */
+.sb-nav {
+  flex: 1;
+  padding: .8rem 0;
+  overflow-y: auto;
+}
+
+.nav-group-label {
+  font-size: .55rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.22);
+  padding: .8rem 1.2rem .3rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding: .6rem 1.2rem;
+  font-size: .78rem;
+  font-weight: 500;
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+  transition: all .18s;
+  border-radius: 0;
+  position: relative;
+  border: none;
+  background: none;
+  font-family: var(--sans);
+  width: 100%;
+  text-align: left;
+}
+.nav-item:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.05); }
+.nav-item.active { color: #fff; background: rgba(255,255,255,.1); font-weight: 600; }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: rgba(255,255,255,.5);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-icon { font-size: .95rem; flex-shrink: 0; width: 18px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  background: rgba(255,255,255,.15);
+  color: rgba(255,255,255,.7);
+  border-radius: 100px;
+  padding: .12rem .45rem;
+  font-size: .58rem;
+  font-weight: 700;
+}
+.nav-badge.alert { background: #c0392b; color: #fff; }
+
+/* sb footer */
+.sb-footer {
+  padding: .8rem 1.2rem 1.2rem;
+  border-top: 1px solid rgba(255,255,255,.07);
+  flex-shrink: 0;
+}
+
+.sb-footer button {
+  display: flex; align-items: center; gap: .5rem;
+  font-size: .72rem;
+  color: rgba(255,255,255,.35);
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  cursor: pointer;
+  padding: .3rem 0;
+  width: 100%;
+  transition: color .18s;
+}
+.sb-footer button:hover { color: rgba(255,255,255,.7); }
+
+/* ── MAIN ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* top bar */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+
+.topbar-right {
+  display: flex; align-items: center; gap: .7rem;
+}
+
+.tb-btn {
+  border: 1px solid var(--rule);
+  background: var(--white);
+  border-radius: 7px;
+  padding: .5rem 1rem;
+  font-family: var(--sans);
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  display: flex; align-items: center; gap: .4rem;
+}
+.tb-btn:hover { color: var(--ink); border-color: var(--faint); }
+
+.tb-btn.green {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+.tb-btn.green:hover { background: var(--green2); border-color: var(--green2); }
+
+/* content area */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+}
+
+/* panels */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeIn .3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── OVERVIEW PANEL ── */
+
+/* stat cards */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.3rem 1.4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--green-m);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 1s .2s cubic-bezier(.4,0,.2,1);
+}
+.stat-card.go::after { transform: scaleX(1); }
+.stat-card.full::after { background: var(--green); transform: scaleX(1); }
+
+.sc-label {
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .5rem;
+}
+
+.sc-val {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: .2rem;
+}
+
+.sc-sub {
+  font-size: .7rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.sc-delta {
+  position: absolute;
+  top: 1.2rem; right: 1.2rem;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: .15rem .45rem;
+  border-radius: 100px;
+}
+.sc-delta.up { background: var(--green-l); color: var(--green2); }
+.sc-delta.new { background: var(--blue-l); color: var(--blue); }
+
+/* two-col layout */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* section headers */
+.s-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.s-title {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.s-action {
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--green2);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  padding: 0;
+  transition: color .18s;
+}
+.s-action:hover { color: var(--green); }
+
+/* recent vouches */
+.vouch-feed {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.vf-item {
+  padding: 1.1rem 1.4rem;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: flex-start;
+  gap: .9rem;
+  transition: background .18s;
+}
+.vf-item:last-child { border-bottom: none; }
+.vf-item:hover { background: var(--paper); }
+
+.vf-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  font-size: .65rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: .1rem;
+}
+
+.vf-body { flex: 1; min-width: 0; }
+
+.vf-name {
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: .15rem;
+  display: flex; align-items: center; gap: .4rem;
+}
+
+.vf-rel-pill {
+  font-size: .58rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: .1rem .45rem;
+}
+
+.vf-quote {
+  font-size: .76rem;
+  color: var(--muted);
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-style: italic;
+  margin-bottom: .35rem;
+}
+
+.vf-meta {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.vf-stars { color: var(--amber); font-size: .68rem; }
+
+.vf-verify {
+  font-size: .6rem;
+  font-weight: 600;
+  color: var(--green2);
+}
+
+.vf-time {
+  font-size: .62rem;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.vf-actions {
+  display: flex; flex-direction: column; gap: .35rem;
+  flex-shrink: 0;
+}
+
+.vf-btn {
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: .3rem .7rem;
+  font-family: var(--sans);
+  font-size: .62rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+  background: none;
+  white-space: nowrap;
+}
+
+.vf-btn.approve {
+  background: var(--green-l);
+  border-color: var(--green-m);
+  color: var(--green2);
+}
+.vf-btn.approve:hover { background: var(--green-m); }
+
+.vf-btn.hide {
+  color: var(--muted);
+}
+.vf-btn.hide:hover { border-color: var(--red); color: var(--red); }
+
+/* pending badge */
+.pending-badge {
+  background: var(--amber-l);
+  border: 1px solid #f0c070;
+  border-radius: 6px;
+  padding: .25rem .6rem;
+  font-size: .6rem;
+  font-weight: 700;
+  color: var(--amber);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* share section sidebar */
+.share-box {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.4rem;
+}
+
+.link-display {
+  display: flex;
+  align-items: center;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: .8rem;
+}
+
+.link-text {
+  flex: 1;
+  font-size: .72rem;
+  color: var(--green2);
+  font-weight: 500;
+  padding: .6rem .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.link-copy {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  padding: .6rem .8rem;
+  font-family: var(--sans);
+  font-size: .65rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s;
+}
+.link-copy:hover { background: var(--green2); }
+.link-copy.copied { background: var(--green2); }
+
+.share-row {
+  display: flex; gap: .4rem; margin-bottom: 1rem;
+}
+
+.share-mini {
+  flex: 1;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: .5rem .3rem;
+  font-family: var(--sans);
+  font-size: .62rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  background: none;
+  text-align: center;
+}
+.share-mini:hover { border-color: var(--faint); color: var(--ink); }
+
+.profile-health {
+  border-top: 1px solid var(--rule);
+  padding-top: 1rem;
+}
+
+.ph-label {
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: .7rem;
+}
+
+.ph-item {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: .74rem;
+  color: var(--ink2);
+  padding: .3rem 0;
+}
+
+.ph-icon { font-size: .78rem; flex-shrink: 0; }
+
+.ph-bar {
+  flex: 1;
+  height: 4px;
+  background: var(--faint);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.ph-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 2px;
+  transition: width 1s .5s ease;
+}
+
+.ph-val {
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 28px;
+  text-align: right;
+}
+
+/* next actions */
+.next-actions {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.na-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background .18s;
+}
+.na-item:last-child { border-bottom: none; }
+.na-item:hover { background: var(--paper); }
+
+.na-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+
+.na-body { flex: 1; }
+.na-title { font-size: .82rem; font-weight: 600; color: var(--ink); margin-bottom: .1rem; }
+.na-desc  { font-size: .7rem; color: var(--muted); line-height: 1.45; }
+
+.na-arrow { color: var(--rule); font-size: .85rem; }
+
+/* ── VOUCHES PANEL ── */
+.filter-bar {
+  display: flex;
+  gap: .4rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  border: 1px solid var(--rule);
+  border-radius: 100px;
+  padding: .35rem .85rem;
+  font-size: .72rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  background: var(--white);
+}
+.filter-chip:hover { border-color: var(--green-m); color: var(--ink); }
+.filter-chip.active { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+
+.vouches-table {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.vt-header {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr 80px;
+  gap: 1rem;
+  padding: .75rem 1.4rem;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.vt-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr 80px;
+  gap: 1rem;
+  padding: .9rem 1.4rem;
+  border-bottom: 1px solid var(--rule);
+  align-items: center;
+  transition: background .18s;
+  cursor: pointer;
+}
+.vt-row:last-child { border-bottom: none; }
+.vt-row:hover { background: var(--paper); }
+
+.vt-person { display: flex; align-items: center; gap: .65rem; }
+
+.vt-av {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  font-size: .58rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.vt-name { font-size: .8rem; font-weight: 600; color: var(--ink); }
+.vt-company { font-size: .68rem; color: var(--muted); }
+
+.vt-rel { font-size: .72rem; color: var(--muted); }
+
+.vt-stars { color: var(--amber); font-size: .72rem; }
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  border-radius: 100px;
+  padding: .2rem .6rem;
+  font-size: .62rem;
+  font-weight: 700;
+}
+.status-pill.live { background: var(--green-l); color: var(--green2); }
+.status-pill.pending { background: var(--amber-l); color: var(--amber); }
+.status-pill.hidden { background: var(--faint); color: var(--muted); }
+
+.vt-actions {
+  display: flex; gap: .3rem; justify-content: flex-end;
+}
+
+.icon-btn {
+  width: 26px; height: 26px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem;
+  transition: all .18s;
+}
+.icon-btn:hover { border-color: var(--faint); background: var(--paper); }
+
+/* ── SHARE PANEL ── */
+.share-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.share-option-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 1.6rem;
+  transition: box-shadow .2s, transform .2s;
+  cursor: pointer;
+}
+.share-option-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.06); transform: translateY(-2px); }
+
+.soc-icon { font-size: 1.6rem; margin-bottom: .75rem; }
+.soc-title { font-size: .9rem; font-weight: 700; color: var(--ink); margin-bottom: .35rem; }
+.soc-desc { font-size: .76rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+.soc-btn {
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  padding: .5rem .9rem;
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .18s;
+  background: none;
+}
+.soc-btn:hover { border-color: var(--green-m); color: var(--green2); }
+
+/* scrollbar */
+.content::-webkit-scrollbar { width: 4px; }
+.content::-webkit-scrollbar-track { background: transparent; }
+.content::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 2px; }
+
+/* responsive */
+@media (max-width: 960px) {
+  html, body { overflow: auto; }
+  .shell { grid-template-columns: 1fr; height: auto; }
+  .sidebar { display: none; }
+  .main { overflow: visible; }
+  .content { overflow: visible; padding: 1.2rem; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .share-panel-grid { grid-template-columns: 1fr; }
+  .vt-header, .vt-row { grid-template-columns: 1fr 1fr 80px; }
+  .vt-header > *:nth-child(3),
+  .vt-header > *:nth-child(4),
+  .vt-row > *:nth-child(3),
+  .vt-row > *:nth-child(4) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── SIDEBAR ── -->
+  <div class="sidebar">
+    <div class="sb-brand">Recomme<span>Now</span></div>
+
+    <div class="sb-user">
+      <div class="sb-avatar">NB</div>
+      <div class="sb-name">Nick Baker</div>
+      <div class="sb-plan">recommenow.com/nick-baker</div>
+      <div class="sb-plan-pill">⚡ Free plan · Upgrade →</div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="nav-group-label">Profile</div>
+      <button class="nav-item active" onclick="switchPanel('overview', this)">
+        <span class="nav-icon">▦</span> Overview
+      </button>
+      <button class="nav-item" onclick="switchPanel('vouches', this)">
+        <span class="nav-icon">✦</span> Vouches
+        <span class="nav-badge">14</span>
+      </button>
+      <button class="nav-item" onclick="switchPanel('share', this)">
+        <span class="nav-icon">↗</span> Share & embed
+      </button>
+
+      <div class="nav-group-label" style="margin-top:.5rem;">Inbox</div>
+      <button class="nav-item" onclick="switchPanel('approvals', this)">
+        <span class="nav-icon">✓</span> Approvals
+        <span class="nav-badge alert">2</span>
+      </button>
+      <button class="nav-item" onclick="switchPanel('flagged', this)">
+        <span class="nav-icon">🚩</span> Flagged
+      </button>
+
+      <div class="nav-group-label" style="margin-top:.5rem;">Account</div>
+      <button class="nav-item" onclick="switchPanel('settings', this)">
+        <span class="nav-icon">⚙</span> Settings
+      </button>
+    </nav>
+
+    <div class="sb-footer">
+      <button>👁 View my public profile →</button>
+      <button>⬇ Download PDF one-pager</button>
+      <button style="margin-top:.3rem;">← Sign out</button>
+    </div>
+  </div>
+
+  <!-- ── MAIN ── -->
+  <div class="main">
+
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Overview</div>
+      <div class="topbar-right">
+        <button class="tb-btn" onclick="copyVouchLink(this)">
+          📋 Copy vouch link
+        </button>
+        <button class="tb-btn green" onclick="switchPanel('approvals', document.querySelector('.nav-item:nth-child(6)'))">
+          2 pending approvals
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══ OVERVIEW ══ -->
+      <div class="panel active" id="panel-overview">
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card full">
+            <div class="sc-label">Overall score</div>
+            <div class="sc-val">4.9</div>
+            <div class="sc-sub">out of 5.0</div>
+            <div class="sc-delta up">↑ from 4.7</div>
+          </div>
+          <div class="stat-card full">
+            <div class="sc-label">Total vouches</div>
+            <div class="sc-val">14</div>
+            <div class="sc-sub">12 verified · 2 pending</div>
+            <div class="sc-delta new">+3 this week</div>
+          </div>
+          <div class="stat-card go">
+            <div class="sc-label">Profile views</div>
+            <div class="sc-val">87</div>
+            <div class="sc-sub">last 30 days</div>
+            <div class="sc-delta up">↑ 24%</div>
+          </div>
+          <div class="stat-card go">
+            <div class="sc-label">Vouch link clicks</div>
+            <div class="sc-val">31</div>
+            <div class="sc-sub">sent to 31 people</div>
+            <div class="sc-delta up">14 converted</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+
+          <!-- Left: recent vouches + next actions -->
+          <div>
+            <div class="s-head">
+              <div class="s-title">Recent vouches</div>
+              <button class="s-action" onclick="switchPanel('vouches', null)">View all →</button>
+            </div>
+            <div class="vouch-feed" style="margin-bottom:1.5rem;">
+
+              <div class="vf-item">
+                <div class="vf-avatar" style="background:#3d6b52;">SC</div>
+                <div class="vf-body">
+                  <div class="vf-name">
+                    Sarah Chen
+                    <span class="vf-rel-pill">Manager</span>
+                  </div>
+                  <div class="vf-quote">"When a project was falling apart, Nick was the person I called…"</div>
+                  <div class="vf-meta">
+                    <div class="vf-stars">★★★★★</div>
+                    <div class="vf-verify">✓ Verified</div>
+                    <div class="vf-time">2 days ago</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vf-item">
+                <div class="vf-avatar" style="background:#3a5c8a;">MR</div>
+                <div class="vf-body">
+                  <div class="vf-name">
+                    Marco Ricci
+                    <span class="vf-rel-pill">Client</span>
+                  </div>
+                  <div class="vf-quote">"He treated our problem like it was his own…"</div>
+                  <div class="vf-meta">
+                    <div class="vf-stars">★★★★★</div>
+                    <div class="vf-verify">✓ Verified</div>
+                    <div class="vf-time">4 days ago</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="vf-item" style="background: #fffbf4;">
+                <div class="vf-avatar" style="background:#8a6a3a;">JP</div>
+                <div class="vf-body">
+                  <div class="vf-name">
+                    James Park
+                    <span class="vf-rel-pill">Colleague</span>
+                  </div>
+                  <div class="vf-quote">"One of the most reliable people I've worked alongside…"</div>
+                  <div class="vf-meta">
+                    <div class="vf-stars">★★★★★</div>
+                    <div class="vf-verify" style="color:var(--amber);">⏳ Awaiting approval</div>
+                    <div class="vf-time">Today</div>
+                  </div>
+                </div>
+                <div class="vf-actions">
+                  <button class="vf-btn approve" onclick="approveVouch(this)">Approve</button>
+                  <button class="vf-btn hide">Hide</button>
+                </div>
+              </div>
+
+              <div class="vf-item" style="background: #fffbf4;">
+                <div class="vf-avatar" style="background:#7a4a8e;">LW</div>
+                <div class="vf-body">
+                  <div class="vf-name">
+                    Laura Wong
+                    <span class="vf-rel-pill">Direct report</span>
+                  </div>
+                  <div class="vf-quote">"Nick always made time for the team, even under pressure…"</div>
+                  <div class="vf-meta">
+                    <div class="vf-stars">★★★★★</div>
+                    <div class="vf-verify" style="color:var(--amber);">⏳ Awaiting approval</div>
+                    <div class="vf-time">Today</div>
+                  </div>
+                </div>
+                <div class="vf-actions">
+                  <button class="vf-btn approve" onclick="approveVouch(this)">Approve</button>
+                  <button class="vf-btn hide">Hide</button>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="s-head">
+              <div class="s-title">Suggested next actions</div>
+            </div>
+            <div class="next-actions">
+              <div class="na-item">
+                <div class="na-icon" style="background:var(--green-l);">✉️</div>
+                <div class="na-body">
+                  <div class="na-title">Send to 3 more people</div>
+                  <div class="na-desc">Profiles with 15+ vouches get 3× more recruiter views. You're at 14.</div>
+                </div>
+                <div class="na-arrow">→</div>
+              </div>
+              <div class="na-item">
+                <div class="na-icon" style="background:var(--blue-l);">🔗</div>
+                <div class="na-body">
+                  <div class="na-title">Add your link to LinkedIn About</div>
+                  <div class="na-desc">Paste recommenow.com/nick-baker into your LinkedIn profile to drive recruiter traffic.</div>
+                </div>
+                <div class="na-arrow">→</div>
+              </div>
+              <div class="na-item" onclick="switchPanel('share', null)">
+                <div class="na-icon" style="background:var(--amber-l);">⬇</div>
+                <div class="na-body">
+                  <div class="na-title">Download your PDF one-pager</div>
+                  <div class="na-desc">Attach to your next job application alongside your CV.</div>
+                </div>
+                <div class="na-arrow">→</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: share + health -->
+          <div>
+            <div class="s-head"><div class="s-title">Your vouch link</div></div>
+            <div class="share-box">
+              <div class="link-display">
+                <div class="link-text">recommenow.com/nick-baker</div>
+                <button class="link-copy" id="lc-btn" onclick="copyVouchLink(this)">Copy</button>
+              </div>
+              <div class="share-row">
+                <button class="share-mini">💬 WhatsApp</button>
+                <button class="share-mini">✉️ Email</button>
+                <button class="share-mini">LinkedIn</button>
+              </div>
+
+              <div class="profile-health">
+                <div class="ph-label">Profile health</div>
+                <div class="ph-item">
+                  <div class="ph-icon">⭐</div>
+                  <div style="flex:1;font-size:.74rem;color:var(--muted);">Score</div>
+                  <div class="ph-bar"><div class="ph-fill" style="width:98%;"></div></div>
+                  <div class="ph-val">4.9</div>
+                </div>
+                <div class="ph-item">
+                  <div class="ph-icon">✓</div>
+                  <div style="flex:1;font-size:.74rem;color:var(--muted);">Verified</div>
+                  <div class="ph-bar"><div class="ph-fill" style="width:86%;"></div></div>
+                  <div class="ph-val">86%</div>
+                </div>
+                <div class="ph-item">
+                  <div class="ph-icon">🧑‍🤝‍🧑</div>
+                  <div style="flex:1;font-size:.74rem;color:var(--muted);">Diversity</div>
+                  <div class="ph-bar"><div class="ph-fill" style="width:78%;"></div></div>
+                  <div class="ph-val">7 types</div>
+                </div>
+                <div class="ph-item">
+                  <div class="ph-icon">📝</div>
+                  <div style="flex:1;font-size:.74rem;color:var(--muted);">Depth</div>
+                  <div class="ph-bar"><div class="ph-fill" style="width:84%;"></div></div>
+                  <div class="ph-val">4.3 avg</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ══ VOUCHES PANEL ══ -->
+      <div class="panel" id="panel-vouches">
+        <div class="filter-bar">
+          <div class="filter-chip active">All (14)</div>
+          <div class="filter-chip">Live (12)</div>
+          <div class="filter-chip">Pending (2)</div>
+          <div class="filter-chip">Verified (12)</div>
+          <div class="filter-chip">Managers</div>
+          <div class="filter-chip">Clients</div>
+          <div class="filter-chip">Colleagues</div>
+        </div>
+
+        <div class="vouches-table">
+          <div class="vt-header">
+            <div>Person</div>
+            <div>Relationship</div>
+            <div>Rating</div>
+            <div>Status</div>
+            <div></div>
+          </div>
+          <div class="vt-row">
+            <div class="vt-person">
+              <div class="vt-av" style="background:#3d6b52;">SC</div>
+              <div><div class="vt-name">Sarah Chen</div><div class="vt-company">Engineering Lead · Stripe</div></div>
+            </div>
+            <div class="vt-rel">Manager</div>
+            <div class="vt-stars">★★★★★</div>
+            <div><span class="status-pill live">● Live</span></div>
+            <div class="vt-actions">
+              <button class="icon-btn" title="View">👁</button>
+              <button class="icon-btn" title="Hide">–</button>
+            </div>
+          </div>
+          <div class="vt-row">
+            <div class="vt-person">
+              <div class="vt-av" style="background:#3a5c8a;">MR</div>
+              <div><div class="vt-name">Marco Ricci</div><div class="vt-company">Founder · Volta Commerce</div></div>
+            </div>
+            <div class="vt-rel">Client</div>
+            <div class="vt-stars">★★★★★</div>
+            <div><span class="status-pill live">● Live</span></div>
+            <div class="vt-actions">
+              <button class="icon-btn" title="View">👁</button>
+              <button class="icon-btn" title="Hide">–</button>
+            </div>
+          </div>
+          <div class="vt-row">
+            <div class="vt-person">
+              <div class="vt-av" style="background:#7a4a8e;">AJ</div>
+              <div><div class="vt-name">Aisha James</div><div class="vt-company">Head of Design · Monzo</div></div>
+            </div>
+            <div class="vt-rel">Cross-functional</div>
+            <div class="vt-stars">★★★★★</div>
+            <div><span class="status-pill live">● Live</span></div>
+            <div class="vt-actions">
+              <button class="icon-btn">👁</button>
+              <button class="icon-btn">–</button>
+            </div>
+          </div>
+          <div class="vt-row" style="background:#fffbf4;">
+            <div class="vt-person">
+              <div class="vt-av" style="background:#8a6a3a;">JP</div>
+              <div><div class="vt-name">James Park</div><div class="vt-company">PM · Deliveroo</div></div>
+            </div>
+            <div class="vt-rel">Colleague</div>
+            <div class="vt-stars">★★★★★</div>
+            <div><span class="status-pill pending">◎ Pending</span></div>
+            <div class="vt-actions">
+              <button class="icon-btn" style="border-color:var(--green-m);color:var(--green2);" onclick="approveFromTable(this)">✓</button>
+              <button class="icon-btn">–</button>
+            </div>
+          </div>
+          <div class="vt-row" style="background:#fffbf4;">
+            <div class="vt-person">
+              <div class="vt-av" style="background:#6a3a8e;">LW</div>
+              <div><div class="vt-name">Laura Wong</div><div class="vt-company">Designer · (Freelance)</div></div>
+            </div>
+            <div class="vt-rel">Direct report</div>
+            <div class="vt-stars">★★★★★</div>
+            <div><span class="status-pill pending">◎ Pending</span></div>
+            <div class="vt-actions">
+              <button class="icon-btn" style="border-color:var(--green-m);color:var(--green2);" onclick="approveFromTable(this)">✓</button>
+              <button class="icon-btn">–</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ SHARE PANEL ══ -->
+      <div class="panel" id="panel-share">
+        <div class="share-panel-grid">
+          <div class="share-option-card">
+            <div class="soc-icon">🔗</div>
+            <div class="soc-title">Share your profile link</div>
+            <div class="soc-desc">Paste recommenow.com/nick-baker into your LinkedIn About section, email signature, or anywhere you apply.</div>
+            <button class="soc-btn" onclick="copyVouchLink(this)">Copy link</button>
+          </div>
+          <div class="share-option-card">
+            <div class="soc-icon">⬇</div>
+            <div class="soc-title">Download PDF one-pager</div>
+            <div class="soc-desc">A single-page reputation summary — your score, top traits, and 3 key vouches. Attach to applications. <span style="color:var(--amber);font-weight:600;">Pro feature.</span></div>
+            <button class="soc-btn">Upgrade to download</button>
+          </div>
+          <div class="share-option-card">
+            <div class="soc-icon">⚙️</div>
+            <div class="soc-title">Embed on your website</div>
+            <div class="soc-desc">A live widget that auto-updates as new vouches come in. Paste one line of code into any site. <span style="color:var(--amber);font-weight:600;">Pro feature.</span></div>
+            <button class="soc-btn">Upgrade to embed</button>
+          </div>
+          <div class="share-option-card">
+            <div class="soc-icon">✉️</div>
+            <div class="soc-title">Send your vouch link</div>
+            <div class="soc-desc">Copy the link below and send to anyone you've worked with. They can leave a vouch in 60 seconds, no account needed.</div>
+            <button class="soc-btn" onclick="copyVouchLink(this)">Copy vouch link</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ APPROVALS PANEL ══ -->
+      <div class="panel" id="panel-approvals">
+        <div class="s-head" style="margin-bottom:1.2rem;">
+          <div class="s-title">Awaiting your approval — 2 vouches</div>
+        </div>
+        <div class="vouch-feed" style="background:var(--white);border:1px solid var(--rule);border-radius:12px;overflow:hidden;">
+          <div class="vf-item">
+            <div class="vf-avatar" style="background:#8a6a3a;">JP</div>
+            <div class="vf-body">
+              <div class="vf-name">James Park <span class="vf-rel-pill">Colleague</span></div>
+              <div class="vf-quote">"One of the most reliable people I've worked alongside. Always found a way to deliver."</div>
+              <div class="vf-meta">
+                <div class="vf-stars">★★★★★</div>
+                <div class="vf-verify" style="color:var(--green2);">✓ Work email verified</div>
+                <div class="vf-time">Today · 10:14</div>
+              </div>
+            </div>
+            <div class="vf-actions">
+              <button class="vf-btn approve" onclick="approveVouch(this)">Approve ✓</button>
+              <button class="vf-btn hide">Hide</button>
+            </div>
+          </div>
+          <div class="vf-item">
+            <div class="vf-avatar" style="background:#7a4a8e;">LW</div>
+            <div class="vf-body">
+              <div class="vf-name">Laura Wong <span class="vf-rel-pill">Direct report</span></div>
+              <div class="vf-quote">"Nick always made time for the team, even under pressure. He's the kind of manager you want to work for again."</div>
+              <div class="vf-meta">
+                <div class="vf-stars">★★★★★</div>
+                <div class="vf-verify" style="color:var(--green2);">✓ Work email verified</div>
+                <div class="vf-time">Today · 09:41</div>
+              </div>
+            </div>
+            <div class="vf-actions">
+              <button class="vf-btn approve" onclick="approveVouch(this)">Approve ✓</button>
+              <button class="vf-btn hide">Hide</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ FLAGGED PANEL ══ -->
+      <div class="panel" id="panel-flagged">
+        <div style="text-align:center;padding:4rem 1rem;">
+          <div style="font-size:2rem;margin-bottom:1rem;">🚩</div>
+          <div style="font-family:var(--serif);font-size:1.3rem;color:var(--ink);margin-bottom:.5rem;">No flagged vouches</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6;">Any vouches flagged by visitors will appear here for your review. The system automatically holds anything that receives 3 or more flags within 48 hours.</div>
+        </div>
+      </div>
+
+      <!-- ══ SETTINGS PANEL ══ -->
+      <div class="panel" id="panel-settings">
+        <div style="max-width:520px;">
+          <div class="s-head" style="margin-bottom:1.2rem;"><div class="s-title">Profile settings</div></div>
+          <div style="background:var(--white);border:1px solid var(--rule);border-radius:12px;overflow:hidden;">
+            <div style="padding:1.4rem;border-bottom:1px solid var(--rule);">
+              <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.2rem;">Full name</div>
+              <div style="font-size:.82rem;color:var(--muted);">Nick Baker</div>
+            </div>
+            <div style="padding:1.4rem;border-bottom:1px solid var(--rule);">
+              <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.2rem;">Profile URL</div>
+              <div style="font-size:.82rem;color:var(--green2);font-weight:500;">recommenow.com/nick-baker</div>
+              <div style="font-size:.7rem;color:var(--muted);margin-top:.3rem;">Custom slugs are a Pro feature. <span style="color:var(--green2);cursor:pointer;font-weight:600;">Upgrade →</span></div>
+            </div>
+            <div style="padding:1.4rem;border-bottom:1px solid var(--rule);">
+              <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.2rem;">Vouch approval</div>
+              <div style="font-size:.82rem;color:var(--muted);">Manual — you review each vouch before it goes live</div>
+            </div>
+            <div style="padding:1.4rem;">
+              <div style="font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:.2rem;">Email notifications</div>
+              <div style="font-size:.82rem;color:var(--muted);">On — you'll be emailed when a new vouch arrives</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// Panel switching
+function switchPanel(name, navEl) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+
+  if (navEl) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+
+  const titles = {
+    overview: 'Overview',
+    vouches: 'My Vouches',
+    share: 'Share & Embed',
+    approvals: 'Vouch Approvals',
+    flagged: 'Flagged Vouches',
+    settings: 'Settings'
+  };
+  document.getElementById('topbar-title').textContent = titles[name] || name;
+}
+
+// Approve vouch
+function approveVouch(btn) {
+  const item = btn.closest('.vf-item');
+  item.style.transition = 'opacity .4s, transform .4s';
+  item.style.opacity = '0';
+  item.style.transform = 'translateX(12px)';
+
+  // Update badge count
+  const badge = document.querySelector('.nav-badge.alert');
+  if (badge) {
+    const n = parseInt(badge.textContent) - 1;
+    if (n <= 0) badge.remove();
+    else badge.textContent = n;
+  }
+
+  // Update topbar button
+  const tbBtn = document.querySelector('.tb-btn.green');
+  if (tbBtn) {
+    const n = parseInt(tbBtn.textContent) - 1;
+    if (n <= 0) tbBtn.style.display = 'none';
+    else tbBtn.textContent = n + ' pending approval' + (n > 1 ? 's' : '');
+  }
+
+  setTimeout(() => item.remove(), 400);
+}
+
+function approveFromTable(btn) {
+  const row = btn.closest('.vt-row');
+  const statusCell = row.querySelector('.status-pill');
+  if (statusCell) {
+    statusCell.className = 'status-pill live';
+    statusCell.textContent = '● Live';
+  }
+  row.style.background = '';
+  btn.textContent = '✓';
+  btn.style.color = 'var(--green2)';
+}
+
+// Copy link
+function copyVouchLink(btn) {
+  navigator.clipboard.writeText('https://recommenow.com/nick-baker').catch(() => {});
+  const orig = btn.textContent;
+  btn.textContent = 'Copied ✓';
+  if (btn.classList.contains('link-copy')) btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = orig;
+    btn.classList.remove('copied');
+  }, 2000);
+}
+
+// Filter chips (visual only)
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.closest('.filter-bar').querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
