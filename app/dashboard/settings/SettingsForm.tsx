@@ -29,7 +29,7 @@ const STAGES = [
 
 const WORK_PREFS = ['Remote only', 'Hybrid', 'On-site', 'Open to all']
 
-const AVAILABILITY = ['Immediately', '1 week', '2 weeks', '1 month', '2 months', '3 months', 'Custom']
+const AVAILABILITY = ['Immediately', '1 week', '2 weeks', '1 month', '2 months', '3 months']
 
 const SLUG_RE = /^[a-z0-9-]{3,40}$/
 

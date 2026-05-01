@@ -3,7 +3,22 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 
-const INDUSTRIES = ['B2B SaaS', 'Fintech', 'Healthtech', 'E-commerce', 'Media', 'Agency', 'Consulting', 'Marketplace', 'Deep tech', 'Climate', 'EdTech', 'Web3']
+const INDUSTRIES = [
+  'Accounting & Tax', 'Advertising & Marketing', 'Aerospace & Defence', 'Agriculture & Farming',
+  'Architecture & Design', 'Automotive', 'Aviation', 'Banking & Finance', 'Biotechnology',
+  'Broadcasting & Media', 'Chemicals & Materials', 'Clean Energy & Renewables', 'Cloud Computing',
+  'Computer Hardware', 'Construction & Real Estate', 'Consulting', 'Consumer Goods', 'Cybersecurity',
+  'Data & Analytics', 'E-commerce', 'EdTech', 'Electronics & Semiconductors', 'Environmental Services',
+  'Events & Entertainment', 'Fashion & Apparel', 'Film & TV Production', 'Fintech', 'Food & Beverage',
+  'Gaming & Esports', 'Government & Public Sector', 'Healthcare & Medical', 'HR & Recruitment',
+  'Hospitality & Tourism', 'Industrial Manufacturing', 'Information Technology', 'Insurance',
+  'Journalism & Publishing', 'Legal Services', 'Logistics & Supply Chain', 'Luxury Goods',
+  'Manufacturing', 'Market Research', 'Medical Devices', 'Mining & Resources', 'Mobile & Apps',
+  'Music & Audio', 'Non-profit & NGO', 'Oil & Gas', 'Pharmaceuticals', 'Private Equity & VC',
+  'PropTech', 'Public Relations', 'Retail', 'SaaS & Software', 'Security Services',
+  'Social Impact', 'Sports & Fitness', 'Telecommunications', 'Transportation', 'Travel & Tourism',
+  'Utilities & Infrastructure', 'Web3 & Blockchain', 'Wellness & Health',
+]
 const REMOTE_OPTIONS = ['Remote only', 'Hybrid', 'On-site', 'Open to all']
 
 type DirectoryProfile = {

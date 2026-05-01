@@ -94,10 +94,10 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
         )}
 
         {/* ── FOR CANDIDATES ── */}
-        <p style={{ fontSize: '.65rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem' }}>
+        <p style={{ fontSize: '.65rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem', textAlign: 'center' }}>
           For candidates
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', maxWidth: 740, marginBottom: '3rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', maxWidth: 740, marginBottom: '3rem', margin: '0 auto 3rem' }}>
           {/* Free */}
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 16, padding: '2rem' }}>
             <div style={{ marginBottom: '1.5rem' }}>
@@ -141,10 +141,10 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
         </div>
 
         {/* ── FOR RECRUITERS ── */}
-        <p id="recruiter" style={{ fontSize: '.65rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem' }}>
+        <p id="recruiter" style={{ fontSize: '.65rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem', textAlign: 'center' }}>
           For recruiters
         </p>
-        <div style={{ maxWidth: 740 }}>
+        <div style={{ maxWidth: 740, margin: '0 auto' }}>
           <div style={{ background: 'var(--ink)', border: '1px solid var(--ink)', borderRadius: 16, padding: '2rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '.75rem' }}>

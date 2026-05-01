@@ -137,12 +137,16 @@ export default function SignInPage() {
           <SignIn
             appearance={{
               variables: {
-                colorPrimary: '#1c3d2c',
-                colorBackground: '#faf9f7',
-                colorText: '#141210',
-                colorTextSecondary: '#6e6a64',
+                colorPrimary: '#2D6A4F',
+                colorBackground: '#ffffff',
+                colorText: '#1b4332',
+                colorTextSecondary: '#52705c',
                 borderRadius: '8px',
                 fontFamily: 'Manrope, sans-serif',
+              },
+              elements: {
+                card: { boxShadow: 'none', border: '1px solid #b7dfc6', borderRadius: '12px' },
+                footer: { background: '#ffffff' },
               },
             }}
           />

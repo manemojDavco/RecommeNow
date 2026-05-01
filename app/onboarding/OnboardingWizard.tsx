@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
@@ -29,7 +29,7 @@ const STAGES = [
 
 const WORK_PREFS = ['Remote only', 'Hybrid', 'On-site', 'Open to all']
 
-const AVAILABILITY = ['Immediately', '1 week', '2 weeks', '1 month', '2 months', '3 months', 'Custom']
+const AVAILABILITY = ['Immediately', '1 week', '2 weeks', '1 month', '2 months', '3 months']
 
 type Step = 1 | 2 | 3
 
@@ -118,6 +118,21 @@ export default function OnboardingWizard() {
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [photoUrl, setPhotoUrl] = useState('')
+  const [photoUploading, setPhotoUploading] = useState(false)
+  const photoInputRef = useRef<HTMLInputElement>(null)
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setPhotoUploading(true)
+    const fd = new FormData()
+    fd.append('photo', file)
+    const res = await fetch('/api/profile/photo', { method: 'POST', body: fd })
+    const data = await res.json()
+    if (res.ok) setPhotoUrl(data.url)
+    setPhotoUploading(false)
+  }
 
   function toggleArr(key: 'stages', val: string) {
     setForm((f) => ({
@@ -229,6 +244,29 @@ export default function OnboardingWizard() {
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {/* Photo upload */}
+                <div>
+                  <label className="field-label">Profile photo <span style={{ fontWeight: 400, color: 'var(--muted)' }}>(optional)</span></label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '.5rem' }}>
+                    <div
+                      onClick={() => photoInputRef.current?.click()}
+                      style={{ width: 64, height: 64, borderRadius: '50%', overflow: 'hidden', background: photoUrl ? 'transparent' : 'var(--green)', border: '2px dashed var(--rule)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                    >
+                      {photoUrl
+                        ? <img src={photoUrl} alt="Your photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ color: '#fff', fontSize: '1.4rem' }}>+</span>
+                      }
+                    </div>
+                    <div>
+                      <button type="button" onClick={() => photoInputRef.current?.click()} style={{ padding: '.45rem 1rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--sans)' }}>
+                        {photoUploading ? 'Uploading…' : photoUrl ? '✓ Photo added' : 'Upload photo'}
+                      </button>
+                      <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.25rem' }}>JPG or PNG, max 5 MB</p>
+                    </div>
+                    <input ref={photoInputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handlePhotoChange} />
+                  </div>
+                </div>
+
                 <div>
                   <label className="field-label">Full name *</label>
                   <input className="field-input" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Nick Baker" style={{ fontSize: '1rem' }} />
@@ -389,8 +427,11 @@ export default function OnboardingWizard() {
 
         <div style={{ padding: '1.5rem', flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700, fontSize: '1.1rem', color: '#fff', flexShrink: 0 }}>
-              {form.name ? form.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '?'}
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700, fontSize: '1.1rem', color: '#fff', flexShrink: 0, overflow: 'hidden' }}>
+              {photoUrl
+                ? <img src={photoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : form.name ? form.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '?'
+              }
             </div>
             <div>
               <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)' }}>{form.name || 'Your name'}</p>
