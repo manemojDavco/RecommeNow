@@ -7,6 +7,8 @@ export type Profile = {
   years_experience: string | null
   location: string | null
   remote_preference: string | null
+  availability: string | null
+  photo_url: string | null
   bio: string | null
   industries: string[]
   stages: string[]

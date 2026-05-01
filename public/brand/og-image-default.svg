@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#1B4332"/>
+
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#2D6A4F" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)" opacity="0.4"/>
+
+  <!-- Large decorative mark — right side -->
+  <!-- Left person (voucher) -->
+  <circle cx="810" cy="230" r="90" fill="#2D6A4F"/>
+  <path d="M660 560 Q660 420 810 420 Q960 420 960 560 Z" fill="#2D6A4F"/>
+  <!-- Arm -->
+  <path d="M952 462 Q1010 432 1034 432" stroke="#52B788" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <polygon points="1034,432 996,406 996,458" fill="#52B788"/>
+  <!-- Right person (vouched) -->
+  <circle cx="1100" cy="230" r="90" fill="#2D6A4F" opacity="0.6"/>
+  <path d="M950 560 Q950 420 1100 420 Q1250 420 1250 560 Z" fill="#2D6A4F" opacity="0.6"/>
+  <!-- Badge -->
+  <circle cx="1176" cy="148" r="56" fill="#2D6A4F"/>
+  <circle cx="1176" cy="148" r="44" fill="#52B788"/>
+  <polyline points="1154,148 1167,162 1198,128" stroke="#F0EAD6" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Logo mark — top left -->
+  <!-- Left person small -->
+  <circle cx="64" cy="56" r="20" fill="#F0EAD6"/>
+  <path d="M36 110 Q36 88 64 88 Q92 88 92 110 Z" fill="#F0EAD6"/>
+  <path d="M89 94 Q100 88 106 88" stroke="#95D5B2" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <polygon points="106,88 97,82 97,94" fill="#95D5B2"/>
+  <circle cx="110" cy="40" r="20" fill="#95D5B2"/>
+  <path d="M82 110 Q82 88 110 88 Q138 88 138 110 Z" fill="#95D5B2"/>
+  <circle cx="126" cy="22" r="13" fill="#F0EAD6"/>
+  <circle cx="126" cy="22" r="10" fill="#1B4332"/>
+  <polyline points="120,22 123,26 132,16" stroke="#F0EAD6" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Wordmark -->
+  <text x="158" y="87" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="56" fill="#F0EAD6" letter-spacing="-1">Recomme<tspan fill="#95D5B2">Now</tspan></text>
+
+  <!-- Main headline -->
+  <text x="80" y="260" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="86" fill="#F0EAD6" letter-spacing="-2">Don't just apply.</text>
+  <text x="80" y="366" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="86" fill="#95D5B2" letter-spacing="-2">Get vouched.</text>
+
+  <!-- Subline -->
+  <text x="80" y="450" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="400" font-size="32" fill="#52B788" letter-spacing="0">Real people. Real recommendations. Real results.</text>
+
+  <!-- URL pill -->
+  <rect x="80" y="490" width="320" height="52" rx="26" fill="#2D6A4F"/>
+  <text x="240" y="523" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="600" font-size="22" fill="#95D5B2" text-anchor="middle">recommenow.com</text>
+</svg>

@@ -19,8 +19,8 @@
 set -e
 
 # ── CONFIGURE THESE ──────────────────────────────────────────────────────────
-PROD_DB_URL="postgresql://postgres:REPLACE_DB_PASSWORD@db.obmbsgstfdmoqmtzvjfk.supabase.co:5432/postgres"
-DEV_DB_URL="postgresql://postgres:REPLACE_DEV_DB_PASSWORD@db.REPLACE_DEV_PROJECT_REF.supabase.co:5432/postgres"
+PROD_DB_URL="postgresql://postgres:R3c0mm3N0w042026@db.obmbsgstfdmoqmtzvjfk.supabase.co:5432/postgres"
+DEV_DB_URL="postgresql://postgres:R3c0mm3N0w042026@db.efudwefjvieokrasbjbw.supabase.co:5432/postgres"
 BACKUP_DIR="$HOME/recommenow-backups"
 KEEP_DAYS=30   # delete backups older than this many days
 # ─────────────────────────────────────────────────────────────────────────────

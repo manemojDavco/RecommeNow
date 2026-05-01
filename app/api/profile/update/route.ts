@@ -9,7 +9,7 @@ export async function PUT(req: NextRequest) {
   const db = createServiceClient()
   const body = await req.json()
 
-  const { title, years_experience, location, remote_preference, bio, industries, stages } = body
+  const { title, years_experience, location, remote_preference, availability, bio, industries, stages } = body
 
   const { data: profile, error } = await db
     .from('profiles')
@@ -18,6 +18,7 @@ export async function PUT(req: NextRequest) {
       ...(years_experience !== undefined ? { years_experience: years_experience?.trim() || null } : {}),
       ...(location !== undefined ? { location: location?.trim() || null } : {}),
       ...(remote_preference !== undefined ? { remote_preference: remote_preference || null } : {}),
+      ...(availability !== undefined ? { availability: availability || null } : {}),
       ...(bio !== undefined ? { bio: bio?.trim() || null } : {}),
       ...(industries !== undefined ? { industries } : {}),
       ...(stages !== undefined ? { stages } : {}),

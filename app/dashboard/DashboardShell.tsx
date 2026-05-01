@@ -66,7 +66,8 @@ export default function DashboardShell({
         }}
       >
         {/* Brand */}
-        <div
+        <Link
+          href="/"
           style={{
             padding: '1.4rem 1.4rem 1rem',
             fontFamily: 'var(--serif)',
@@ -75,10 +76,12 @@ export default function DashboardShell({
             color: 'rgba(255,255,255,.5)',
             borderBottom: '1px solid rgba(255,255,255,.07)',
             flexShrink: 0,
+            textDecoration: 'none',
+            display: 'block',
           }}
         >
           Recomme<span style={{ color: 'rgba(255,255,255,.9)' }}>Now</span>
-        </div>
+        </Link>
 
         {/* User info */}
         <div
@@ -104,9 +107,13 @@ export default function DashboardShell({
               fontSize: '.85rem',
               color: 'rgba(255,255,255,.85)',
               marginBottom: '.6rem',
+              overflow: 'hidden',
+              flexShrink: 0,
             }}
           >
-            {initials}
+            {profile.photo_url
+              ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              : initials}
           </div>
           <div
             style={{
@@ -282,7 +289,7 @@ export default function DashboardShell({
       {/* ── MAIN ── */}
       <main
         style={{
-          background: 'var(--paper)',
+          background: '#fff',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',

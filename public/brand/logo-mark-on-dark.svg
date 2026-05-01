@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Dark background -->
+  <rect width="200" height="200" rx="40" fill="#1B4332"/>
+
+  <!-- Left person (voucher) — cream -->
+  <circle cx="58" cy="62" r="24" fill="#F0EAD6"/>
+  <path d="M22 160 Q22 108 58 108 Q94 108 94 160 Z" fill="#F0EAD6"/>
+
+  <!-- Pointing arm -->
+  <path d="M90 122 Q107 112 114 112" stroke="#95D5B2" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <polygon points="114,112 104,104 104,120" fill="#95D5B2"/>
+
+  <!-- Right person (vouched) — mint -->
+  <circle cx="142" cy="62" r="24" fill="#95D5B2"/>
+  <path d="M106 160 Q106 108 142 108 Q178 108 178 160 Z" fill="#95D5B2"/>
+
+  <!-- Verified badge -->
+  <circle cx="166" cy="36" r="17" fill="#F0EAD6"/>
+  <circle cx="166" cy="36" r="13" fill="#1B4332"/>
+  <polyline points="159,36 163,41 173,28" stroke="#F0EAD6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

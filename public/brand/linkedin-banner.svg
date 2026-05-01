@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1584 396" width="1584" height="396">
+  <!-- White background -->
+  <rect width="1584" height="396" fill="#FFFFFF"/>
+
+  <!-- Subtle green left accent bar -->
+  <rect width="8" height="396" fill="#2D6A4F"/>
+
+  <!-- Decorative large mark — right side, faded -->
+  <!-- Left person -->
+  <circle cx="1280" cy="148" r="72" fill="#F0EAD6"/>
+  <path d="M1166 370 Q1166 258 1280 258 Q1394 258 1394 370 Z" fill="#F0EAD6"/>
+  <!-- Arm -->
+  <path d="M1388 292 Q1430 272 1448 272" stroke="#D8F3DC" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <polygon points="1448,272 1416,252 1416,292" fill="#D8F3DC"/>
+  <!-- Right person -->
+  <circle cx="1500" cy="148" r="72" fill="#D8F3DC"/>
+  <path d="M1386 370 Q1386 258 1500 258 Q1614 258 1614 370 Z" fill="#D8F3DC"/>
+  <!-- Badge -->
+  <circle cx="1566" cy="84" r="44" fill="#F0EAD6"/>
+  <circle cx="1566" cy="84" r="34" fill="#95D5B2"/>
+  <polyline points="1548,84 1558,95 1584,68" stroke="#2D6A4F" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Logo mark — top left -->
+  <circle cx="60" cy="56" r="16" fill="#2D6A4F"/>
+  <path d="M36 104 Q36 80 60 80 Q84 80 84 104 Z" fill="#2D6A4F"/>
+  <path d="M82 87 Q94 80 100 80" stroke="#52B788" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <polygon points="100,80 90,73 90,87" fill="#52B788"/>
+  <circle cx="116" cy="56" r="16" fill="#52B788"/>
+  <path d="M92 104 Q92 80 116 80 Q140 80 140 104 Z" fill="#52B788"/>
+  <circle cx="132" cy="40" r="11" fill="#2D6A4F"/>
+  <polyline points="126,40 129,44 138,33" stroke="#F0EAD6" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Wordmark next to mark -->
+  <text x="156" y="78" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="44" fill="#2D6A4F" letter-spacing="-1">Recomme<tspan fill="#52B788">Now</tspan></text>
+
+  <!-- Main headline -->
+  <text x="56" y="210" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="78" fill="#1B4332" letter-spacing="-2">Don't just apply.</text>
+  <text x="56" y="306" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="800" font-size="78" fill="#2D6A4F" letter-spacing="-2">Get <tspan fill="#52B788">vouched.</tspan></text>
+
+  <!-- URL -->
+  <text x="56" y="360" font-family="'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-weight="500" font-size="24" fill="#95D5B2" letter-spacing="0">recommenow.com</text>
+</svg>

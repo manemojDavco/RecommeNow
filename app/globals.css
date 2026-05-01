@@ -5,26 +5,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --white:    #faf9f7;
-  --paper:    #f4f2ee;
-  --paper2:   #eeeae2;
-  --ink:      #141210;
-  --ink2:     #2a2724;
-  --muted:    #6e6a64;
-  --faint:    #e8e4dc;
-  --rule:     #dedad2;
-  --green:    #1c3d2c;
-  --green2:   #2a5c40;
-  --green-l:  #edf4f0;
-  --green-m:  #d0e9da;
-  --amber:    #e8a020;
-  --amber-l:  #fdf4e7;
-  --red:      #c0392b;
-  --red-l:    #fdf0ee;
-  --blue:     #1a4a7a;
-  --blue-l:   #eef4fc;
-  --serif:    'Libre Baskerville', Georgia, serif;
-  --sans:     'Manrope', sans-serif;
+  --white:      #ffffff;
+  --paper:      #f5f7f5;
+  --paper2:     #eaece8;
+  --ink:        #1b4332;
+  --ink2:       #2d6a4f;
+  --muted:      #52705c;
+  --faint:      #d8f3dc;
+  --rule:       #b7dfc6;
+  --green:      #2d6a4f;
+  --green2:     #1b4332;
+  --green-l:    #d8f3dc;
+  --green-m:    #95d5b2;
+  --green-mid:  #52b788;
+  --green-mint: #95d5b2;
+  --cream:      #f0ead6;
+  --amber:      #e8a020;
+  --amber-l:    #fdf4e7;
+  --red:        #c0392b;
+  --red-l:      #fdf0ee;
+  --blue:       #1a4a7a;
+  --blue-l:     #eef4fc;
+  --serif:      'Libre Baskerville', Georgia, serif;
+  --sans:       'Manrope', sans-serif;
 }
 
 *, *::before, *::after {
@@ -230,22 +233,34 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2.5rem;
-  background: rgba(250,249,247,.92);
-  backdrop-filter: blur(12px);
+  padding: 1rem 2.5rem;
+  background: rgba(254,250,224,.95);
+  backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
-.rn-nav.scrolled { border-bottom-color: var(--rule); }
+.rn-nav.scrolled {
+  border-bottom-color: var(--rule);
+  box-shadow: 0 2px 20px rgba(27,67,50,.06);
+}
 
 .rn-logo {
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  font-style: italic;
-  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
   text-decoration: none;
 }
-.rn-logo span { color: var(--ink); }
+.rn-logo-mark {
+  flex-shrink: 0;
+}
+.rn-logo-text {
+  font-family: var(--sans);
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+.rn-logo-text span { color: var(--green-mid); }
 
 /* ─── VOUCH CARD ─── */
 .vouch-card {

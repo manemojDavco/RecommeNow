@@ -23,10 +23,10 @@ if [ ! -f "$BACKUP_FILE" ]; then
 fi
 
 if [ "$ENV" = "prod" ]; then
-  DB_URL="postgresql://postgres:REPLACE_DB_PASSWORD@db.obmbsgstfdmoqmtzvjfk.supabase.co:5432/postgres"
+  DB_URL="postgresql://postgres:R3c0mm3N0w042026@db.obmbsgstfdmoqmtzvjfk.supabase.co:5432/postgres"
   echo "⚠️  You are about to RESTORE to PRODUCTION"
 elif [ "$ENV" = "dev" ]; then
-  DB_URL="postgresql://postgres:REPLACE_DEV_DB_PASSWORD@db.REPLACE_DEV_PROJECT_REF.supabase.co:5432/postgres"
+  DB_URL="postgresql://postgres:R3c0mm3N0w042026@db.efudwefjvieokrasbjbw.supabase.co:5432/postgres"
   echo "🔧 Restoring to DEV"
 else
   echo "Usage: $0 [dev|prod] /path/to/backup.sql.gz"
