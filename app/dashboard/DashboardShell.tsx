@@ -273,8 +273,8 @@ export default function DashboardShell({
           )}
         </nav>
 
-        {/* Upgrade CTA for free users */}
-        {!isPro && (
+        {/* Upgrade CTA — only for free users who are not recruiters */}
+        {!isPro && !isRecruiter && (
           <div style={{ padding: '.8rem 1rem', flexShrink: 0 }}>
             <Link
               href="/pricing"

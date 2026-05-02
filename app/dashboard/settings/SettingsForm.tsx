@@ -91,8 +91,8 @@ function IndustryPicker({ selected, onChange }: { selected: string[]; onChange: 
 
 export default function SettingsForm({ profile }: { profile: Profile }) {
   const router = useRouter()
-  const isPro = profile.plan === 'pro'
   const isRecruiter = profile.recruiter_active
+  const isPro = profile.plan === 'pro' || isRecruiter  // Recruiter includes all Pro features
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
   const fileInputRef = useRef<HTMLInputElement>(null)
 

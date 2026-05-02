@@ -127,8 +127,8 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
               <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>{proPrice.display.split(' ')[0]}</div>
               <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.6)', marginTop: '.4rem' }}>{currency.toUpperCase()} / month</div>
             </div>
-            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 2rem', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
-              {['Everything in Free', 'Unlimited vouches', 'Custom slug (your-name)', 'Priority support'].map((f) => (
+            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
+              {['Everything in Free', 'Unlimited vouches', 'Custom slug (your-name)', 'Embeddable widget', 'PDF one-pager', 'Priority support'].map((f) => (
                 <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '.55rem', fontSize: '.82rem', color: '#fff' }}>
                   <span style={{ color: 'rgba(255,255,255,.7)', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
                 </li>
@@ -137,6 +137,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
             <button onClick={() => handleCheckout('pro')} disabled={loading !== null} style={{ display: 'block', width: '100%', padding: '.8rem', borderRadius: 9, border: 'none', background: '#fff', color: 'var(--green)', fontSize: '.83rem', fontWeight: 700, cursor: loading !== null ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', opacity: loading !== null ? 0.8 : 1 }}>
               {loading === 'pro' ? 'Redirecting…' : 'Upgrade to Pro →'}
             </button>
+            <p style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.45)', textAlign: 'center', marginTop: '.6rem' }}>Cancel anytime</p>
           </div>
         </div>
 
@@ -155,7 +156,10 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
                 <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>{recruiterPrice.display.split(' ')[0]}</div>
                 <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.5)' }}>{currency.toUpperCase()} / month</div>
               </div>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '1.25rem 0 0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.65rem .75rem' }}>
+              <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', marginTop: '.75rem', marginBottom: '.5rem' }}>
+                Includes everything in Pro, plus:
+              </p>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.65rem .75rem' }}>
                 {[
                   'Full talent directory access',
                   'Advanced search & filters',
