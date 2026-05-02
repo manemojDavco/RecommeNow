@@ -6,6 +6,7 @@ import type { Vouch } from '@/types'
 import Stars from '@/components/Stars'
 import UpgradedBanner from './UpgradedBanner'
 import RecruiterBanner from './RecruiterBanner'
+import RecruiterDirectoryCard from './RecruiterDirectoryCard'
 
 export default async function DashboardOverviewPage({
   searchParams,
@@ -58,17 +59,7 @@ export default async function DashboardOverviewPage({
       </div>
 
       {/* Recruiter directory shortcut — full width */}
-      {profile.recruiter_active && (
-        <div style={{ background: 'var(--ink)', borderRadius: 12, padding: '.9rem 1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-          <div>
-            <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'rgba(255,255,255,.4)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: '.2rem' }}>Recruiter access</p>
-            <p style={{ fontSize: '.85rem', fontWeight: 600, color: '#fff' }}>Browse the talent directory</p>
-          </div>
-          <Link href="/directory" style={{ background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.2)', borderRadius: 8, padding: '.5rem 1rem', fontSize: '.75rem', fontWeight: 600, color: '#fff', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
-            Open Directory →
-          </Link>
-        </div>
-      )}
+      {profile.recruiter_active && <RecruiterDirectoryCard />}
 
       {/* Stats row — full width */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '.75rem', marginBottom: '1rem' }}>

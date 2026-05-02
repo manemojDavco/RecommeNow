@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { PRO_PRICES, RECRUITER_PRICES } from '@/lib/plans'
+import { PRO_PRICES, RECRUITER_PRICES, PRO_PRICES_YEARLY, RECRUITER_PRICES_YEARLY } from '@/lib/plans'
 
 const CURRENCY_LABELS: Record<string, string> = {
   usd: '🇺🇸 USD',
@@ -13,15 +13,17 @@ const CURRENCY_LABELS: Record<string, string> = {
 }
 
 type PlanType = 'pro' | 'recruiter'
+type Interval = 'month' | 'year'
 
 export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
   const router = useRouter()
   const [currency, setCurrency] = useState('usd')
+  const [interval, setInterval] = useState<Interval>('month')
   const [loading, setLoading] = useState<PlanType | null>(null)
   const [error, setError] = useState('')
 
-  const proPrice = PRO_PRICES[currency]
-  const recruiterPrice = RECRUITER_PRICES[currency]
+  const proPrice  = interval === 'year' ? PRO_PRICES_YEARLY[currency]       : PRO_PRICES[currency]
+  const recPrice  = interval === 'year' ? RECRUITER_PRICES_YEARLY[currency] : RECRUITER_PRICES[currency]
 
   async function handleCheckout(planType: PlanType) {
     if (!isSignedIn) {
@@ -34,7 +36,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currency, planType }),
+        body: JSON.stringify({ currency, planType, interval }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Failed to start checkout')
@@ -67,8 +69,33 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
             For candidates building a reputation. For recruiters searching for talent.
           </p>
 
+          {/* Billing interval toggle */}
+          <div style={{ display: 'inline-flex', gap: 0, marginTop: '1.5rem', background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '.3rem', position: 'relative' }}>
+            {(['month', 'year'] as const).map((i) => (
+              <button
+                key={i}
+                onClick={() => setInterval(i)}
+                style={{
+                  padding: '.4rem 1rem', borderRadius: 7, border: 'none',
+                  background: interval === i ? 'var(--green)' : 'transparent',
+                  color: interval === i ? '#fff' : 'var(--muted)',
+                  fontSize: '.78rem', fontWeight: 600, cursor: 'pointer',
+                  fontFamily: 'var(--sans)', transition: 'all .15s',
+                  display: 'flex', alignItems: 'center', gap: '.4rem',
+                }}
+              >
+                {i === 'month' ? 'Monthly' : 'Yearly'}
+                {i === 'year' && (
+                  <span style={{ background: interval === 'year' ? 'rgba(255,255,255,.2)' : 'var(--green-l)', color: interval === 'year' ? '#fff' : 'var(--green2)', fontSize: '.62rem', fontWeight: 700, padding: '.1rem .45rem', borderRadius: 100, letterSpacing: '.04em' }}>
+                    Save 17%
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
           {/* Currency selector */}
-          <div style={{ display: 'inline-flex', gap: '.4rem', marginTop: '1.5rem', background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '.3rem' }}>
+          <div style={{ display: 'inline-flex', gap: '.4rem', marginTop: '.75rem', background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '.3rem' }}>
             {Object.entries(CURRENCY_LABELS).map(([code, label]) => (
               <button
                 key={code}
@@ -124,8 +151,16 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)', marginBottom: '.5rem' }}>Pro</div>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>{proPrice.display.split(' ')[0]}</div>
-              <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.6)', marginTop: '.4rem' }}>{currency.toUpperCase()} / month</div>
+              <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+                {proPrice.display.split(' ')[0]}
+              </div>
+              {interval === 'year' ? (
+                <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.7)', marginTop: '.4rem' }}>
+                  {currency.toUpperCase()} / year &nbsp;·&nbsp; <span style={{ color: 'rgba(255,255,255,.5)' }}>{'monthly' in proPrice ? `${(proPrice as {monthly:string}).monthly}/mo` : ''}</span>
+                </div>
+              ) : (
+                <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.6)', marginTop: '.4rem' }}>{currency.toUpperCase()} / month</div>
+              )}
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
               {['Everything in Free', 'Unlimited vouches', 'Custom slug (your-name)', 'Embeddable widget', 'PDF one-pager', 'Priority support'].map((f) => (
@@ -153,8 +188,16 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
                 <span style={{ background: 'rgba(255,255,255,.1)', color: 'rgba(255,255,255,.7)', fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.2rem .55rem', borderRadius: 100 }}>New</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '.5rem', marginBottom: '.4rem' }}>
-                <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>{recruiterPrice.display.split(' ')[0]}</div>
-                <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.5)' }}>{currency.toUpperCase()} / month</div>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+                  {recPrice.display.split(' ')[0]}
+                </div>
+                {interval === 'year' ? (
+                  <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.5)' }}>
+                    {currency.toUpperCase()} / year &nbsp;·&nbsp; {'monthly' in recPrice ? `${(recPrice as {monthly:string}).monthly}/mo` : ''}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.5)' }}>{currency.toUpperCase()} / month</div>
+                )}
               </div>
               <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', marginTop: '.75rem', marginBottom: '.5rem' }}>
                 Includes everything in Pro, plus:
@@ -190,6 +233,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
             { q: 'Can I cancel at any time?', a: 'Yes. Cancel from your dashboard billing settings. You keep access until the end of the billing period.' },
             { q: 'How does "Contact candidate" work?', a: 'You write a short message and it\'s delivered to the candidate by email. They can reply directly to you — we never share their email address with you.' },
             { q: 'What happens to my vouches if I downgrade from Pro?', a: 'All vouches remain. Only the first 10 approved ones will show publicly until you re-upgrade.' },
+            { q: 'Is the yearly plan charged all at once?', a: 'Yes. Choosing yearly bills the full annual amount upfront (equal to 10 months of the monthly price). You save ~17% compared to paying monthly.' },
           ].map(({ q, a }) => (
             <div key={q}>
               <p style={{ fontWeight: 600, fontSize: '.85rem', color: 'var(--ink)', marginBottom: '.35rem' }}>{q}</p>

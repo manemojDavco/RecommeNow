@@ -93,7 +93,20 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>13. Contact</h2>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>13. Service discontinuation</h2>
+            <p style={{ marginBottom: '.75rem' }}>We intend to operate RecommeNow for as long as it is viable. However, if we decide to discontinue or permanently shut down the Service, we commit to the following:</p>
+            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '.75rem' }}>
+              <li><strong>Advance notice.</strong> We will provide at least 30 days&apos; written notice of a planned shutdown by email to all registered users. Where circumstances allow, we will aim to give 60 days&apos; notice so you have adequate time to act.</li>
+              <li><strong>Data export.</strong> During the notice period you will be able to export your profile data, vouch history, and any other personal data held by RecommeNow in a machine-readable format (JSON or CSV). Export tools will be available from your account settings until the final shutdown date.</li>
+              <li><strong>Pro-rated refunds.</strong> If you hold an active paid subscription (Pro or Recruiter) at the time of a shutdown announcement, we will issue a pro-rated refund for the unused portion of any prepaid billing period. Annual subscribers will receive a refund proportional to the remaining full months of their subscription. Refunds will be processed to the original payment method within 14 days of the announcement.</li>
+              <li><strong>Data deletion.</strong> No later than 90 days after the shutdown date, all personal data stored by RecommeNow — including profiles, vouches, and contact information — will be permanently deleted from our servers and any third-party services we use to operate the platform, unless we are required by law to retain it for a longer period.</li>
+              <li><strong>Public profile URLs.</strong> After the shutdown date, all public profile URLs will become inactive. We recommend downloading your vouch summary and PDF one-pager before the service ends so you have a permanent record of your professional reputation.</li>
+            </ul>
+            <p>This section survives any termination or expiry of these Terms. We will always make commercially reasonable efforts to fulfil these commitments, even in cases of unexpected closure.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>14. Contact</h2>
             <p>For questions about these Terms of Use, please contact us at <a href="mailto:hello@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>hello@recommenow.com</a>.</p>
           </section>
         </div>

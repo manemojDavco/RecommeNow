@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { getStripe, PRO_PRICES, RECRUITER_PRICES, DEFAULT_CURRENCY } from '@/lib/stripe'
+import { getStripe, PRO_PRICES, RECRUITER_PRICES, PRO_PRICES_YEARLY, RECRUITER_PRICES_YEARLY, DEFAULT_CURRENCY } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase-server'
 
 export async function POST(req: NextRequest) {
@@ -10,8 +10,11 @@ export async function POST(req: NextRequest) {
   const body = await req.json()
   const currency: string = (body.currency ?? DEFAULT_CURRENCY).toLowerCase()
   const planType: 'pro' | 'recruiter' = body.planType === 'recruiter' ? 'recruiter' : 'pro'
+  const interval: 'month' | 'year' = body.interval === 'year' ? 'year' : 'month'
 
-  const priceMap = planType === 'recruiter' ? RECRUITER_PRICES : PRO_PRICES
+  const priceMap = interval === 'year'
+    ? (planType === 'recruiter' ? RECRUITER_PRICES_YEARLY : PRO_PRICES_YEARLY)
+    : (planType === 'recruiter' ? RECRUITER_PRICES : PRO_PRICES)
   const priceConfig = priceMap[currency]
   if (!priceConfig) return NextResponse.json({ error: 'Unsupported currency' }, { status: 400 })
 
@@ -69,7 +72,7 @@ export async function POST(req: NextRequest) {
       price_data: {
         currency,
         unit_amount: priceConfig.amount,
-        recurring: { interval: 'month' },
+        recurring: { interval },
         product_data: { name: productName, description: productDesc },
       },
       quantity: 1,
