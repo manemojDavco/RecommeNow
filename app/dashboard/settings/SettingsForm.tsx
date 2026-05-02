@@ -92,6 +92,7 @@ function IndustryPicker({ selected, onChange }: { selected: string[]; onChange: 
 export default function SettingsForm({ profile }: { profile: Profile }) {
   const router = useRouter()
   const isPro = profile.plan === 'pro'
+  const isRecruiter = profile.recruiter_active
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -113,6 +114,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [slugStatus, setSlugStatus] = useState<'idle' | 'saving' | 'saved' | 'error' | 'conflict'>('idle')
   const [slugError, setSlugError] = useState('')
   const [portalLoading, setPortalLoading] = useState(false)
+  const [portalError, setPortalError] = useState('')
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -170,10 +172,17 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
 
   async function openPortal() {
     setPortalLoading(true)
+    setPortalError('')
     try {
       const res = await fetch('/api/stripe/portal', { method: 'POST' })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setPortalError(data.error ?? 'Could not open billing portal.')
+      }
+    } catch {
+      setPortalError('Network error. Please try again.')
     } finally {
       setPortalLoading(false)
     }
@@ -326,9 +335,11 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
 
         {/* Billing */}
         <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.5rem', marginTop: '.5rem' }}>
-          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.4rem' }}>Billing</h2>
+          <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem' }}>Billing</h2>
+
+          {/* Pro plan row */}
           {isPro ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isRecruiter ? '.75rem' : 0 }}>
               <div>
                 <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Pro plan</p>
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Unlimited vouches · Custom slug</p>
@@ -337,7 +348,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
                 {portalLoading ? 'Loading…' : 'Manage billing →'}
               </button>
             </div>
-          ) : (
+          ) : !isRecruiter ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Free plan</p>
@@ -345,7 +356,28 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
               </div>
               <Link href="/pricing" style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.78rem', fontWeight: 600, textDecoration: 'none' }}>Upgrade to Pro →</Link>
             </div>
+          ) : null}
+
+          {/* Recruiter plan row */}
+          {isRecruiter && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Recruiter plan</p>
+                <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Directory access · Contact candidates</p>
+              </div>
+              <button onClick={openPortal} disabled={portalLoading} style={{ padding: '.5rem 1rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.78rem', fontWeight: 600, cursor: portalLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)' }}>
+                {portalLoading ? 'Loading…' : 'Manage billing →'}
+              </button>
+            </div>
           )}
+
+          {portalError && (
+            <p style={{ fontSize: '.75rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.5rem .8rem', borderRadius: 7, marginTop: '.75rem' }}>{portalError}</p>
+          )}
+
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.6rem', lineHeight: 1.5 }}>
+            Cancellations take effect at the end of your billing period — you keep access until then.
+          </p>
         </div>
       </div>
     </div>

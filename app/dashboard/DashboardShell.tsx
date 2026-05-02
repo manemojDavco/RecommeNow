@@ -15,6 +15,10 @@ const NAV_ITEMS = [
   { label: 'Settings', href: '/dashboard/settings', icon: '⚙' },
 ]
 
+const RECRUITER_NAV_ITEMS = [
+  { label: 'Talent Directory', href: '/directory', icon: '⊛' },
+]
+
 export default function DashboardShell({
   children,
   profile,
@@ -25,13 +29,21 @@ export default function DashboardShell({
   const pathname = usePathname()
   const { signOut } = useClerk()
   const [portalLoading, setPortalLoading] = useState(false)
+  const [portalError, setPortalError] = useState('')
 
   async function openPortal() {
     setPortalLoading(true)
+    setPortalError('')
     try {
       const res = await fetch('/api/stripe/portal', { method: 'POST' })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setPortalError(data.error ?? 'Could not open billing portal.')
+      }
+    } catch {
+      setPortalError('Network error. Please try again.')
     } finally {
       setPortalLoading(false)
     }
@@ -129,26 +141,31 @@ export default function DashboardShell({
             {profile.name}
           </div>
           {(isPro || isRecruiter) ? (
-            <button
-              onClick={openPortal}
-              disabled={portalLoading}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '.3rem',
-                background: 'rgba(255,255,255,.15)',
-                border: '1px solid rgba(255,255,255,.25)',
-                borderRadius: 100,
-                padding: '.18rem .6rem',
-                fontSize: '.6rem',
-                fontWeight: 700,
-                color: '#fff',
-                cursor: 'pointer',
-                fontFamily: 'var(--sans)',
-              }}
-            >
-              {isRecruiter ? '🔍 Recruiter' : '★ Pro'}{isPro && isRecruiter ? ' + Pro' : ''} · Manage
-            </button>
+            <div>
+              <button
+                onClick={openPortal}
+                disabled={portalLoading}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '.3rem',
+                  background: 'rgba(255,255,255,.15)',
+                  border: '1px solid rgba(255,255,255,.25)',
+                  borderRadius: 100,
+                  padding: '.18rem .6rem',
+                  fontSize: '.6rem',
+                  fontWeight: 700,
+                  color: '#fff',
+                  cursor: portalLoading ? 'not-allowed' : 'pointer',
+                  fontFamily: 'var(--sans)',
+                }}
+              >
+                {portalLoading ? '…' : isRecruiter && isPro ? '🔍 Recruiter + ★ Pro · Manage' : isRecruiter ? '🔍 Recruiter · Manage' : '★ Pro · Manage'}
+              </button>
+              {portalError && (
+                <p style={{ fontSize: '.6rem', color: 'rgba(255,100,100,.9)', marginTop: '.25rem', lineHeight: 1.3 }}>{portalError}</p>
+              )}
+            </div>
           ) : (
             <Link
               href="/pricing"
@@ -210,6 +227,50 @@ export default function DashboardShell({
               </Link>
             )
           })}
+
+          {/* Recruiter-only section */}
+          {isRecruiter && (
+            <>
+              <p
+                style={{
+                  fontSize: '.55rem',
+                  fontWeight: 700,
+                  letterSpacing: '.18em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(255,255,255,.22)',
+                  padding: '.8rem 1.2rem .3rem',
+                  marginTop: '.4rem',
+                }}
+              >
+                Recruit
+              </p>
+              {RECRUITER_NAV_ITEMS.map((item) => {
+                const active = pathname.startsWith(item.href)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '.65rem',
+                      padding: '.6rem 1.2rem',
+                      fontSize: '.78rem',
+                      fontWeight: active ? 600 : 500,
+                      color: active ? '#fff' : 'rgba(255,255,255,.5)',
+                      textDecoration: 'none',
+                      background: active ? 'rgba(255,255,255,.1)' : 'transparent',
+                      borderLeft: active ? '2px solid rgba(255,255,255,.4)' : '2px solid transparent',
+                      transition: 'all .15s',
+                    }}
+                  >
+                    <span style={{ fontSize: '.85rem', opacity: active ? 1 : 0.6 }}>{item.icon}</span>
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </>
+          )}
         </nav>
 
         {/* Upgrade CTA for free users */}

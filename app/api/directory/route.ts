@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const search = searchParams.get('search')?.trim() ?? ''
   const industry = searchParams.get('industry')?.trim() ?? ''
   const remote = searchParams.get('remote')?.trim() ?? ''
+  const location = searchParams.get('location')?.trim() ?? ''
   const sort = searchParams.get('sort') ?? 'vouches'
   const page = Math.max(0, parseInt(searchParams.get('page') ?? '0', 10))
   const limit = 24
@@ -25,6 +26,9 @@ export async function GET(req: NextRequest) {
   }
   if (remote) {
     query = query.eq('remote_preference', remote)
+  }
+  if (location) {
+    query = query.ilike('location', `%${location}%`)
   }
 
   if (sort === 'trust') {

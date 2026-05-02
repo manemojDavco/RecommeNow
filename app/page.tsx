@@ -584,8 +584,12 @@ export default function LandingPage() {
           <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', color: 'var(--muted)' }}>
             Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
           </span>
-          <p style={{ fontSize: '.72rem', color: 'var(--muted)' }}>
-            © {new Date().getFullYear()} RecommeNow · privacy · terms
+          <p style={{ fontSize: '.72rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '.6rem' }}>
+            © {new Date().getFullYear()} RecommeNow
+            <span style={{ opacity: .4 }}>·</span>
+            <Link href="/privacy" style={{ color: 'var(--muted)', textDecoration: 'none' }}>Privacy Policy</Link>
+            <span style={{ opacity: .4 }}>·</span>
+            <Link href="/terms" style={{ color: 'var(--muted)', textDecoration: 'none' }}>Terms of Use</Link>
           </p>
         </footer>
       </main>

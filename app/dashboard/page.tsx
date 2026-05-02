@@ -46,6 +46,46 @@ export default async function DashboardOverviewPage({
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       {upgraded === '1' && <UpgradedBanner />}
       {recruiter === '1' && <RecruiterBanner />}
+
+      {/* Recruiter directory shortcut */}
+      {profile.recruiter_active && (
+        <div
+          style={{
+            background: 'var(--ink)',
+            borderRadius: 12,
+            padding: '1.25rem 1.5rem',
+            marginBottom: '1.75rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1rem',
+          }}
+        >
+          <div>
+            <p style={{ fontSize: '.75rem', fontWeight: 700, color: 'rgba(255,255,255,.45)', letterSpacing: '.08em', textTransform: 'uppercase', marginBottom: '.25rem' }}>Recruiter access</p>
+            <p style={{ fontSize: '.9rem', fontWeight: 600, color: '#fff', marginBottom: '.2rem' }}>Browse the talent directory</p>
+            <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Search verified candidates by industry, location, and availability.</p>
+          </div>
+          <Link
+            href="/directory"
+            style={{
+              background: 'rgba(255,255,255,.1)',
+              border: '1px solid rgba(255,255,255,.2)',
+              borderRadius: 8,
+              padding: '.65rem 1.2rem',
+              fontSize: '.78rem',
+              fontWeight: 600,
+              color: '#fff',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            Open Directory →
+          </Link>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <h1

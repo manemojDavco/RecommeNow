@@ -12,6 +12,8 @@ const isProtectedRoute = createRouteMatcher([
 const isAlwaysAllowed = createRouteMatcher([
   '/coming-soon',
   '/api(.*)',
+  '/terms',
+  '/privacy',
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {

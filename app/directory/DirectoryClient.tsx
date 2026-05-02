@@ -126,17 +126,19 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
   const [search, setSearch] = useState('')
   const [industry, setIndustry] = useState('')
   const [remote, setRemote] = useState('')
+  const [location, setLocation] = useState('')
   const [sort, setSort] = useState('vouches')
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(initial.length === 24)
 
-  const fetch_ = useCallback(async (opts: { search: string; industry: string; remote: string; sort: string; page: number; replace: boolean }) => {
+  const fetch_ = useCallback(async (opts: { search: string; industry: string; remote: string; location: string; sort: string; page: number; replace: boolean }) => {
     setLoading(true)
     const params = new URLSearchParams({
       search: opts.search,
       industry: opts.industry,
       remote: opts.remote,
+      location: opts.location,
       sort: opts.sort,
       page: String(opts.page),
     })
@@ -150,13 +152,13 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
 
   useEffect(() => {
     setPage(0)
-    fetch_({ search, industry, remote, sort, page: 0, replace: true })
-  }, [search, industry, remote, sort, fetch_])
+    fetch_({ search, industry, remote, location, sort, page: 0, replace: true })
+  }, [search, industry, remote, location, sort, fetch_])
 
   function loadMore() {
     const next = page + 1
     setPage(next)
-    fetch_({ search, industry, remote, sort, page: next, replace: false })
+    fetch_({ search, industry, remote, location, sort, page: next, replace: false })
   }
 
   return (
@@ -182,13 +184,22 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
           {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
         </select>
 
+        <input
+          type="search"
+          placeholder="City or country…"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          className="field-input"
+          style={{ flex: '0 1 160px' }}
+        />
+
         <select
           value={remote}
           onChange={(e) => setRemote(e.target.value)}
           className="field-input"
           style={{ flex: '0 1 160px' }}
         >
-          <option value="">Any location</option>
+          <option value="">Any work style</option>
           {REMOTE_OPTIONS.map((r) => <option key={r} value={r}>{r}</option>)}
         </select>
 
