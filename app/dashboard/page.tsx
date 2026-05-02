@@ -47,60 +47,58 @@ export default async function DashboardOverviewPage({
       {upgraded === '1' && <UpgradedBanner />}
       {recruiter === '1' && <RecruiterBanner />}
 
-      {/* Two-column layout spanning the full page */}
+      {/* Header */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
+          Good to see you, {profile.name.split(' ')[0]}
+        </h1>
+        <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>
+          Here's an overview of your reputation profile.
+        </p>
+      </div>
+
+      {/* Recruiter directory shortcut — full width */}
+      {profile.recruiter_active && (
+        <div style={{ background: 'var(--ink)', borderRadius: 12, padding: '1.1rem 1.5rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+          <div>
+            <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'rgba(255,255,255,.4)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: '.2rem' }}>Recruiter access</p>
+            <p style={{ fontSize: '.85rem', fontWeight: 600, color: '#fff' }}>Browse the talent directory</p>
+          </div>
+          <Link href="/directory" style={{ background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.2)', borderRadius: 8, padding: '.5rem 1rem', fontSize: '.75rem', fontWeight: 600, color: '#fff', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
+            Open Directory →
+          </Link>
+        </div>
+      )}
+
+      {/* Stats row — full width */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+        {[
+          { label: 'Trust score', value: trustScore > 0 ? `${trustScore}/5` : '—', sub: 'avg star rating' },
+          { label: 'Approved vouches', value: approved.length, sub: 'live on your profile' },
+          { label: 'Verification rate', value: `${verificationRate}%`, sub: 'email-verified' },
+          { label: 'Pending review', value: pending.length, sub: 'awaiting your approval', highlight: pending.length > 0 },
+        ].map((stat) => (
+          <div key={stat.label} style={{ background: 'var(--white)', border: `1px solid ${stat.highlight ? 'var(--amber)' : 'var(--rule)'}`, borderRadius: 10, padding: '1.25rem' }}>
+            <p style={{ fontSize: '.7rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.6rem' }}>{stat.label}</p>
+            <p style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: stat.highlight ? 'var(--amber)' : 'var(--green)', lineHeight: 1, marginBottom: '.2rem' }}>{stat.value}</p>
+            <p style={{ fontSize: '.7rem', color: 'var(--muted)' }}>{stat.sub}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Two-column: recent vouches + right sidebar */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem' }}>
 
-        {/* ── LEFT COLUMN ── */}
-        <div style={{ minWidth: 0 }}>
-
-          {/* Header */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
-              Good to see you, {profile.name.split(' ')[0]}
-            </h1>
-            <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>
-              Here's an overview of your reputation profile.
-            </p>
-          </div>
-
-          {/* Recruiter directory shortcut */}
-          {profile.recruiter_active && (
-            <div style={{ background: 'var(--ink)', borderRadius: 12, padding: '1.1rem 1.25rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-              <div>
-                <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'rgba(255,255,255,.4)', letterSpacing: '.1em', textTransform: 'uppercase', marginBottom: '.2rem' }}>Recruiter access</p>
-                <p style={{ fontSize: '.85rem', fontWeight: 600, color: '#fff' }}>Browse the talent directory</p>
-              </div>
-              <Link href="/directory" style={{ background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.2)', borderRadius: 8, padding: '.5rem 1rem', fontSize: '.75rem', fontWeight: 600, color: '#fff', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                Open Directory →
-              </Link>
-            </div>
-          )}
-
-          {/* Stats row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '.75rem', marginBottom: '1.25rem' }}>
-            {[
-              { label: 'Trust score', value: trustScore > 0 ? `${trustScore}/5` : '—', sub: 'avg star rating' },
-              { label: 'Approved', value: approved.length, sub: 'live on profile' },
-              { label: 'Verified', value: `${verificationRate}%`, sub: 'email-verified' },
-              { label: 'Pending', value: pending.length, sub: 'awaiting approval', highlight: pending.length > 0 },
-            ].map((stat) => (
-              <div key={stat.label} style={{ background: 'var(--white)', border: `1px solid ${stat.highlight ? 'var(--amber)' : 'var(--rule)'}`, borderRadius: 10, padding: '1rem' }}>
-                <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.5rem' }}>{stat.label}</p>
-                <p style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', fontWeight: 700, color: stat.highlight ? 'var(--amber)' : 'var(--green)', lineHeight: 1, marginBottom: '.15rem' }}>{stat.value}</p>
-                <p style={{ fontSize: '.65rem', color: 'var(--muted)' }}>{stat.sub}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Recent vouches */}
+        {/* Recent vouches */}
+        <div>
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, overflow: 'hidden' }}>
-            <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '1.1rem 1.25rem', borderBottom: '1px solid var(--rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ fontSize: '.85rem', fontWeight: 700, color: 'var(--ink)' }}>Recent vouches</h2>
               <Link href="/dashboard/vouches" style={{ fontSize: '.75rem', color: 'var(--green2)', textDecoration: 'none', fontWeight: 500 }}>View all →</Link>
             </div>
 
             {recentVouches.length === 0 ? (
-              <div style={{ padding: '2.5rem 1.25rem', textAlign: 'center' }}>
+              <div style={{ padding: '3rem 1.25rem', textAlign: 'center' }}>
                 <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1rem' }}>No vouches yet</p>
                 <Link href={`/vouch/${profile.slug}`} style={{ background: 'var(--green)', color: '#fff', borderRadius: 7, padding: '.6rem 1.2rem', fontSize: '.78rem', fontWeight: 600, textDecoration: 'none' }}>
                   Share your vouch link →
@@ -108,8 +106,8 @@ export default async function DashboardOverviewPage({
               </div>
             ) : (
               recentVouches.map((v) => (
-                <div key={v.id} style={{ padding: '.9rem 1.25rem', borderBottom: '1px solid var(--rule)', display: 'flex', alignItems: 'flex-start', gap: '.9rem' }}>
-                  <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--green-l)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.65rem', fontWeight: 700, color: 'var(--green)', flexShrink: 0 }}>
+                <div key={v.id} style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--rule)', display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--green-l)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.7rem', fontWeight: 700, color: 'var(--green)', flexShrink: 0 }}>
                     {v.giver_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -120,7 +118,7 @@ export default async function DashboardOverviewPage({
                       </div>
                       <Stars rating={v.star_rating} size={11} />
                     </div>
-                    <p style={{ fontSize: '.75rem', color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>"{v.quote}"</p>
+                    <p style={{ fontSize: '.78rem', color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>"{v.quote}"</p>
                   </div>
                   <StatusBadge status={v.status} verified={v.verified} />
                 </div>
@@ -128,9 +126,8 @@ export default async function DashboardOverviewPage({
             )}
           </div>
 
-          {/* Alerts */}
           {pending.length > 0 && (
-            <div style={{ background: 'var(--amber-l)', border: '1px solid var(--amber)', borderRadius: 10, padding: '1rem 1.25rem', marginTop: '.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ background: 'var(--amber-l)', border: '1px solid var(--amber)', borderRadius: 10, padding: '1.1rem 1.25rem', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--ink)' }}>{pending.length} vouch{pending.length !== 1 ? 'es' : ''} waiting for approval</p>
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '.1rem' }}>Review and approve to make them live on your profile.</p>
@@ -140,7 +137,7 @@ export default async function DashboardOverviewPage({
           )}
 
           {flagged.length > 0 && (
-            <div style={{ background: 'var(--red-l)', border: '1px solid var(--red)', borderRadius: 10, padding: '1rem 1.25rem', marginTop: '.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ background: 'var(--red-l)', border: '1px solid var(--red)', borderRadius: 10, padding: '1.1rem 1.25rem', marginTop: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--ink)' }}>{flagged.length} flagged vouch{flagged.length !== 1 ? 'es' : ''}</p>
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '.1rem' }}>Review flagged submissions in the Flagged tab.</p>
@@ -150,13 +147,11 @@ export default async function DashboardOverviewPage({
           )}
         </div>
 
-        {/* ── RIGHT COLUMN ── */}
+        {/* Right column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-
-          {/* Share link card */}
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1.25rem' }}>
             <p style={{ fontSize: '.7rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.75rem' }}>Your vouch link</p>
-            <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 7, padding: '.6rem .9rem', fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 7, padding: '.6rem .9rem', fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.75rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'}/vouch/{profile.slug}
             </div>
             <Link href="/dashboard/share" className="btn-primary" style={{ fontSize: '.78rem', padding: '.55rem 1rem', display: 'block', textAlign: 'center' }}>
@@ -164,7 +159,6 @@ export default async function DashboardOverviewPage({
             </Link>
           </div>
 
-          {/* Profile completeness */}
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1.25rem' }}>
             <p style={{ fontSize: '.7rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.75rem' }}>Profile completeness</p>
             {[
@@ -181,8 +175,8 @@ export default async function DashboardOverviewPage({
             ))}
             <Link href="/dashboard/settings" style={{ fontSize: '.75rem', color: 'var(--green2)', textDecoration: 'none', fontWeight: 500, marginTop: '.5rem', display: 'block' }}>Edit profile →</Link>
           </div>
-
         </div>
+
       </div>
     </div>
   )
