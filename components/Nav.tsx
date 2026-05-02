@@ -46,9 +46,6 @@ export default function Nav() {
         <Link href="/#proof" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
           Examples
         </Link>
-        <Link href="/directory" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
-          Directory
-        </Link>
         <Link href="/pricing" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
           Pricing
         </Link>

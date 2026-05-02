@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { auth } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase-server'
 import DirectoryClient from './DirectoryClient'
 
@@ -9,7 +11,61 @@ export const metadata: Metadata = {
 }
 
 export default async function DirectoryPage() {
+  const { userId } = await auth()
+
+  // Not signed in — redirect to sign-in
+  if (!userId) redirect('/sign-in')
+
   const db = createServiceClient()
+
+  // Check recruiter status
+  const { data: profile } = await db
+    .from('profiles')
+    .select('recruiter_active, plan')
+    .eq('user_id', userId)
+    .single()
+
+  const isRecruiter = profile?.recruiter_active === true
+
+  // Not a recruiter — show upgrade wall instead of the directory
+  if (!isRecruiter) {
+    return (
+      <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)', display: 'flex', flexDirection: 'column' }}>
+        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
+          <Link href="/" style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1.1rem', color: 'var(--ink)', textDecoration: 'none' }}>
+            Recomme<span style={{ color: 'var(--green)' }}>Now</span>
+          </Link>
+          <Link href="/dashboard" style={{ fontSize: '.82rem', color: 'var(--muted)', textDecoration: 'none' }}>← Dashboard</Link>
+        </nav>
+
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '4rem 2rem' }}>
+          <div style={{ maxWidth: 480, textAlign: 'center' }}>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--green-l)', border: '2px solid var(--green-m)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.5rem' }}>
+              ⊛
+            </div>
+            <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem', lineHeight: 1.2 }}>
+              Talent Directory
+            </h1>
+            <p style={{ fontSize: '.9rem', color: 'var(--muted)', lineHeight: 1.7, marginBottom: '2rem' }}>
+              Browse verified professionals by industry, location, and availability. The directory is available on the Recruiter plan.
+            </p>
+            <Link
+              href="/pricing"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem', background: 'var(--green)', color: '#fff', borderRadius: 8, padding: '.8rem 1.6rem', fontSize: '.85rem', fontWeight: 600, textDecoration: 'none' }}
+            >
+              View Recruiter plan →
+            </Link>
+            <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '1rem' }}>
+              Already subscribed?{' '}
+              <Link href="/dashboard/settings" style={{ color: 'var(--green)', textDecoration: 'none', fontWeight: 600 }}>Check your billing settings</Link>
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Recruiter — show full directory
   const { data } = await db
     .from('public_directory')
     .select('*')
@@ -26,8 +82,7 @@ export default async function DirectoryPage() {
           Recomme<span style={{ color: 'var(--green)' }}>Now</span>
         </Link>
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <Link href="/pricing" style={{ fontSize: '.82rem', color: 'var(--muted)', textDecoration: 'none' }}>Pricing</Link>
-          <Link href="/sign-up" style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--green)', textDecoration: 'none' }}>Build your profile →</Link>
+          <Link href="/dashboard" style={{ fontSize: '.82rem', color: 'var(--muted)', textDecoration: 'none' }}>← Dashboard</Link>
         </div>
       </nav>
 

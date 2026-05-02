@@ -6,6 +6,7 @@ const isProtectedRoute = createRouteMatcher([
   '/dashboard(.*)',
   '/onboarding(.*)',
   '/admin(.*)',
+  '/directory(.*)',
 ])
 
 // In coming-soon mode only these routes stay accessible
