@@ -442,14 +442,14 @@ export default function LandingPage() {
                 >
                   <div
                     style={{
-                      width: 48,
-                      height: 48,
+                      width: 36,
+                      height: 36,
                       background: 'var(--green-l)',
-                      borderRadius: 10,
+                      borderRadius: 8,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.4rem',
+                      fontSize: '1.35rem',
                       flexShrink: 0,
                     }}
                   >
