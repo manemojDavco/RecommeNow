@@ -115,6 +115,9 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [slugError, setSlugError] = useState('')
   const [portalLoading, setPortalLoading] = useState(false)
   const [portalError, setPortalError] = useState('')
+  const [cancelLoading, setCancelLoading] = useState(false)
+  const [cancelDone, setCancelDone] = useState(false)
+  const [downgradeLoading, setDowngradeLoading] = useState(false)
 
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -167,6 +170,58 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
       const data = await res.json()
       setSlugError(data.error ?? 'Failed to update slug.')
       setSlugStatus(res.status === 409 ? 'conflict' : 'error')
+    }
+  }
+
+  async function cancelRecruiter() {
+    if (!confirm('Cancel your Recruiter plan? You keep directory access until the end of your billing period.')) return
+    setCancelLoading(true)
+    setPortalError('')
+    try {
+      const res = await fetch('/api/stripe/cancel-recruiter', { method: 'POST' })
+      const data = await res.json()
+      if (res.ok) {
+        setCancelDone(true)
+      } else {
+        setPortalError(data.error ?? 'Could not cancel. Please try again.')
+      }
+    } catch {
+      setPortalError('Network error. Please try again.')
+    } finally {
+      setCancelLoading(false)
+    }
+  }
+
+  async function downgradeToProAndCancel() {
+    if (!confirm('Downgrade to Pro? Your Recruiter access will end at the billing period. You\'ll be taken to checkout for the Pro plan.')) return
+    setDowngradeLoading(true)
+    setPortalError('')
+    try {
+      // Cancel recruiter first
+      const res = await fetch('/api/stripe/cancel-recruiter', { method: 'POST' })
+      if (!res.ok) {
+        const data = await res.json()
+        setPortalError(data.error ?? 'Could not downgrade. Please try again.')
+        setDowngradeLoading(false)
+        return
+      }
+      // Then start Pro checkout
+      const checkoutRes = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currency: 'usd', planType: 'pro', interval: 'month' }),
+      })
+      const checkoutData = await checkoutRes.json()
+      if (checkoutData.url) {
+        window.location.href = checkoutData.url
+      } else {
+        setCancelDone(true)
+        setPortalError('Recruiter plan cancelled. Go to Pricing to add Pro.')
+      }
+    } catch {
+      setPortalError('Network error. Please try again.')
+    } finally {
+      setDowngradeLoading(false)
     }
   }
 
@@ -337,9 +392,46 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
         <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.5rem', marginTop: '.5rem' }}>
           <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem' }}>Billing</h2>
 
-          {/* Pro plan row */}
-          {isPro ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: isRecruiter ? '.75rem' : 0 }}>
+          {/* Recruiter plan row — shown instead of Pro row since it includes Pro */}
+          {isRecruiter ? (
+            <div style={{ border: '1px solid var(--rule)', borderRadius: 10, padding: '1rem 1.1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem', marginBottom: cancelDone ? 0 : '.85rem' }}>
+                <div>
+                  <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600, marginBottom: '.15rem' }}>Recruiter plan</p>
+                  <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Directory access · Contact candidates · Includes all Pro features</p>
+                </div>
+                <button onClick={openPortal} disabled={portalLoading} style={{ padding: '.45rem .9rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.75rem', fontWeight: 600, cursor: portalLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  {portalLoading ? 'Loading…' : 'Invoices & card →'}
+                </button>
+              </div>
+
+              {!cancelDone && (
+                <div style={{ display: 'flex', gap: '.6rem', paddingTop: '.75rem', borderTop: '1px solid var(--rule)' }}>
+                  <button
+                    onClick={downgradeToProAndCancel}
+                    disabled={downgradeLoading || cancelLoading}
+                    style={{ padding: '.45rem .9rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.75rem', fontWeight: 600, cursor: downgradeLoading || cancelLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', opacity: downgradeLoading || cancelLoading ? 0.6 : 1 }}
+                  >
+                    {downgradeLoading ? 'Processing…' : 'Downgrade to Pro'}
+                  </button>
+                  <button
+                    onClick={cancelRecruiter}
+                    disabled={cancelLoading || downgradeLoading}
+                    style={{ padding: '.45rem .9rem', borderRadius: 7, border: '1.5px solid var(--red)', background: 'var(--red-l)', color: 'var(--red)', fontSize: '.75rem', fontWeight: 600, cursor: cancelLoading || downgradeLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', opacity: cancelLoading || downgradeLoading ? 0.6 : 1 }}
+                  >
+                    {cancelLoading ? 'Cancelling…' : 'Cancel plan'}
+                  </button>
+                </div>
+              )}
+
+              {cancelDone && (
+                <p style={{ fontSize: '.78rem', color: 'var(--green2)', background: 'var(--green-l)', padding: '.5rem .8rem', borderRadius: 7, marginTop: '.75rem' }}>
+                  Your Recruiter plan is set to cancel at the end of the billing period. You keep full access until then.
+                </p>
+              )}
+            </div>
+          ) : isPro ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Pro plan</p>
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Unlimited vouches · Custom slug</p>
@@ -348,26 +440,13 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
                 {portalLoading ? 'Loading…' : 'Manage billing →'}
               </button>
             </div>
-          ) : !isRecruiter ? (
+          ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Free plan</p>
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Up to 10 approved vouches</p>
               </div>
               <Link href="/pricing" style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.78rem', fontWeight: 600, textDecoration: 'none' }}>Upgrade to Pro →</Link>
-            </div>
-          ) : null}
-
-          {/* Recruiter plan row */}
-          {isRecruiter && (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div>
-                <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Recruiter plan</p>
-                <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Directory access · Contact candidates</p>
-              </div>
-              <button onClick={openPortal} disabled={portalLoading} style={{ padding: '.5rem 1rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.78rem', fontWeight: 600, cursor: portalLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)' }}>
-                {portalLoading ? 'Loading…' : 'Manage billing →'}
-              </button>
             </div>
           )}
 
