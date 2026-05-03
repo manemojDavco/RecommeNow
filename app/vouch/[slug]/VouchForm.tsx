@@ -16,6 +16,14 @@ const TRAITS = [
   'Empathy',
   'Commercial acumen',
   'Mentorship',
+  'Adaptability',
+  'Decision making',
+  'Ownership',
+  'Attention to detail',
+  'Coaching',
+  'Negotiation',
+  'Data-driven',
+  'Cross-functional',
 ]
 
 const RELATIONSHIPS = [
