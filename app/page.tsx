@@ -226,10 +226,10 @@ export default function LandingPage() {
                 >
                   {step.n}
                 </div>
-                <div style={{ fontSize: '.9rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '.6rem' }}>
+                <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '.65rem' }}>
                   {step.title}
                 </div>
-                <div style={{ fontSize: '.8rem', fontWeight: 300, color: 'var(--muted)', lineHeight: 1.7 }}>
+                <div style={{ fontSize: '.93rem', fontWeight: 400, color: 'var(--muted)', lineHeight: 1.75 }}>
                   {step.desc}
                 </div>
               </div>
