@@ -66,7 +66,7 @@ export default function LandingPage() {
             }}
           >
             Build a verified reputation profile from real colleagues, managers and clients.
-            Share it anywhere you apply — as a link, embed or PDF.
+            Share it anywhere you apply as a link, embed or PDF.
           </p>
 
           <div
