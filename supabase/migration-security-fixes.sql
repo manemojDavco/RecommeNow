@@ -2,10 +2,49 @@
 -- Addresses all Security Advisor errors and warnings
 
 -- ─── 1. Fix SECURITY DEFINER views → SECURITY INVOKER ────────────────────────
--- Views were implicitly created with the definer's privileges.
--- Switching to invoker means they run with the querying role's privileges instead.
-ALTER VIEW public.public_directory SET (security_invoker = true);
-ALTER VIEW public.profile_stats    SET (security_invoker = true);
+-- Drop and recreate both views with security_invoker = true.
+-- This is the only reliable fix across all Supabase Postgres versions.
+
+DROP VIEW IF EXISTS public.public_directory;
+DROP VIEW IF EXISTS public.profile_stats;
+
+CREATE OR REPLACE VIEW public.profile_stats WITH (security_invoker = true) AS
+SELECT
+  p.id AS profile_id,
+  p.slug,
+  COUNT(v.id) FILTER (WHERE v.status = 'approved') AS approved_count,
+  ROUND(
+    AVG(v.star_rating) FILTER (WHERE v.status = 'approved')::numeric, 1
+  ) AS trust_score,
+  CASE
+    WHEN COUNT(v.id) FILTER (WHERE v.status = 'approved') = 0 THEN 0
+    ELSE ROUND(
+      100.0 *
+      COUNT(v.id) FILTER (WHERE v.status = 'approved' AND v.verified = true) /
+      COUNT(v.id) FILTER (WHERE v.status = 'approved')
+    )
+  END AS verification_rate
+FROM public.profiles p
+LEFT JOIN public.vouches v ON v.profile_id = p.id
+GROUP BY p.id, p.slug;
+
+CREATE OR REPLACE VIEW public.public_directory WITH (security_invoker = true) AS
+SELECT
+  p.id,
+  p.slug,
+  p.name,
+  p.title,
+  p.location,
+  p.remote_preference,
+  p.industries,
+  p.stages,
+  p.created_at,
+  COALESCE(ps.approved_count, 0)    AS vouch_count,
+  COALESCE(ps.trust_score, 0)       AS trust_score,
+  COALESCE(ps.verification_rate, 0) AS verification_rate
+FROM public.profiles p
+LEFT JOIN public.profile_stats ps ON ps.profile_id = p.id
+WHERE COALESCE(ps.approved_count, 0) > 0;
 
 -- ─── 2. Fix mutable search_path on functions ─────────────────────────────────
 -- A mutable search_path allows a malicious user to shadow functions/types.
