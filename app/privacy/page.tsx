@@ -94,7 +94,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>11. Contact</h2>
-            <p>For privacy-related questions or to exercise your data rights, contact us at <a href="mailto:hello@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>hello@recommenow.com</a>.</p>
+            <p>For privacy-related questions or to exercise your data rights, contact us at <a href="mailto:legal@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>legal@recommenow.com</a>.</p>
           </section>
         </div>
 
