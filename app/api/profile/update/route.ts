@@ -9,7 +9,7 @@ export async function PUT(req: NextRequest) {
   const db = createServiceClient()
   const body = await req.json()
 
-  const { title, years_experience, location, remote_preference, availability, bio, industries, stages } = body
+  const { title, years_experience, location, remote_preference, availability, bio, industries, stages, phone } = body
 
   const { data: profile, error } = await db
     .from('profiles')
@@ -22,6 +22,7 @@ export async function PUT(req: NextRequest) {
       ...(bio !== undefined ? { bio: bio?.trim() || null } : {}),
       ...(industries !== undefined ? { industries } : {}),
       ...(stages !== undefined ? { stages } : {}),
+      ...(phone !== undefined ? { phone: phone?.trim() || null } : {}),
     })
     .eq('user_id', userId)
     .select()

@@ -12,6 +12,7 @@ export type Profile = {
   bio: string | null
   industries: string[]
   stages: string[]
+  phone: string | null
   plan: 'free' | 'pro'
   stripe_customer_id: string | null
   stripe_subscription_id: string | null

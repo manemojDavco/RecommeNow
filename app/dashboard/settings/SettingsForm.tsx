@@ -27,6 +27,58 @@ const STAGES = [
   'Large Business', 'Enterprise', 'Public Company', 'Non-profit', 'Other',
 ]
 
+const COUNTRY_CODES = [
+  { code: 'AU', name: 'Australia',         dial: '+61' },
+  { code: 'AT', name: 'Austria',           dial: '+43' },
+  { code: 'BE', name: 'Belgium',           dial: '+32' },
+  { code: 'BR', name: 'Brazil',            dial: '+55' },
+  { code: 'CA', name: 'Canada',            dial: '+1' },
+  { code: 'CN', name: 'China',             dial: '+86' },
+  { code: 'HR', name: 'Croatia',           dial: '+385' },
+  { code: 'CZ', name: 'Czech Republic',    dial: '+420' },
+  { code: 'DK', name: 'Denmark',           dial: '+45' },
+  { code: 'EG', name: 'Egypt',             dial: '+20' },
+  { code: 'FI', name: 'Finland',           dial: '+358' },
+  { code: 'FR', name: 'France',            dial: '+33' },
+  { code: 'DE', name: 'Germany',           dial: '+49' },
+  { code: 'GR', name: 'Greece',            dial: '+30' },
+  { code: 'HK', name: 'Hong Kong',         dial: '+852' },
+  { code: 'HU', name: 'Hungary',           dial: '+36' },
+  { code: 'IN', name: 'India',             dial: '+91' },
+  { code: 'ID', name: 'Indonesia',         dial: '+62' },
+  { code: 'IE', name: 'Ireland',           dial: '+353' },
+  { code: 'IL', name: 'Israel',            dial: '+972' },
+  { code: 'IT', name: 'Italy',             dial: '+39' },
+  { code: 'JP', name: 'Japan',             dial: '+81' },
+  { code: 'MY', name: 'Malaysia',          dial: '+60' },
+  { code: 'MX', name: 'Mexico',            dial: '+52' },
+  { code: 'NL', name: 'Netherlands',       dial: '+31' },
+  { code: 'NZ', name: 'New Zealand',       dial: '+64' },
+  { code: 'NG', name: 'Nigeria',           dial: '+234' },
+  { code: 'NO', name: 'Norway',            dial: '+47' },
+  { code: 'PH', name: 'Philippines',       dial: '+63' },
+  { code: 'PL', name: 'Poland',            dial: '+48' },
+  { code: 'PT', name: 'Portugal',          dial: '+351' },
+  { code: 'RO', name: 'Romania',           dial: '+40' },
+  { code: 'SA', name: 'Saudi Arabia',      dial: '+966' },
+  { code: 'RS', name: 'Serbia',            dial: '+381' },
+  { code: 'SG', name: 'Singapore',         dial: '+65' },
+  { code: 'ZA', name: 'South Africa',      dial: '+27' },
+  { code: 'KR', name: 'South Korea',       dial: '+82' },
+  { code: 'ES', name: 'Spain',             dial: '+34' },
+  { code: 'SE', name: 'Sweden',            dial: '+46' },
+  { code: 'CH', name: 'Switzerland',       dial: '+41' },
+  { code: 'TW', name: 'Taiwan',            dial: '+886' },
+  { code: 'TH', name: 'Thailand',          dial: '+66' },
+  { code: 'TR', name: 'Turkey',            dial: '+90' },
+  { code: 'UA', name: 'Ukraine',           dial: '+380' },
+  { code: 'AE', name: 'UAE',               dial: '+971' },
+  { code: 'GB', name: 'United Kingdom',    dial: '+44' },
+  { code: 'US', name: 'United States',     dial: '+1' },
+  { code: 'VN', name: 'Vietnam',           dial: '+84' },
+  { code: 'MK', name: 'North Macedonia',   dial: '+389' },
+]
+
 const WORK_PREFS = ['Remote only', 'Hybrid', 'On-site', 'Open to all']
 
 const AVAILABILITY = ['Immediately', '1 week', '2 weeks', '1 month', '2 months', '3 months']
@@ -96,6 +148,16 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Parse stored phone (e.g. "+44 7911 123456") into dial code + number
+  function parsePhone(stored: string | null): { dialCode: string; number: string } {
+    if (!stored) return { dialCode: '+44', number: '' }
+    const match = COUNTRY_CODES.find((c) => stored.startsWith(c.dial + ' '))
+    if (match) return { dialCode: match.dial, number: stored.slice(match.dial.length + 1) }
+    // fallback: treat everything as number
+    return { dialCode: '+44', number: stored }
+  }
+  const parsedPhone = parsePhone(profile.phone ?? null)
+
   const [form, setForm] = useState({
     title: profile.title ?? '',
     years_experience: profile.years_experience ?? '',
@@ -106,6 +168,8 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     industries: profile.industries ?? [],
     stages: profile.stages ?? [],
   })
+  const [phoneDialCode, setPhoneDialCode] = useState(parsedPhone.dialCode)
+  const [phoneNumber, setPhoneNumber] = useState(parsedPhone.number)
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [photoUrl, setPhotoUrl] = useState(profile.photo_url ?? '')
   const [photoStatus, setPhotoStatus] = useState<'idle' | 'uploading' | 'done' | 'error'>('idle')
@@ -142,7 +206,10 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     const res = await fetch('/api/profile/update', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify({
+        ...form,
+        phone: phoneNumber.trim() ? `${phoneDialCode} ${phoneNumber.trim()}` : '',
+      }),
     })
     if (res.ok) {
       setStatus('saved')
@@ -329,6 +396,33 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             <label className="field-label">Location</label>
             <input className="field-input" value={form.location} onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))} placeholder="London, UK" />
           </div>
+        </div>
+
+        <div>
+          <label className="field-label">Mobile number</label>
+          <div style={{ display: 'flex', gap: '.5rem', marginTop: '.25rem' }}>
+            <select
+              value={phoneDialCode}
+              onChange={(e) => setPhoneDialCode(e.target.value)}
+              className="field-input"
+              style={{ width: 'auto', flexShrink: 0, paddingRight: '2rem', fontSize: '.83rem' }}
+            >
+              {COUNTRY_CODES.sort((a, b) => a.name.localeCompare(b.name)).map((c) => (
+                <option key={c.code} value={c.dial}>
+                  {c.name} ({c.dial})
+                </option>
+              ))}
+            </select>
+            <input
+              className="field-input"
+              style={{ flex: 1 }}
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value.replace(/[^\d\s\-()]/g, ''))}
+              placeholder="7911 123456"
+            />
+          </div>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Only visible to you — not shown publicly.</p>
         </div>
 
         <div>
