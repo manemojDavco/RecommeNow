@@ -39,7 +39,34 @@ async function getProfileData(slug: string) {
       ? Math.round((approved.filter((v) => v.verified).length / approved.length) * 100)
       : 0
 
-  return { profile: profile as Profile, vouches: approved, trustScore, verificationRate }
+  // Build email → profile slug map so VouchCard can link givers who have accounts
+  const giverEmails = [...new Set(approved.map((v) => v.giver_email).filter(Boolean))]
+  const giverSlugMap: Record<string, string> = {}
+  if (giverEmails.length > 0) {
+    try {
+      const params = giverEmails.map((e) => `email_address[]=${encodeURIComponent(e)}`).join('&')
+      const clerkRes = await fetch(`https://api.clerk.com/v1/users?${params}&limit=50`, {
+        headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` },
+      })
+      if (clerkRes.ok) {
+        const clerkUsers: Array<{ id: string; email_addresses: Array<{ email_address: string; id: string }>; primary_email_address_id: string }> = await clerkRes.json()
+        const userIds = clerkUsers.map((u) => u.id)
+        if (userIds.length > 0) {
+          const { data: giverProfiles } = await db
+            .from('profiles')
+            .select('user_id, slug')
+            .in('user_id', userIds)
+          const userIdToSlug = Object.fromEntries((giverProfiles ?? []).map((p) => [p.user_id, p.slug]))
+          for (const u of clerkUsers) {
+            const email = u.email_addresses.find((e) => e.id === u.primary_email_address_id)?.email_address
+            if (email && userIdToSlug[u.id]) giverSlugMap[email] = userIdToSlug[u.id]
+          }
+        }
+      }
+    } catch { /* non-fatal — links just won't appear */ }
+  }
+
+  return { profile: profile as Profile, vouches: approved, trustScore, verificationRate, giverSlugMap }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -101,7 +128,7 @@ export default async function PublicProfilePage({ params }: Props) {
     }
   }
 
-  const { profile, vouches, trustScore, verificationRate } = data
+  const { profile, vouches, trustScore, verificationRate, giverSlugMap } = data
 
   const relationshipCounts = vouches.reduce<Record<string, number>>((acc, v) => {
     const r = v.giver_relationship ?? 'Other'
@@ -352,7 +379,7 @@ export default async function PublicProfilePage({ params }: Props) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               {vouches.map((v) => (
                 <div key={v.id} style={{ position: 'relative' }}>
-                  <VouchCard vouch={v} />
+                  <VouchCard vouch={v} giverSlug={giverSlugMap[v.giver_email] ?? null} />
                   <FlagVouchButton vouchId={v.id} />
                 </div>
               ))}

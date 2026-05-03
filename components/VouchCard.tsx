@@ -1,7 +1,8 @@
+import Link from 'next/link'
 import type { Vouch } from '@/types'
 import Stars from './Stars'
 
-export default function VouchCard({ vouch }: { vouch: Vouch }) {
+export default function VouchCard({ vouch, giverSlug }: { vouch: Vouch; giverSlug?: string | null }) {
   const initials = vouch.giver_name
     .split(' ')
     .map((w) => w[0])
@@ -99,7 +100,15 @@ export default function VouchCard({ vouch }: { vouch: Vouch }) {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontSize: '.82rem', fontWeight: 600, color: 'var(--ink)' }}>
-            {vouch.giver_name}
+            {giverSlug ? (
+              <Link
+                href={`/${giverSlug}`}
+                style={{ color: 'var(--green2)', textDecoration: 'none', fontWeight: 600 }}
+                title="View RecommeNow profile"
+              >
+                {vouch.giver_name} ↗
+              </Link>
+            ) : vouch.giver_name}
           </div>
           {(vouch.giver_title || vouch.giver_company) && (
             <div style={{ fontSize: '.72rem', fontWeight: 300, color: 'var(--muted)', marginTop: 1 }}>
