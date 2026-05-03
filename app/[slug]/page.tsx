@@ -75,6 +75,7 @@ export default async function PublicProfilePage({ params }: Props) {
 
   const { userId } = await auth()
   let isRecruiter = false
+  let candidateEmail: string | null = null
   if (userId) {
     const db = createServiceClient()
     const { data: viewer } = await db
@@ -83,6 +84,21 @@ export default async function PublicProfilePage({ params }: Props) {
       .eq('user_id', userId)
       .single()
     isRecruiter = viewer?.recruiter_active ?? false
+
+    // Fetch candidate email from Clerk — only expose to recruiters
+    if (isRecruiter) {
+      try {
+        const clerkRes = await fetch(`https://api.clerk.com/v1/users/${data.profile.user_id}`, {
+          headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` },
+        })
+        if (clerkRes.ok) {
+          const u = await clerkRes.json()
+          candidateEmail = u.email_addresses?.find(
+            (e: { id: string }) => e.id === u.primary_email_address_id
+          )?.email_address ?? null
+        }
+      } catch { /* non-fatal */ }
+    }
   }
 
   const { profile, vouches, trustScore, verificationRate } = data
@@ -435,6 +451,8 @@ export default async function PublicProfilePage({ params }: Props) {
           <RecruiterContactButton
             candidateSlug={profile.slug}
             candidateName={profile.name}
+            candidatePhone={profile.phone ?? null}
+            candidateEmail={candidateEmail}
             isRecruiter={isRecruiter}
             isSignedIn={!!userId}
           />

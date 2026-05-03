@@ -6,11 +6,13 @@ import Link from 'next/link'
 type Props = {
   candidateSlug: string
   candidateName: string
+  candidatePhone: string | null
+  candidateEmail: string | null
   isRecruiter: boolean
   isSignedIn: boolean
 }
 
-export default function RecruiterContactButton({ candidateSlug, candidateName, isRecruiter, isSignedIn }: Props) {
+export default function RecruiterContactButton({ candidateSlug, candidateName, candidatePhone, candidateEmail, isRecruiter, isSignedIn }: Props) {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ company: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -189,6 +191,30 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, i
                   >
                     {status === 'sending' ? 'Sending…' : 'Send message'}
                   </button>
+
+                  {(candidateEmail || candidatePhone) && (
+                    <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+                      <p style={{ fontSize: '.68rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.1rem' }}>
+                        Direct contact details
+                      </p>
+                      {candidateEmail && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
+                          <span style={{ fontSize: '.75rem', color: 'var(--muted)', flexShrink: 0 }}>✉</span>
+                          <a href={`mailto:${candidateEmail}`} style={{ fontSize: '.82rem', color: 'var(--green2)', textDecoration: 'none', fontWeight: 500, wordBreak: 'break-all' }}>
+                            {candidateEmail}
+                          </a>
+                        </div>
+                      )}
+                      {candidatePhone && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
+                          <span style={{ fontSize: '.75rem', color: 'var(--muted)', flexShrink: 0 }}>📱</span>
+                          <a href={`tel:${candidatePhone.replace(/\s/g, '')}`} style={{ fontSize: '.82rem', color: 'var(--green2)', textDecoration: 'none', fontWeight: 500 }}>
+                            {candidatePhone}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </>
             )}
