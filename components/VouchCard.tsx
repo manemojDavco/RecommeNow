@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import type { Vouch } from '@/types'
-import Stars from './Stars'
 
 export default function VouchCard({ vouch, giverSlug }: { vouch: Vouch; giverSlug?: string | null }) {
   const initials = vouch.giver_name
@@ -42,9 +41,6 @@ export default function VouchCard({ vouch, giverSlug }: { vouch: Vouch; giverSlu
           {vouch.giver_relationship}
         </span>
       )}
-
-      {/* stars */}
-      <Stars rating={vouch.star_rating} />
 
       {/* quote */}
       <blockquote

@@ -1,26 +1,56 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import Link from 'next/link'
 import type { Vouch } from '@/types'
-import Stars from '@/components/Stars'
 
-type Tab = 'all' | 'approved' | 'pending' | 'hidden' | 'flagged'
+type Tab = 'all' | 'approved' | 'pending' | 'hidden' | 'flagged' | 'given'
+
+type GivenVouch = {
+  id: string
+  profile_id: string
+  profile_name: string
+  profile_slug: string
+  quote: string
+  traits: string[]
+  giver_relationship: string | null
+  verified: boolean
+  created_at: string
+}
 
 export default function VouchesPage() {
   const [tab, setTab] = useState<Tab>('all')
   const [vouches, setVouches] = useState<Vouch[]>([])
   const [loading, setLoading] = useState(true)
+  const [givenVouches, setGivenVouches] = useState<GivenVouch[]>([])
+  const [givenLoading, setGivenLoading] = useState(true)
+  const [localVouches, setLocalVouches] = useState<Vouch[]>([])
+  const dragItem = useRef<number | null>(null)
+  const dragOver = useRef<number | null>(null)
 
   useEffect(() => {
+    if (tab === 'given') return
     setLoading(true)
     const q = tab === 'all' ? '' : `?status=${tab}`
     fetch(`/api/dashboard/vouches${q}`)
       .then((r) => r.json())
       .then((d) => {
-        setVouches(d.vouches ?? [])
+        const list = d.vouches ?? []
+        setVouches(list)
+        setLocalVouches(list)
         setLoading(false)
       })
   }, [tab])
+
+  useEffect(() => {
+    fetch('/api/dashboard/given-vouches')
+      .then((r) => r.json())
+      .then((d) => {
+        setGivenVouches(d.vouches ?? [])
+        setGivenLoading(false)
+      })
+      .catch(() => setGivenLoading(false))
+  }, [])
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'all', label: 'All' },
@@ -28,7 +58,40 @@ export default function VouchesPage() {
     { key: 'pending', label: 'Pending' },
     { key: 'hidden', label: 'Hidden' },
     { key: 'flagged', label: 'Flagged' },
+    { key: 'given', label: 'Given' },
   ]
+
+  // ── Drag-and-drop (approved tab only) ──
+  function handleDragStart(index: number) {
+    dragItem.current = index
+  }
+
+  function handleDragEnter(index: number) {
+    if (dragItem.current === null || dragItem.current === index) return
+    const from = dragItem.current
+    dragItem.current = index   // update synchronously so rapid events don't double-fire
+    setLocalVouches((prev) => {
+      const updated = [...prev]
+      const dragged = updated.splice(from, 1)[0]
+      updated.splice(index, 0, dragged)
+      return updated
+    })
+  }
+
+  async function handleDragEnd() {
+    dragItem.current = null
+    dragOver.current = null
+    // Auto-save new order
+    await fetch('/api/dashboard/vouches/reorder', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order: localVouches.map((v) => v.id) }),
+    })
+  }
+
+  const isApprovedTab = tab === 'approved'
+  const displayVouches = isApprovedTab ? localVouches : vouches
+  const showDragHint = isApprovedTab && displayVouches.length > 1
 
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
@@ -40,7 +103,7 @@ export default function VouchesPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 0, borderBottom: '1px solid var(--rule)', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid var(--rule)', marginBottom: '1.5rem' }}>
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -64,72 +127,145 @@ export default function VouchesPage() {
         ))}
       </div>
 
-      {loading ? (
-        <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
-      ) : vouches.length === 0 ? (
-        <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '3rem', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)' }}>No vouches in this category.</p>
-        </div>
-      ) : (
-        <div
-          style={{
-            background: 'var(--white)',
-            border: '1px solid var(--rule)',
-            borderRadius: 10,
-            overflow: 'hidden',
-          }}
-        >
-          {vouches.map((v, i) => (
-            <div
-              key={v.id}
-              style={{
-                padding: '1.1rem 1.25rem',
-                borderBottom: i < vouches.length - 1 ? '1px solid var(--rule)' : 'none',
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '1rem',
-              }}
-            >
-              <div
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: '50%',
-                  background: 'var(--green-l)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '.7rem',
-                  fontWeight: 700,
-                  color: 'var(--green)',
-                  flexShrink: 0,
-                }}
-              >
-                {v.giver_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.2rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                    <span style={{ fontSize: '.85rem', fontWeight: 600, color: 'var(--ink)' }}>{v.giver_name}</span>
-                    {v.verified && (
-                      <span className="badge-verified" style={{ fontSize: '.58rem' }}>✓ Verified</span>
-                    )}
+      {/* ── GIVEN TAB ── */}
+      {tab === 'given' && (
+        <>
+          {givenLoading ? (
+            <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
+          ) : givenVouches.length === 0 ? (
+            <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '2.5rem', textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)', fontSize: '.9rem' }}>You haven&apos;t given any vouches yet.</p>
+              <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: '.5rem' }}>When you vouch for someone on their profile page, it will appear here.</p>
+            </div>
+          ) : (
+            <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, overflow: 'hidden' }}>
+              {givenVouches.map((v, i) => (
+                <div
+                  key={v.id}
+                  style={{
+                    padding: '1.1rem 1.25rem',
+                    borderBottom: i < givenVouches.length - 1 ? '1px solid var(--rule)' : 'none',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                  }}
+                >
+                  <div style={{
+                    width: 38, height: 38, borderRadius: '50%',
+                    background: 'var(--paper)',
+                    border: '1px solid var(--rule)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '.7rem', fontWeight: 700, color: 'var(--muted)', flexShrink: 0,
+                  }}>
+                    {v.profile_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
-                    <Stars rating={v.star_rating} size={11} />
-                    <StatusPill status={v.status} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.2rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                        <Link href={`/${v.profile_slug}`} target="_blank" style={{ fontSize: '.85rem', fontWeight: 600, color: 'var(--green)', textDecoration: 'none' }}>
+                          {v.profile_name} ↗
+                        </Link>
+                        {v.verified && <span className="badge-verified" style={{ fontSize: '.58rem' }}>✓ Verified</span>}
+                      </div>
+                      {v.giver_relationship && (
+                        <span style={{ fontSize: '.68rem', color: 'var(--green2)', fontWeight: 600 }}>{v.giver_relationship}</span>
+                      )}
+                    </div>
+                    <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      &ldquo;{v.quote}&rdquo;
+                    </p>
                   </div>
                 </div>
-                <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.3rem' }}>
-                  {[v.giver_title, v.giver_company, v.giver_relationship].filter(Boolean).join(' · ')}
-                </p>
-                <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  "{v.quote}"
-                </p>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
+      )}
+
+      {/* ── RECEIVED VOUCHES (all tabs except given) ── */}
+      {tab !== 'given' && (
+        <>
+          {showDragHint && (
+            <p style={{ fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.75rem', display: 'flex', alignItems: 'center', gap: '.35rem' }}>
+              <span style={{ fontSize: '.9rem' }}>⠿</span> Drag vouches to reorder how they appear on your public profile — changes save automatically.
+            </p>
+          )}
+
+          {loading ? (
+            <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
+          ) : displayVouches.length === 0 ? (
+            <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '3rem', textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)' }}>No vouches in this category.</p>
+            </div>
+          ) : (
+            <div
+              style={{
+                background: 'var(--white)',
+                border: '1px solid var(--rule)',
+                borderRadius: 10,
+                overflow: 'hidden',
+              }}
+            >
+              {displayVouches.map((v, i) => (
+                <div
+                  key={v.id}
+                  draggable={isApprovedTab}
+                  onDragStart={isApprovedTab ? () => handleDragStart(i) : undefined}
+                  onDragEnter={isApprovedTab ? () => handleDragEnter(i) : undefined}
+                  onDragOver={isApprovedTab ? (e) => e.preventDefault() : undefined}
+                  onDragEnd={isApprovedTab ? handleDragEnd : undefined}
+                  style={{
+                    padding: '1.1rem 1.25rem',
+                    borderBottom: i < displayVouches.length - 1 ? '1px solid var(--rule)' : 'none',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '1rem',
+                    cursor: isApprovedTab ? 'grab' : 'default',
+                    userSelect: isApprovedTab ? 'none' : 'auto',
+                  }}
+                >
+                  {isApprovedTab && (
+                    <span style={{ fontSize: '1rem', color: 'var(--muted)', flexShrink: 0, alignSelf: 'center', cursor: 'grab' }}>⠿</span>
+                  )}
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: '50%',
+                      background: 'var(--green-l)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '.7rem',
+                      fontWeight: 700,
+                      color: 'var(--green)',
+                      flexShrink: 0,
+                    }}
+                  >
+                    {v.giver_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.2rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                        <span style={{ fontSize: '.85rem', fontWeight: 600, color: 'var(--ink)' }}>{v.giver_name}</span>
+                        {v.verified && (
+                          <span className="badge-verified" style={{ fontSize: '.58rem' }}>✓ Verified</span>
+                        )}
+                      </div>
+                      <StatusPill status={v.status} />
+                    </div>
+                    <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.3rem' }}>
+                      {[v.giver_title, v.giver_company, v.giver_relationship].filter(Boolean).join(' · ')}
+                    </p>
+                    <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      &ldquo;{v.quote}&rdquo;
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )

@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase-server'
 import type { Vouch } from '@/types'
-import Stars from '@/components/Stars'
 import UpgradedBanner from './UpgradedBanner'
 import RecruiterBanner from './RecruiterBanner'
 import RecruiterDirectoryCard from './RecruiterDirectoryCard'
@@ -32,10 +31,6 @@ export default async function DashboardOverviewPage({
   const pending = vouches.filter((v) => v.status === 'pending')
   const flagged = vouches.filter((v) => v.status === 'flagged')
 
-  const trustScore =
-    approved.length > 0
-      ? Math.round((approved.reduce((s, v) => s + v.star_rating, 0) / approved.length) * 10) / 10
-      : 0
   const verificationRate =
     approved.length > 0
       ? Math.round((approved.filter((v) => v.verified).length / approved.length) * 100)
@@ -64,17 +59,29 @@ export default async function DashboardOverviewPage({
       {/* Stats row — full width */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '.75rem', marginBottom: '1rem' }}>
         {[
-          { label: 'Trust score', value: trustScore > 0 ? `${trustScore}/5` : '—', sub: 'avg star rating' },
-          { label: 'Approved vouches', value: approved.length, sub: 'live on your profile' },
-          { label: 'Verification rate', value: `${verificationRate}%`, sub: 'email-verified' },
-          { label: 'Pending review', value: pending.length, sub: 'awaiting your approval', highlight: pending.length > 0 },
-        ].map((stat) => (
-          <div key={stat.label} style={{ background: 'var(--white)', border: `1px solid ${stat.highlight ? 'var(--amber)' : 'var(--rule)'}`, borderRadius: 10, padding: '1rem' }}>
-            <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.5rem' }}>{stat.label}</p>
-            <p style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', fontWeight: 700, color: stat.highlight ? 'var(--amber)' : 'var(--green)', lineHeight: 1, marginBottom: '.15rem' }}>{stat.value}</p>
-            <p style={{ fontSize: '.65rem', color: 'var(--muted)' }}>{stat.sub}</p>
-          </div>
-        ))}
+          { label: 'Approved vouches', value: approved.length, sub: 'live on your profile', href: '/dashboard/vouches' },
+          { label: 'Unique vouchers', value: new Set(approved.map((v) => v.giver_email)).size, sub: 'distinct people', href: null },
+          { label: 'Verification rate', value: `${verificationRate}%`, sub: 'email-verified', href: null },
+          { label: 'Pending review', value: pending.length, sub: 'awaiting your approval', highlight: pending.length > 0, href: '/dashboard/approvals' },
+        ].map((stat) => {
+          const inner = (
+            <>
+              <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.5rem' }}>{stat.label}</p>
+              <p style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', fontWeight: 700, color: stat.highlight ? 'var(--amber)' : 'var(--green)', lineHeight: 1, marginBottom: '.15rem' }}>{stat.value}</p>
+              <p style={{ fontSize: '.65rem', color: 'var(--muted)' }}>{stat.sub}</p>
+            </>
+          )
+          const sharedStyle = { background: 'var(--white)', border: `1px solid ${stat.highlight ? 'var(--amber)' : 'var(--rule)'}`, borderRadius: 10, padding: '1rem' }
+          return stat.href ? (
+            <Link key={stat.label} href={stat.href} style={{ ...sharedStyle, textDecoration: 'none', display: 'block', cursor: 'pointer' }}>
+              {inner}
+            </Link>
+          ) : (
+            <div key={stat.label} style={sharedStyle}>
+              {inner}
+            </div>
+          )
+        })}
       </div>
 
       {/* Two-column: recent vouches + right sidebar */}
@@ -107,10 +114,7 @@ export default async function DashboardOverviewPage({
                         <span style={{ fontSize: '.8rem', fontWeight: 600, color: 'var(--ink)' }}>{v.giver_name}</span>
                         {v.giver_company && <span style={{ fontSize: '.72rem', color: 'var(--muted)', marginLeft: '.35rem' }}>· {v.giver_company}</span>}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem', flexShrink: 0 }}>
-                        <Stars rating={v.star_rating} size={10} />
-                        <StatusBadge status={v.status} verified={v.verified} />
-                      </div>
+                      <StatusBadge status={v.status} verified={v.verified} />
                     </div>
                     <p style={{
                       fontSize: '.74rem',

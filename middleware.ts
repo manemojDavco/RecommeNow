@@ -15,6 +15,11 @@ const isAlwaysAllowed = createRouteMatcher([
   '/api(.*)',
   '/terms',
   '/privacy',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/dashboard(.*)',
+  '/onboarding(.*)',
+  '/admin(.*)',
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {

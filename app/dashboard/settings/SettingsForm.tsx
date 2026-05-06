@@ -165,6 +165,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     remote_preference: profile.remote_preference ?? '',
     availability: profile.availability ?? '',
     bio: profile.bio ?? '',
+    linkedin_url: profile.linkedin_url ?? '',
     industries: profile.industries ?? [],
     stages: profile.stages ?? [],
   })
@@ -423,6 +424,18 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             />
           </div>
           <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Only visible to you — not shown publicly.</p>
+        </div>
+
+        <div>
+          <label className="field-label">LinkedIn profile URL</label>
+          <input
+            className="field-input"
+            type="url"
+            value={form.linkedin_url}
+            onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))}
+            placeholder="https://linkedin.com/in/your-name"
+          />
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Shown on your public profile so recruiters can view your full LinkedIn.</p>
         </div>
 
         <div>

@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import type { Profile, Vouch } from '@/types'
-import Stars from '@/components/Stars'
 import VouchCard from '@/components/VouchCard'
 import FlagVouchButton from './FlagVouchButton'
 import RecruiterContactButton from '@/components/RecruiterContactButton'
@@ -22,18 +21,20 @@ async function getProfileData(slug: string) {
 
   if (!profile) return null
 
-  const { data: vouches } = await db
+  const { data: vouchesRaw } = await db
     .from('vouches')
     .select('*')
     .eq('profile_id', profile.id)
     .eq('status', 'approved')
     .order('created_at', { ascending: false })
 
-  const approved = (vouches ?? []) as Vouch[]
-  const trustScore =
-    approved.length > 0
-      ? Math.round((approved.reduce((s, v) => s + v.star_rating, 0) / approved.length) * 10) / 10
-      : 0
+  // Sort by display_order in JS so missing column doesn't break the page
+  const approved = ((vouchesRaw ?? []) as Vouch[]).sort((a, b) => {
+    if (a.display_order == null && b.display_order == null) return 0
+    if (a.display_order == null) return 1
+    if (b.display_order == null) return -1
+    return a.display_order - b.display_order
+  })
   const verificationRate =
     approved.length > 0
       ? Math.round((approved.filter((v) => v.verified).length / approved.length) * 100)
@@ -66,7 +67,7 @@ async function getProfileData(slug: string) {
     } catch { /* non-fatal — links just won't appear */ }
   }
 
-  return { profile: profile as Profile, vouches: approved, trustScore, verificationRate, giverSlugMap }
+  return { profile: profile as Profile, vouches: approved, verificationRate, giverSlugMap }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -74,22 +75,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getProfileData(slug)
   if (!data) return { title: 'Profile not found' }
 
-  const { profile, vouches, trustScore } = data
+  const { profile, vouches } = data
   const title = `${profile.name} — ${vouches.length} verified vouches · RecommeNow`
-  const description = `${trustScore}/5 · ${vouches.length} vouches from managers, clients and colleagues`
+  const description = `${vouches.length} vouches from managers, clients and colleagues · RecommeNow`
 
   return {
     title,
     description,
     openGraph: {
-      title: `${profile.name} · ${vouches.length} vouches · ${trustScore}/5`,
+      title: `${profile.name} · ${vouches.length} verified vouches`,
       description: `${profile.title ?? ''} · Verified by managers, clients & colleagues. See what people say about working with ${profile.name.split(' ')[0]}.`,
       type: 'profile',
       url: `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`,
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${profile.name} · ${vouches.length} vouches · ${trustScore}/5`,
+      title: `${profile.name} · ${vouches.length} verified vouches`,
       description,
     },
   }
@@ -128,7 +129,7 @@ export default async function PublicProfilePage({ params }: Props) {
     }
   }
 
-  const { profile, vouches, trustScore, verificationRate, giverSlugMap } = data
+  const { profile, vouches, verificationRate, giverSlugMap } = data
 
   const relationshipCounts = vouches.reduce<Record<string, number>>((acc, v) => {
     const r = v.giver_relationship ?? 'Other'
@@ -283,6 +284,27 @@ export default async function PublicProfilePage({ params }: Props) {
                   {profile.remote_preference && (
                     <span style={{ fontSize: '.75rem', color: 'var(--muted)' }}>· {profile.remote_preference}</span>
                   )}
+                  {profile.linkedin_url && (
+                    <a
+                      href={profile.linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '.3rem',
+                        fontSize: '.75rem',
+                        color: '#0a66c2',
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                      }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                      LinkedIn
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -326,7 +348,16 @@ export default async function PublicProfilePage({ params }: Props) {
               </h2>
               {vouches.length > 0 && (
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '.2rem' }}>
-                  {verificationRate}% email-verified · avg {trustScore}/5
+                  {verificationRate}% email-verified
+                  {Object.keys(relationshipCounts).length > 0 && (
+                    <> · {
+                      Object.entries(relationshipCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 3)
+                        .map(([r]) => r.toLowerCase())
+                        .join(', ')
+                    }</>
+                  )}
                 </p>
               )}
             </div>
@@ -343,7 +374,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 textDecoration: 'none',
               }}
             >
-              + Add a vouch
+              Give {profile.name.split(' ')[0]} a Vouch
             </Link>
           </div>
 
@@ -389,7 +420,7 @@ export default async function PublicProfilePage({ params }: Props) {
 
         {/* ─── RIGHT SIDEBAR ─── */}
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          {/* Trust score card */}
+          {/* Vouch summary card */}
           <div
             style={{
               background: 'var(--green)',
@@ -399,26 +430,29 @@ export default async function PublicProfilePage({ params }: Props) {
             }}
           >
             <p style={{ fontSize: '.62rem', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginBottom: '1.2rem' }}>
-              Trust score
+              Vouch summary
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.5rem', marginBottom: '.4rem' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.4rem', marginBottom: '1.2rem' }}>
               <span style={{ fontFamily: 'var(--serif)', fontSize: '3rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
-                {trustScore > 0 ? trustScore.toFixed(1) : '—'}
+                {vouches.length}
               </span>
-              <span style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.4)', marginBottom: '.4rem' }}>/5</span>
+              <span style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.5)', marginBottom: '.5rem' }}>
+                {vouches.length === 1 ? 'vouch' : 'vouches'}
+              </span>
             </div>
-            <Stars rating={Math.round(trustScore)} size={16} />
 
-            <div style={{ borderTop: '1px solid rgba(255,255,255,.12)', marginTop: '1.2rem', paddingTop: '1.2rem', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Vouches</span>
-                <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{vouches.length}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Verified rate</span>
+                <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Email verified</span>
                 <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{verificationRate}%</span>
               </div>
+              {Object.keys(relationshipCounts).length > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Relationship types</span>
+                  <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{Object.keys(relationshipCounts).length}</span>
+                </div>
+              )}
             </div>
           </div>
 

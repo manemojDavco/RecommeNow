@@ -2,7 +2,6 @@ import { notFound } from 'next/navigation'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import type { Profile, Vouch } from '@/types'
-import Stars from '@/components/Stars'
 import PrintButton from './PrintButton'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -205,7 +204,6 @@ export default async function PrintPage({ params }: Props) {
                     </div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                    <Stars rating={v.star_rating} size={10} />
                     {v.verified && <span className="verified-badge">✓ Verified</span>}
                   </div>
                 </div>

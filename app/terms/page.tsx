@@ -93,7 +93,33 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>13. Service discontinuation</h2>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>13. No guarantee of employment or recruitment outcomes</h2>
+            <p style={{ marginBottom: '.75rem' }}>RecommeNow is a professional reputation and reference platform. <strong>We do not guarantee, promise, or imply that use of the Service will result in a job offer, an interview, a hire, or any other employment or business outcome</strong> for any Candidate, Recruiter, or other user.</p>
+            <p style={{ marginBottom: '.75rem' }}>Specifically:</p>
+            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '.75rem' }}>
+              <li><strong>Candidates.</strong> Creating a profile, collecting vouches, or appearing in the Recruiter Directory does not guarantee that any Recruiter will view your profile, contact you, or offer you employment or a contract of any kind.</li>
+              <li><strong>Recruiters.</strong> Access to the Candidate Directory and individual profiles does not guarantee that you will find a suitable candidate, successfully hire, or fill any vacancy. We do not vet, screen, verify employment eligibility, or make representations about any Candidate&apos;s suitability for any particular role.</li>
+              <li><strong>Vouches.</strong> Vouches displayed on the Service reflect the personal opinions of the individuals who submitted them. RecommeNow does not independently verify the accuracy of vouch content beyond email verification of the submitter&apos;s address. The presence or quality of vouches does not constitute a professional reference, background check, or endorsement by RecommeNow.</li>
+            </ul>
+            <p>Your use of the Service is entirely at your own risk. RecommeNow is a tool to help you present and discover professional reputation — nothing more. Any employment decisions you make based on information found on the Service are solely your own responsibility.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>14. Algorithmic credibility scores</h2>
+            <p style={{ marginBottom: '.75rem' }}>Each vouch displayed on the Service is assigned an automated <strong>Credibility Score</strong> (on a scale of 1.0 to 5.0). This score is calculated entirely by our algorithm based on a set of objective, observable factors including: the stated relationship between the voucher and the Candidate, the length and detail of the vouch text, the number of professional traits selected, whether the submitter used a professional (non-free-provider) email address, and whether the submitter verified their email address by clicking the verification link we send them.</p>
+            <p style={{ marginBottom: '.75rem' }}>By using the Service, you acknowledge and agree that:</p>
+            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '.75rem' }}>
+              <li><strong>Scores are informational only.</strong> Credibility Scores are a convenience signal intended to help viewers quickly assess the relative weight of a vouch. They are not a judgment of a Candidate&apos;s character, ability, or professional worth, and they should not be treated as such.</li>
+              <li><strong>No right to a specific score.</strong> No Candidate or vouch submitter has any right to a particular Credibility Score. The algorithm applies the same weighting rules to every vouch consistently; we do not manually adjust scores at a user&apos;s request.</li>
+              <li><strong>Scores are not guarantees of accuracy.</strong> The algorithm cannot assess the truthfulness of vouch content, the depth of the professional relationship, or the underlying quality of work described. A high score reflects structural completeness, not factual accuracy.</li>
+              <li><strong>No claims arising from scores.</strong> You waive any right to bring a claim against RecommeNow arising from the Credibility Score assigned to any vouch, including but not limited to claims that a score is inaccurate, unfair, too low, or damaging to reputation.</li>
+              <li><strong>Scores may change.</strong> We reserve the right to adjust the scoring algorithm at any time. Historical scores may be recalculated when we update the methodology. We will not notify individual users of score changes resulting from algorithm updates.</li>
+            </ul>
+            <p>If you believe a specific vouch contains false or defamatory content (distinct from the numerical score it received), you may report it to us at <a href="mailto:legal@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>legal@recommenow.com</a> and we will review it under our content moderation process.</p>
+          </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>15. Service discontinuation</h2>
             <p style={{ marginBottom: '.75rem' }}>We intend to operate RecommeNow for as long as it is viable. However, if we decide to discontinue or permanently shut down the Service, we commit to the following:</p>
             <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '.75rem' }}>
               <li><strong>Advance notice.</strong> We will provide at least 30 days&apos; written notice of a planned shutdown by email to all registered users. Where circumstances allow, we will aim to give 60 days&apos; notice so you have adequate time to act.</li>
@@ -106,7 +132,7 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>14. Contact</h2>
+            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>16. Contact</h2>
             <p>For questions about these Terms of Use, please contact us at <a href="mailto:hello@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>hello@recommenow.com</a>.</p>
           </section>
         </div>

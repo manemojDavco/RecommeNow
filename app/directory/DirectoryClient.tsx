@@ -27,29 +27,35 @@ type DirectoryProfile = {
   slug: string
   name: string
   title: string | null
+  bio: string | null
   location: string | null
   remote_preference: string | null
   industries: string[]
   vouch_count: number
   trust_score: number
   verification_rate: number
+  top_quote: string | null
 }
 
 function ProfileCard({ p }: { p: DirectoryProfile }) {
   const initials = p.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
+  const summary = p.bio || p.top_quote || null
+
   return (
     <Link href={`/${p.slug}`} style={{ textDecoration: 'none' }}>
-      <div style={{
-        background: 'var(--white)',
-        border: '1px solid var(--rule)',
-        borderRadius: 12,
-        padding: '1.4rem',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '.75rem',
-        cursor: 'pointer',
-        transition: 'border-color .15s, box-shadow .15s',
-      }}
+      <div
+        style={{
+          background: 'var(--white)',
+          border: '1px solid var(--rule)',
+          borderRadius: 12,
+          padding: '1.25rem 1.4rem',
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '1.5rem',
+          cursor: 'pointer',
+          transition: 'border-color .15s, box-shadow .15s',
+          alignItems: 'center',
+        }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLElement).style.borderColor = 'var(--green)'
           ;(e.currentTarget as HTMLElement).style.boxShadow = '0 2px 12px rgba(0,0,0,.06)'
@@ -59,53 +65,80 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
           ;(e.currentTarget as HTMLElement).style.boxShadow = 'none'
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem' }}>
-          <div style={{
-            width: 44, height: 44, borderRadius: '50%',
-            background: 'var(--green-l)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700,
-            fontSize: '.9rem', color: 'var(--green)', flexShrink: 0,
-          }}>
-            {initials}
+        {/* LEFT: profile info */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '.65rem', minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem' }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: '50%',
+              background: 'var(--green-l)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700,
+              fontSize: '.9rem', color: 'var(--green)', flexShrink: 0,
+            }}>
+              {initials}
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p style={{ fontWeight: 700, fontSize: '.88rem', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</p>
+              {p.title && <p style={{ fontSize: '.75rem', color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</p>}
+            </div>
           </div>
-          <div style={{ minWidth: 0 }}>
-            <p style={{ fontWeight: 700, fontSize: '.88rem', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</p>
-            {p.title && <p style={{ fontSize: '.75rem', color: 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.title}</p>}
+
+          <div style={{ display: 'flex', gap: '.6rem' }}>
+            <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.45rem .6rem', textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--serif)', fontSize: '1rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>{p.vouch_count}</p>
+              <p style={{ fontSize: '.6rem', color: 'var(--muted)', marginTop: '.1rem' }}>vouches</p>
+            </div>
+            <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.45rem .6rem', textAlign: 'center' }}>
+              <p style={{ fontFamily: 'var(--serif)', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{p.verification_rate}%</p>
+              <p style={{ fontSize: '.6rem', color: 'var(--muted)', marginTop: '.1rem' }}>verified</p>
+            </div>
           </div>
+
+          {(p.location || p.remote_preference) && (
+            <p style={{ fontSize: '.72rem', color: 'var(--muted)' }}>
+              📍 {[p.location, p.remote_preference].filter(Boolean).join(' · ')}
+            </p>
+          )}
+
+          {p.industries?.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.3rem' }}>
+              {p.industries.slice(0, 3).map((ind) => (
+                <span key={ind} style={{ background: 'var(--green-l)', color: 'var(--green2)', borderRadius: 100, padding: '.2rem .6rem', fontSize: '.62rem', fontWeight: 600 }}>{ind}</span>
+              ))}
+              {p.industries.length > 3 && (
+                <span style={{ fontSize: '.62rem', color: 'var(--muted)', alignSelf: 'center' }}>+{p.industries.length - 3}</span>
+              )}
+            </div>
+          )}
         </div>
 
-        <div style={{ display: 'flex', gap: '.75rem' }}>
-          <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.5rem .7rem', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>{p.vouch_count}</p>
-            <p style={{ fontSize: '.62rem', color: 'var(--muted)', marginTop: '.15rem' }}>vouches</p>
-          </div>
-          <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.5rem .7rem', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{p.trust_score > 0 ? `${p.trust_score}★` : '—'}</p>
-            <p style={{ fontSize: '.62rem', color: 'var(--muted)', marginTop: '.15rem' }}>trust score</p>
-          </div>
-          <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.5rem .7rem', textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{p.verification_rate}%</p>
-            <p style={{ fontSize: '.62rem', color: 'var(--muted)', marginTop: '.15rem' }}>verified</p>
-          </div>
+        {/* RIGHT: vouch summary */}
+        <div style={{ borderLeft: '1px solid var(--rule)', paddingLeft: '1.5rem', minWidth: 0 }}>
+          {summary ? (
+            <>
+              <p style={{ fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--green2)', marginBottom: '.5rem' }}>
+                {p.bio ? 'About' : 'From their vouches'}
+              </p>
+              <p style={{
+                fontFamily: p.top_quote && !p.bio ? 'var(--serif)' : 'var(--sans)',
+                fontStyle: p.top_quote && !p.bio ? 'italic' : 'normal',
+                fontSize: '.85rem',
+                lineHeight: 1.65,
+                color: 'var(--ink2)',
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical' as const,
+                overflow: 'hidden',
+              }}>
+                {p.top_quote && !p.bio ? `"${summary}"` : summary}
+              </p>
+            </>
+          ) : (
+            <p style={{ fontSize: '.82rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+              View profile to read their vouches →
+            </p>
+          )}
         </div>
-
-        {(p.location || p.remote_preference) && (
-          <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>
-            {[p.location, p.remote_preference].filter(Boolean).join(' · ')}
-          </p>
-        )}
-
-        {p.industries?.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.3rem' }}>
-            {p.industries.slice(0, 3).map((ind) => (
-              <span key={ind} style={{ background: 'var(--green-l)', color: 'var(--green2)', borderRadius: 100, padding: '.2rem .6rem', fontSize: '.65rem', fontWeight: 600 }}>{ind}</span>
-            ))}
-            {p.industries.length > 3 && (
-              <span style={{ fontSize: '.65rem', color: 'var(--muted)', alignSelf: 'center' }}>+{p.industries.length - 3}</span>
-            )}
-          </div>
-        )}
       </div>
     </Link>
   )
@@ -325,15 +358,36 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
           {REMOTE_OPTIONS.map((r) => <option key={r} value={r}>{r}</option>)}
         </select>
 
-        <select
-          value={sort}
-          onChange={(e) => { setSort(e.target.value); setAiActive(false) }}
-          className="field-input"
-          style={{ flex: '0 1 150px', fontSize: '.82rem' }}
-        >
-          <option value="vouches">Most vouches</option>
-          <option value="trust">Highest trust</option>
-        </select>
+      </div>
+
+      {/* ── Sort bar ── */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1rem', padding: '.6rem .9rem', background: 'var(--paper)', borderRadius: 8, border: '1px solid var(--rule)' }}>
+        <span style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', flexShrink: 0 }}>Sort by</span>
+        {[
+          { value: 'vouches', label: 'Most vouches' },
+          { value: 'verified', label: 'Most verified' },
+          { value: 'name', label: 'Name' },
+          { value: 'location', label: 'Location' },
+        ].map((opt) => (
+          <button
+            key={opt.value}
+            onClick={() => { setSort(opt.value); setAiActive(false) }}
+            style={{
+              padding: '.3rem .75rem',
+              borderRadius: 100,
+              border: `1.5px solid ${sort === opt.value ? 'var(--green)' : 'var(--rule)'}`,
+              background: sort === opt.value ? 'var(--green-l)' : 'var(--white)',
+              color: sort === opt.value ? 'var(--green)' : 'var(--muted)',
+              fontSize: '.75rem',
+              fontWeight: sort === opt.value ? 600 : 400,
+              cursor: 'pointer',
+              fontFamily: 'var(--sans)',
+              transition: 'all .15s',
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
       </div>
 
       {/* Results */}
@@ -348,10 +402,10 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
         </div>
       ) : (
         <>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '2rem' }}>
             {(loading || aiLoading)
               ? Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} style={{ background: 'var(--paper)', borderRadius: 12, padding: '1.4rem', height: 200, animation: 'pulse 1.5s ease-in-out infinite' }} />
+                  <div key={i} style={{ background: 'var(--paper)', borderRadius: 12, padding: '1.25rem 1.4rem', height: 110, animation: 'pulse 1.5s ease-in-out infinite' }} />
                 ))
               : profiles.map((p) => <ProfileCard key={p.id} p={p} />)
             }

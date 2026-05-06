@@ -59,7 +59,6 @@ export default function VouchForm({ profile }: { profile: Profile }) {
     giver_relationship: '',
     traits: [] as string[],
     quote: '',
-    star_rating: 0,
   })
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -77,7 +76,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
   function canAdvance() {
     if (step === 1) return form.giver_name.trim() && form.giver_email.trim() && form.giver_relationship
     if (step === 2) return form.traits.length >= 1
-    if (step === 3) return form.quote.trim().length >= 30 && form.star_rating > 0
+    if (step === 3) return form.quote.trim().length >= 30
     return false
   }
 
@@ -414,35 +413,6 @@ export default function VouchForm({ profile }: { profile: Profile }) {
                 </div>
               </div>
 
-              <div>
-                <label className="field-label">Overall rating *</label>
-                <div style={{ display: 'flex', gap: '.5rem', marginTop: '.5rem' }}>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <button
-                      key={n}
-                      onClick={() => setForm((f) => ({ ...f, star_rating: n }))}
-                      style={{
-                        fontSize: '1.8rem',
-                        background: 'none',
-                        border: 'none',
-                        cursor: 'pointer',
-                        color: n <= form.star_rating ? 'var(--amber)' : 'var(--faint)',
-                        padding: '0 2px',
-                        lineHeight: 1,
-                        transition: 'color .1s, transform .1s',
-                        transform: n <= form.star_rating ? 'scale(1.1)' : 'scale(1)',
-                      }}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-                {form.star_rating > 0 && (
-                  <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '.4rem' }}>
-                    {['', 'Poor', 'Below average', 'Average', 'Good', 'Excellent'][form.star_rating]}
-                  </p>
-                )}
-              </div>
             </div>
           </div>
         )}
@@ -458,21 +428,14 @@ export default function VouchForm({ profile }: { profile: Profile }) {
             </p>
 
             <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 12, padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <p style={{ fontSize: '.9rem', fontWeight: 700, color: 'var(--ink)' }}>{form.giver_name}</p>
-                  <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: 2 }}>
-                    {[form.giver_title, form.giver_company].filter(Boolean).join(' · ')}
-                  </p>
-                  <p style={{ fontSize: '.72rem', color: 'var(--green2)', marginTop: 4, fontWeight: 600 }}>
-                    {form.giver_relationship}
-                  </p>
-                </div>
-                <div style={{ display: 'flex', gap: 2, color: 'var(--amber)', fontSize: '1.1rem' }}>
-                  {[1,2,3,4,5].map((n) => (
-                    <span key={n} style={{ color: n <= form.star_rating ? 'var(--amber)' : 'var(--faint)' }}>★</span>
-                  ))}
-                </div>
+              <div>
+                <p style={{ fontSize: '.9rem', fontWeight: 700, color: 'var(--ink)' }}>{form.giver_name}</p>
+                <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: 2 }}>
+                  {[form.giver_title, form.giver_company].filter(Boolean).join(' · ')}
+                </p>
+                <p style={{ fontSize: '.72rem', color: 'var(--green2)', marginTop: 4, fontWeight: 600 }}>
+                  {form.giver_relationship}
+                </p>
               </div>
 
               <blockquote style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.93rem', lineHeight: 1.7, color: 'var(--ink2)' }}>

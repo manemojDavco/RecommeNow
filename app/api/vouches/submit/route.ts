@@ -3,6 +3,7 @@ import { createServiceClient } from '@/lib/supabase-server'
 import { getVouchRateLimit } from '@/lib/rate-limit'
 import { sendVouchVerificationEmail, sendNewVouchNotification } from '@/lib/email'
 import { nanoid } from 'nanoid'
+import { calculateVouchScore } from '@/lib/vouch-score'
 
 export async function POST(req: NextRequest) {
   // Rate limit by IP
@@ -25,19 +26,24 @@ export async function POST(req: NextRequest) {
     giver_relationship,
     traits,
     quote,
-    star_rating,
   } = body
 
   // Basic validation
-  if (!profile_id || !giver_name || !giver_email || !quote || !star_rating) {
+  if (!profile_id || !giver_name || !giver_email || !quote) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
   }
   if (quote.trim().length < 30) {
     return NextResponse.json({ error: 'Quote must be at least 30 characters.' }, { status: 400 })
   }
-  if (star_rating < 1 || star_rating > 5) {
-    return NextResponse.json({ error: 'Rating must be between 1 and 5.' }, { status: 400 })
-  }
+
+  // Calculate credibility score from objective factors (voucher cannot set this)
+  const { score: star_rating } = calculateVouchScore({
+    relationship: giver_relationship ?? null,
+    quoteLength: quote.trim().length,
+    traitCount: (traits ?? []).length,
+    email: giver_email.trim().toLowerCase(),
+    verified: false,
+  })
 
   const db = createServiceClient()
 

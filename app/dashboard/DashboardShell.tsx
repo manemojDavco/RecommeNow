@@ -81,15 +81,16 @@ export default function DashboardShell({
         <Link
           href="/"
           style={{
-            padding: '1.4rem 1.4rem 1rem',
+            padding: '.9rem 1.4rem .7rem',
             fontFamily: 'var(--serif)',
             fontStyle: 'italic',
-            fontSize: '1rem',
+            fontSize: '1.15rem',
             color: 'rgba(255,255,255,.5)',
             borderBottom: '1px solid rgba(255,255,255,.07)',
             flexShrink: 0,
             textDecoration: 'none',
             display: 'block',
+            textAlign: 'center',
           }}
         >
           Recomme<span style={{ color: 'rgba(255,255,255,.9)' }}>Now</span>
@@ -98,15 +99,19 @@ export default function DashboardShell({
         {/* User info */}
         <div
           style={{
-            padding: '1.2rem',
+            padding: '.75rem 1rem',
             borderBottom: '1px solid rgba(255,255,255,.07)',
             flexShrink: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
           }}
         >
           <div
             style={{
-              width: 38,
-              height: 38,
+              width: 50,
+              height: 50,
               borderRadius: '50%',
               background: 'rgba(255,255,255,.12)',
               border: '1.5px solid rgba(255,255,255,.2)',
@@ -116,9 +121,9 @@ export default function DashboardShell({
               fontFamily: 'var(--serif)',
               fontStyle: 'italic',
               fontWeight: 700,
-              fontSize: '.85rem',
+              fontSize: '1rem',
               color: 'rgba(255,255,255,.85)',
-              marginBottom: '.6rem',
+              marginBottom: '.4rem',
               overflow: 'hidden',
               flexShrink: 0,
             }}
@@ -129,7 +134,7 @@ export default function DashboardShell({
           </div>
           <div
             style={{
-              fontSize: '.82rem',
+              fontSize: '.95rem',
               fontWeight: 700,
               color: 'rgba(255,255,255,.85)',
               marginBottom: '.1rem',
@@ -153,7 +158,7 @@ export default function DashboardShell({
                   border: '1px solid rgba(255,255,255,.25)',
                   borderRadius: 100,
                   padding: '.18rem .6rem',
-                  fontSize: '.6rem',
+                  fontSize: '.72rem',
                   fontWeight: 700,
                   color: '#fff',
                   cursor: portalLoading ? 'not-allowed' : 'pointer',
@@ -163,7 +168,7 @@ export default function DashboardShell({
                 {portalLoading ? '…' : isRecruiter && isPro ? '🔍 Recruiter + ★ Pro · Manage' : isRecruiter ? '🔍 Recruiter · Manage' : '★ Pro · Manage'}
               </button>
               {portalError && (
-                <p style={{ fontSize: '.6rem', color: 'rgba(255,100,100,.9)', marginTop: '.25rem', lineHeight: 1.3 }}>{portalError}</p>
+                <p style={{ fontSize: '.72rem', color: 'rgba(255,100,100,.9)', marginTop: '.25rem', lineHeight: 1.3 }}>{portalError}</p>
               )}
             </div>
           ) : (
@@ -177,7 +182,7 @@ export default function DashboardShell({
                 border: '1px solid rgba(255,255,255,.12)',
                 borderRadius: 100,
                 padding: '.18rem .6rem',
-                fontSize: '.6rem',
+                fontSize: '.72rem',
                 fontWeight: 600,
                 color: 'rgba(255,255,255,.5)',
                 textDecoration: 'none',
@@ -189,15 +194,16 @@ export default function DashboardShell({
         </div>
 
         {/* Nav items */}
-        <nav style={{ flex: 1, padding: '.8rem 0', overflowY: 'auto' }}>
+        <nav style={{ flex: 1, padding: '.4rem 0', overflowY: 'auto' }}>
           <p
             style={{
-              fontSize: '.55rem',
+              fontSize: '.65rem',
               fontWeight: 700,
               letterSpacing: '.18em',
               textTransform: 'uppercase',
               color: 'rgba(255,255,255,.22)',
-              padding: '.8rem 1.2rem .3rem',
+              padding: '.5rem 1.2rem .2rem',
+              textAlign: 'center',
             }}
           >
             Manage
@@ -211,18 +217,20 @@ export default function DashboardShell({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
+                  justifyContent: 'center',
                   gap: '.65rem',
-                  padding: '.6rem 1.2rem',
-                  fontSize: '.78rem',
+                  padding: '.45rem 1rem',
+                  fontSize: '.9rem',
                   fontWeight: active ? 600 : 500,
                   color: active ? '#fff' : 'rgba(255,255,255,.5)',
                   textDecoration: 'none',
                   background: active ? 'rgba(255,255,255,.1)' : 'transparent',
-                  borderLeft: active ? '2px solid rgba(255,255,255,.4)' : '2px solid transparent',
+                  borderRadius: 7,
+                  margin: '0 .5rem',
                   transition: 'all .15s',
                 }}
               >
-                <span style={{ fontSize: '.85rem', opacity: active ? 1 : 0.6 }}>{item.icon}</span>
+                <span style={{ fontSize: '1rem', opacity: active ? 1 : 0.6 }}>{item.icon}</span>
                 {item.label}
               </Link>
             )
@@ -233,13 +241,14 @@ export default function DashboardShell({
             <>
               <p
                 style={{
-                  fontSize: '.55rem',
+                  fontSize: '.65rem',
                   fontWeight: 700,
                   letterSpacing: '.18em',
                   textTransform: 'uppercase',
                   color: 'rgba(255,255,255,.22)',
-                  padding: '.8rem 1.2rem .3rem',
-                  marginTop: '.4rem',
+                  padding: '.5rem 1.2rem .2rem',
+                  marginTop: '.2rem',
+                  textAlign: 'center',
                 }}
               >
                 Recruit
@@ -253,14 +262,16 @@ export default function DashboardShell({
                     style={{
                       display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       gap: '.65rem',
-                      padding: '.6rem 1.2rem',
+                      padding: '.6rem 1rem',
                       fontSize: '.78rem',
                       fontWeight: active ? 600 : 500,
                       color: active ? '#fff' : 'rgba(255,255,255,.5)',
                       textDecoration: 'none',
                       background: active ? 'rgba(255,255,255,.1)' : 'transparent',
-                      borderLeft: active ? '2px solid rgba(255,255,255,.4)' : '2px solid transparent',
+                      borderRadius: 7,
+                      margin: '0 .5rem',
                       transition: 'all .15s',
                     }}
                   >
@@ -275,7 +286,7 @@ export default function DashboardShell({
 
         {/* Upgrade CTA — only for free users who are not recruiters */}
         {!isPro && !isRecruiter && (
-          <div style={{ padding: '.8rem 1rem', flexShrink: 0 }}>
+          <div style={{ padding: '.5rem .8rem', flexShrink: 0 }}>
             <Link
               href="/pricing"
               style={{
@@ -283,13 +294,14 @@ export default function DashboardShell({
                 background: 'rgba(255,255,255,.1)',
                 border: '1px solid rgba(255,255,255,.15)',
                 borderRadius: 10,
-                padding: '.8rem',
+                padding: '.6rem',
                 textDecoration: 'none',
+                textAlign: 'center',
               }}
             >
-              <p style={{ fontSize: '.68rem', fontWeight: 700, color: '#fff', marginBottom: '.2rem' }}>Upgrade to Pro</p>
-              <p style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.4 }}>Custom slug + unlimited vouches</p>
-              <p style={{ fontSize: '.65rem', fontWeight: 600, color: 'rgba(255,255,255,.7)', marginTop: '.4rem' }}>From $6.99/mo →</p>
+              <p style={{ fontSize: '.82rem', fontWeight: 700, color: '#fff', marginBottom: '.2rem' }}>Upgrade to Pro</p>
+              <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.5 }}>Custom slug<br />Unlimited vouches</p>
+              <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'rgba(255,255,255,.7)', marginTop: '.4rem' }}>From $6.99/mo →</p>
             </Link>
           </div>
         )}
@@ -297,11 +309,12 @@ export default function DashboardShell({
         {/* Bottom: view profile + sign out */}
         <div
           style={{
-            padding: '1rem 1.2rem',
+            padding: '.5rem 1rem',
             borderTop: '1px solid rgba(255,255,255,.07)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '.5rem',
+            alignItems: 'center',
+            gap: '.2rem',
             flexShrink: 0,
           }}
         >
@@ -311,12 +324,13 @@ export default function DashboardShell({
             style={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '.5rem',
-              fontSize: '.75rem',
+              fontSize: '.88rem',
               fontWeight: 500,
               color: 'rgba(255,255,255,.5)',
               textDecoration: 'none',
-              padding: '.4rem .6rem',
+              padding: '.25rem .5rem',
               borderRadius: 6,
               transition: 'color .15s',
             }}
@@ -328,8 +342,9 @@ export default function DashboardShell({
             style={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: '.5rem',
-              fontSize: '.75rem',
+              fontSize: '.88rem',
               fontWeight: 500,
               color: 'rgba(255,255,255,.35)',
               background: 'none',
@@ -338,7 +353,6 @@ export default function DashboardShell({
               padding: '.4rem .6rem',
               borderRadius: 6,
               fontFamily: 'var(--sans)',
-              textAlign: 'left',
               transition: 'color .15s',
             }}
           >

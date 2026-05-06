@@ -13,6 +13,7 @@ export type Profile = {
   industries: string[]
   stages: string[]
   phone: string | null
+  linkedin_url: string | null
   plan: 'free' | 'pro'
   stripe_customer_id: string | null
   stripe_subscription_id: string | null
@@ -40,6 +41,7 @@ export type Vouch = {
   verification_token: string | null
   status: 'pending' | 'approved' | 'hidden' | 'flagged'
   flag_count: number
+  display_order: number | null
   created_at: string
 }
 

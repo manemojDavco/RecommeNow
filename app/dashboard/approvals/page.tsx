@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import type { Vouch } from '@/types'
-import Stars from '@/components/Stars'
 
 export default function ApprovalsPage() {
   const [vouches, setVouches] = useState<Vouch[]>([])
@@ -83,7 +82,6 @@ export default function ApprovalsPage() {
                   </p>
                   <p style={{ fontSize: '.72rem', color: 'var(--muted)', marginTop: '.2rem' }}>{v.giver_email}</p>
                 </div>
-                <Stars rating={v.star_rating} />
               </div>
 
               <blockquote

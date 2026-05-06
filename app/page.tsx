@@ -477,24 +477,17 @@ export default function LandingPage() {
               padding: '2.5rem',
             }}
           >
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <div
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: '50%',
-                  border: '3px solid var(--green)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  margin: '0 auto 1rem',
-                }}
-              >
-                <span style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>4.9</span>
-                <span style={{ fontSize: '.6rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.1em' }}>/ 5</span>
-              </div>
-              <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Average trust score · 14 approved vouches</p>
+            <div style={{ display: 'flex', gap: '.75rem', marginBottom: '2rem' }}>
+              {[
+                { value: '14', label: 'approved vouches' },
+                { value: '93%', label: 'email-verified' },
+                { value: '5', label: 'relationship types' },
+              ].map((stat) => (
+                <div key={stat.label} style={{ flex: 1, background: 'var(--paper)', borderRadius: 10, padding: '.9rem .5rem', textAlign: 'center' }}>
+                  <p style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>{stat.value}</p>
+                  <p style={{ fontSize: '.62rem', color: 'var(--muted)', marginTop: '.25rem' }}>{stat.label}</p>
+                </div>
+              ))}
             </div>
 
             {[
@@ -572,18 +565,52 @@ export default function LandingPage() {
         {/* ─── FOOTER ─── */}
         <footer
           style={{
-            padding: '3rem 2.5rem',
+            padding: '2.5rem 2.5rem',
             maxWidth: 1100,
             margin: '0 auto',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             borderTop: '1px solid var(--rule)',
+            flexWrap: 'wrap',
+            gap: '1rem',
           }}
         >
-          <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', color: 'var(--muted)' }}>
-            Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
-          </span>
+          {/* Brand + social icons together on the left */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
+            <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', color: 'var(--muted)' }}>
+              Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
+            </span>
+            <style>{`
+              .footer-social-ig { color: var(--muted); display: flex; align-items: center; transition: color .15s; }
+              .footer-social-ig:hover { color: #e1306c; }
+              .footer-social-li { color: var(--muted); display: flex; align-items: center; transition: color .15s; }
+              .footer-social-li:hover { color: #0a66c2; }
+            `}</style>
+            <a
+              href="https://www.instagram.com/recommenow"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="footer-social-ig"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+            <a
+              href="https://www.linkedin.com/company/recommenow"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="footer-social-li"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
+          </div>
+
           <p style={{ fontSize: '.72rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '.6rem' }}>
             © {new Date().getFullYear()} RecommeNow
             <span style={{ opacity: .4 }}>·</span>
