@@ -36,18 +36,22 @@ export async function GET() {
     giver_relationship: string | null
     verified: boolean
     created_at: string
-    profiles: { name: string; slug: string }
-  }) => ({
-    id: v.id,
-    profile_id: v.profile_id,
-    profile_name: v.profiles.name,
-    profile_slug: v.profiles.slug,
-    quote: v.quote,
-    traits: v.traits,
-    giver_relationship: v.giver_relationship,
-    verified: v.verified,
-    created_at: v.created_at,
-  }))
+    profiles: { name: string; slug: string } | { name: string; slug: string }[]
+  }) => {
+    // Supabase may return the joined relation as an array or a single object
+    const profile = Array.isArray(v.profiles) ? v.profiles[0] : v.profiles
+    return {
+      id: v.id,
+      profile_id: v.profile_id,
+      profile_name: profile?.name ?? '',
+      profile_slug: profile?.slug ?? '',
+      quote: v.quote,
+      traits: v.traits,
+      giver_relationship: v.giver_relationship,
+      verified: v.verified,
+      created_at: v.created_at,
+    }
+  })
 
   return NextResponse.json({ vouches: formatted })
 }
