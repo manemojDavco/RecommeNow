@@ -15,6 +15,7 @@ export type Profile = {
   phone: string | null
   linkedin_url: string | null
   plan: 'free' | 'pro'
+  pro_trial_until: string | null
   stripe_customer_id: string | null
   stripe_subscription_id: string | null
   referral_code: string | null

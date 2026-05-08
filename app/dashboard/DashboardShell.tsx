@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useClerk } from '@clerk/nextjs'
 import { useState } from 'react'
 import type { Profile } from '@/types'
+import { isProTrial, proTrialDaysLeft } from '@/lib/plans'
 
 const NAV_ITEMS = [
   { label: 'Overview', href: '/dashboard', icon: '⊞' },
@@ -50,6 +51,8 @@ export default function DashboardShell({
   }
 
   const isPro = profile.plan === 'pro'
+  const isTrial = isProTrial(profile)
+  const trialDaysLeft = proTrialDaysLeft(profile.pro_trial_until)
   const isRecruiter = profile.recruiter_active
 
   const initials = profile.name
@@ -146,27 +149,52 @@ export default function DashboardShell({
             {profile.name}
           </div>
           {(isPro || isRecruiter) ? (
-            <div>
-              <button
-                onClick={openPortal}
-                disabled={portalLoading}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '.3rem',
-                  background: 'rgba(255,255,255,.15)',
-                  border: '1px solid rgba(255,255,255,.25)',
-                  borderRadius: 100,
-                  padding: '.18rem .6rem',
-                  fontSize: '.72rem',
-                  fontWeight: 700,
-                  color: '#fff',
-                  cursor: portalLoading ? 'not-allowed' : 'pointer',
-                  fontFamily: 'var(--sans)',
-                }}
-              >
-                {portalLoading ? '…' : isRecruiter && isPro ? '🔍 Recruiter + ★ Pro · Manage' : isRecruiter ? '🔍 Recruiter · Manage' : '★ Pro · Manage'}
-              </button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.25rem' }}>
+              {/* Trial users: show days-remaining badge + upgrade CTA */}
+              {isTrial && (
+                <Link
+                  href="/pricing"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '.3rem',
+                    background: 'rgba(255,215,0,.15)',
+                    border: '1px solid rgba(255,215,0,.35)',
+                    borderRadius: 100,
+                    padding: '.18rem .6rem',
+                    fontSize: '.68rem',
+                    fontWeight: 700,
+                    color: '#ffd700',
+                    textDecoration: 'none',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  ✨ PRO Trial · {trialDaysLeft}d left
+                </Link>
+              )}
+              {/* Paid pro/recruiter: show manage button */}
+              {!isTrial && (
+                <button
+                  onClick={openPortal}
+                  disabled={portalLoading}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '.3rem',
+                    background: 'rgba(255,255,255,.15)',
+                    border: '1px solid rgba(255,255,255,.25)',
+                    borderRadius: 100,
+                    padding: '.18rem .6rem',
+                    fontSize: '.72rem',
+                    fontWeight: 700,
+                    color: '#fff',
+                    cursor: portalLoading ? 'not-allowed' : 'pointer',
+                    fontFamily: 'var(--sans)',
+                  }}
+                >
+                  {portalLoading ? '…' : isRecruiter && isPro ? '🔍 Recruiter + ★ Pro · Manage' : isRecruiter ? '🔍 Recruiter · Manage' : '★ Pro · Manage'}
+                </button>
+              )}
               {portalError && (
                 <p style={{ fontSize: '.72rem', color: 'rgba(255,100,100,.9)', marginTop: '.25rem', lineHeight: 1.3 }}>{portalError}</p>
               )}
@@ -283,6 +311,28 @@ export default function DashboardShell({
             </>
           )}
         </nav>
+
+        {/* Trial CTA — for first-100 users on free PRO trial */}
+        {isTrial && (
+          <div style={{ padding: '.5rem .8rem', flexShrink: 0 }}>
+            <Link
+              href="/pricing"
+              style={{
+                display: 'block',
+                background: 'rgba(255,215,0,.1)',
+                border: '1px solid rgba(255,215,0,.25)',
+                borderRadius: 10,
+                padding: '.6rem',
+                textDecoration: 'none',
+                textAlign: 'center',
+              }}
+            >
+              <p style={{ fontSize: '.82rem', fontWeight: 700, color: '#ffd700', marginBottom: '.2rem' }}>✨ {trialDaysLeft} days left in trial</p>
+              <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.5 }}>Lock in PRO before it ends</p>
+              <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'rgba(255,215,0,.7)', marginTop: '.4rem' }}>Upgrade now →</p>
+            </Link>
+          </div>
+        )}
 
         {/* Upgrade CTA — only for free users who are not recruiters */}
         {!isPro && !isRecruiter && (

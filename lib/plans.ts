@@ -33,6 +33,28 @@ export const PRO_PRICES_YEARLY: Record<string, { amount: number; display: string
 
 export const DEFAULT_CURRENCY = 'usd'
 
+// Returns true if the profile has an active PRO trial (plan = 'pro' granted for
+// free, pro_trial_until is set and in the future, and no paid Stripe subscription).
+export function isProTrial(profile: {
+  plan: string
+  pro_trial_until?: string | null
+  stripe_subscription_id?: string | null
+}): boolean {
+  return (
+    profile.plan === 'pro' &&
+    !!profile.pro_trial_until &&
+    new Date(profile.pro_trial_until) > new Date() &&
+    !profile.stripe_subscription_id
+  )
+}
+
+// Days remaining in PRO trial (0 if not a trial user)
+export function proTrialDaysLeft(proTrialUntil: string | null | undefined): number {
+  if (!proTrialUntil) return 0
+  const ms = new Date(proTrialUntil).getTime() - Date.now()
+  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)))
+}
+
 // Recruiter plan prices — monthly
 export const RECRUITER_PRICES: Record<string, { amount: number; display: string }> = {
   usd: { amount: 1999, display: '$19.99 USD' },

@@ -22,6 +22,8 @@ export default function ComingSoonPage() {
   const [email, setEmail]   = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [message, setMessage] = useState('')
+  const [earlyAccess, setEarlyAccess] = useState(false)
+  const [position, setPosition] = useState<number | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -31,6 +33,8 @@ export default function ComingSoonPage() {
       const res  = await fetch('/api/waitlist', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
       const data = await res.json()
       if (!res.ok) { setStatus('error'); setMessage(data.error || 'Something went wrong'); return }
+      setEarlyAccess(!!data.earlyAccess)
+      setPosition(data.position ?? null)
       setStatus('done')
       setMessage(data.alreadyRegistered ? "You're already on the list — we'll be in touch!" : "You're on the list! We'll reach out when we launch.")
     } catch {
@@ -79,9 +83,22 @@ export default function ComingSoonPage() {
 
         {/* Email form */}
         {status === 'done' ? (
-          <div style={{ background: 'rgba(82,183,136,.12)', border: '1px solid rgba(82,183,136,.3)', borderRadius: '14px', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="11" fill="#52B788"/><polyline points="6,11 9.5,14.5 16,7.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 500, color: '#95D5B2' }}>{message}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', width: '100%', maxWidth: '480px' }}>
+            <div style={{ background: 'rgba(82,183,136,.12)', border: '1px solid rgba(82,183,136,.3)', borderRadius: '14px', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="11" fill="#52B788"/><polyline points="6,11 9.5,14.5 16,7.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 500, color: '#95D5B2' }}>{message}</span>
+            </div>
+            {earlyAccess && (
+              <div style={{ background: 'rgba(255,215,0,.1)', border: '1px solid rgba(255,215,0,.3)', borderRadius: '14px', padding: '16px 24px', textAlign: 'center', width: '100%' }}>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '1rem', fontWeight: 700, color: '#ffd700', marginBottom: '4px' }}>
+                  🎁 You&apos;re in the first 100!
+                </p>
+                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.85rem', color: 'rgba(255,215,0,.75)', lineHeight: 1.5 }}>
+                  When we launch, your account automatically gets <strong>1 month of PRO free</strong>.
+                  {position && ` You're #${position} on the list.`}
+                </p>
+              </div>
+            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>

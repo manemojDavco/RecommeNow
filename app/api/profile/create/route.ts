@@ -81,5 +81,45 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to create profile.' }, { status: 500 })
   }
 
+  // ── First-100 PRO trial ───────────────────────────────────────────────────
+  // If the new user's email was among the first 100 on the waitlist, grant 1
+  // month of PRO automatically. We fetch their Clerk email, look it up in the
+  // waitlist table, and call grant_pro_trial() when position ≤ 100.
+  try {
+    const clerkRes = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
+      headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` },
+    })
+    if (clerkRes.ok) {
+      const clerkUser = await clerkRes.json()
+      const email: string | undefined = clerkUser.email_addresses?.find(
+        (e: { id: string }) => e.id === clerkUser.primary_email_address_id
+      )?.email_address
+
+      if (email) {
+        const { data: waitlistEntry } = await db
+          .from('waitlist')
+          .select('position')
+          .eq('email', email.toLowerCase())
+          .single()
+
+        if (waitlistEntry?.position && waitlistEntry.position <= 100) {
+          await db.rpc('grant_pro_trial', {
+            p_profile_id: profile!.id,
+            p_days: 30,
+          })
+          // Return the updated profile so dashboard immediately shows PRO
+          const { data: updatedProfile } = await db
+            .from('profiles')
+            .select()
+            .eq('id', profile!.id)
+            .single()
+          if (updatedProfile) {
+            return NextResponse.json({ profile: updatedProfile, proTrialGranted: true })
+          }
+        }
+      }
+    }
+  } catch { /* non-fatal — profile is still created */ }
+
   return NextResponse.json({ profile })
 }

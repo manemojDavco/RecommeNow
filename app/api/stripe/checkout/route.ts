@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { getStripe, PRO_PRICES, RECRUITER_PRICES, PRO_PRICES_YEARLY, RECRUITER_PRICES_YEARLY, DEFAULT_CURRENCY } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase-server'
+import { isProTrial } from '@/lib/plans'
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
@@ -21,12 +22,13 @@ export async function POST(req: NextRequest) {
   const db = createServiceClient()
   const { data: profile } = await db
     .from('profiles')
-    .select('id, name, slug, stripe_customer_id, plan, recruiter_active')
+    .select('id, name, slug, stripe_customer_id, plan, pro_trial_until, stripe_subscription_id, recruiter_active')
     .eq('user_id', userId)
     .single()
 
   if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  if (planType === 'pro' && profile.plan === 'pro') {
+  // Allow trial users (plan='pro' but no paid subscription) to upgrade to paid
+  if (planType === 'pro' && profile.plan === 'pro' && !isProTrial(profile)) {
     return NextResponse.json({ error: 'Already on Pro plan' }, { status: 400 })
   }
   if (planType === 'recruiter' && profile.recruiter_active) {

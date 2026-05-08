@@ -13,15 +13,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Valid email required' }, { status: 400 })
   }
 
-  const { error } = await db.from('waitlist').insert({ email: email.toLowerCase().trim() })
+  const { data: inserted, error } = await db
+    .from('waitlist')
+    .insert({ email: email.toLowerCase().trim() })
+    .select('position')
+    .single()
 
   if (error) {
     if (error.code === '23505') {
-      // Already on the list — treat as success so we don't leak info
-      return NextResponse.json({ ok: true, alreadyRegistered: true })
+      // Already on the list — look up their position
+      const { data: existing } = await db
+        .from('waitlist')
+        .select('position')
+        .eq('email', email.toLowerCase().trim())
+        .single()
+      return NextResponse.json({
+        ok: true,
+        alreadyRegistered: true,
+        position: existing?.position ?? null,
+        earlyAccess: (existing?.position ?? 999) <= 100,
+      })
     }
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 })
   }
 
-  return NextResponse.json({ ok: true })
+  const position = inserted?.position ?? null
+  return NextResponse.json({
+    ok: true,
+    position,
+    earlyAccess: position !== null && position <= 100,
+  })
 }
