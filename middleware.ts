@@ -9,17 +9,12 @@ const isProtectedRoute = createRouteMatcher([
   '/directory(.*)',
 ])
 
-// In coming-soon mode only these routes stay accessible
+// In coming-soon mode ONLY these routes stay accessible.
+// Everything else → /coming-soon redirect.
 const isAlwaysAllowed = createRouteMatcher([
   '/coming-soon',
-  '/api(.*)',
-  '/terms',
-  '/privacy',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/dashboard(.*)',
-  '/onboarding(.*)',
-  '/admin(.*)',
+  '/api(.*)',    // webhooks, waitlist, cron — must never be blocked
+  '/admin(.*)', // internal admin panel
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
