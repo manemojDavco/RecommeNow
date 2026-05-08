@@ -63,6 +63,7 @@ AS $$
     AND plan = 'free';           -- only grant if not already paid pro
 $$;
 
+REVOKE ALL     ON FUNCTION public.grant_pro_trial(uuid, int) FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.grant_pro_trial(uuid, int) FROM anon, authenticated;
 
 -- ─── 4. Cron helper: expire_pro_trials() ─────────────────────────────────────
@@ -85,4 +86,5 @@ AS $$
   SELECT COUNT(*)::int FROM expired;
 $$;
 
+REVOKE ALL     ON FUNCTION public.expire_pro_trials() FROM PUBLIC;
 REVOKE EXECUTE ON FUNCTION public.expire_pro_trials() FROM anon, authenticated;
