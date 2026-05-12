@@ -5,11 +5,22 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
   const { slug } = await params
   const db = createServiceClient()
 
-  const { data: profile } = await db
+  // Try exact match first
+  let { data: profile } = await db
     .from('profiles')
     .select('*')
     .eq('slug', slug)
     .single()
+
+  // Fallback: prefix match (handles slugs with random suffixes, e.g. "nick-davchevski" → "nick-davchevski-a3bx")
+  if (!profile) {
+    const { data: rows } = await db
+      .from('profiles')
+      .select('*')
+      .ilike('slug', `${slug}-%`)
+      .limit(1)
+    profile = rows?.[0] ?? null
+  }
 
   if (!profile) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 

@@ -7,6 +7,8 @@ import type { Profile, Vouch } from '@/types'
 import VouchCard from '@/components/VouchCard'
 import FlagVouchButton from './FlagVouchButton'
 import RecruiterContactButton from '@/components/RecruiterContactButton'
+import { Logo, LocationPin } from '@/components/Logo'
+import QrModal from './QrModal'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -76,7 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!data) return { title: 'Profile not found' }
 
   const { profile, vouches } = data
-  const title = `${profile.name} — ${vouches.length} verified vouches · RecommeNow`
+  const title = `${profile.name} | ${vouches.length} verified vouches · RecommeNow`
   const description = `${vouches.length} vouches from managers, clients and colleagues · RecommeNow`
 
   return {
@@ -166,19 +168,15 @@ export default async function PublicProfilePage({ params }: Props) {
           background: 'rgba(250,249,247,.92)',
           backdropFilter: 'blur(12px)',
           borderBottom: '1px solid var(--rule)',
-          padding: '1rem 2rem',
+          padding: '1rem 2.5rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}
       >
-        <Link
-          href="/"
-          style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.92rem', color: 'var(--muted)', textDecoration: 'none' }}
-        >
-          Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
-        </Link>
+        <Logo variant="dark" href="/" size={30} />
         <div style={{ display: 'flex', gap: '.6rem', alignItems: 'center' }}>
+          <QrModal slug={profile.slug} name={profile.name.split(' ')[0]} />
           <Link
             href={`/vouch/${profile.slug}`}
             style={{
@@ -239,21 +237,23 @@ export default async function PublicProfilePage({ params }: Props) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontFamily: 'var(--serif)',
-                  fontStyle: 'italic',
+                  fontFamily: 'var(--sans)',
                   fontSize: '1.5rem',
                   fontWeight: 700,
                   color: '#fff',
                   flexShrink: 0,
+                  overflow: 'hidden',
                 }}
               >
-                {initials}
+                {profile.photo_url
+                  ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : initials}
               </div>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', flexWrap: 'wrap', marginBottom: '.4rem' }}>
                   <h1
                     style={{
-                      fontFamily: 'var(--serif)',
+                      fontFamily: 'var(--sans)',
                       fontSize: '1.7rem',
                       fontWeight: 700,
                       letterSpacing: '-.02em',
@@ -270,6 +270,17 @@ export default async function PublicProfilePage({ params }: Props) {
                       Verified
                     </span>
                   )}
+                  {((profile as any).recruiter_active || (profile as any).plan === 'pro') && (
+                    <span style={{
+                      fontSize: '.6rem', fontWeight: 800, letterSpacing: '.08em',
+                      padding: '.2rem .55rem', borderRadius: 100,
+                      background: (profile as any).recruiter_active ? '#ede9fe' : '#f0fdf4',
+                      color: (profile as any).recruiter_active ? '#6d28d9' : 'var(--green)',
+                      border: `1px solid ${(profile as any).recruiter_active ? '#ddd6fe' : '#d1fae5'}`,
+                    }}>
+                      {(profile as any).recruiter_active ? 'RECRUITER' : 'PRO'}
+                    </span>
+                  )}
                 </div>
                 {profile.title && (
                   <p style={{ fontSize: '.9rem', color: 'var(--muted)', fontWeight: 400, marginBottom: '.4rem' }}>
@@ -279,7 +290,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 )}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
                   {profile.location && (
-                    <span style={{ fontSize: '.75rem', color: 'var(--muted)' }}>📍 {profile.location}</span>
+                    <span style={{ fontSize: '.75rem', color: 'var(--muted)', display: 'inline-flex', alignItems: 'center' }}><LocationPin />{profile.location}</span>
                   )}
                   {profile.remote_preference && (
                     <span style={{ fontSize: '.75rem', color: 'var(--muted)' }}>· {profile.remote_preference}</span>
@@ -343,7 +354,7 @@ export default async function PublicProfilePage({ params }: Props) {
           {/* Vouches header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
             <div>
-              <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)' }}>
+              <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)' }}>
                 {vouches.length} verified vouch{vouches.length !== 1 ? 'es' : ''}
               </h2>
               {vouches.length > 0 && (
@@ -388,7 +399,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 textAlign: 'center',
               }}
             >
-              <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1rem', color: 'var(--muted)', marginBottom: '1rem' }}>
+              <p style={{ fontFamily: 'var(--sans)', fontSize: '1rem', color: 'var(--muted)', marginBottom: '1rem' }}>
                 No approved vouches yet
               </p>
               <Link
@@ -434,7 +445,7 @@ export default async function PublicProfilePage({ params }: Props) {
             </p>
 
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.4rem', marginBottom: '1.2rem' }}>
-              <span style={{ fontFamily: 'var(--serif)', fontSize: '3rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+              <span style={{ fontFamily: 'var(--sans)', fontSize: '3rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
                 {vouches.length}
               </span>
               <span style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.5)', marginBottom: '.5rem' }}>
@@ -520,11 +531,11 @@ export default async function PublicProfilePage({ params }: Props) {
 
           {/* CTA */}
           <div className="card-paper" style={{ textAlign: 'center' }}>
-            <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', color: 'var(--ink)', marginBottom: '.5rem' }}>
+            <p style={{ fontFamily: 'var(--sans)', fontSize: '.9rem', color: 'var(--ink)', marginBottom: '.5rem' }}>
               Want a profile like this?
             </p>
             <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '1rem', fontWeight: 300 }}>
-              Free to start — build yours in minutes.
+              Free to start. Build yours in minutes.
             </p>
             <Link
               href="/sign-up"

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Nav from '@/components/Nav'
+import { Logo } from '@/components/Logo'
 
 export default function LandingPage() {
   return (
@@ -33,25 +34,24 @@ export default function LandingPage() {
               marginBottom: '2.5rem',
             }}
           >
-            <span style={{ width: 28, height: 1, background: 'var(--rule)', display: 'inline-block' }} />
             Verified peer reputation
           </p>
 
           <h1
             className="animate-fade-up delay-100"
             style={{
-              fontFamily: 'var(--serif)',
+              fontFamily: 'var(--sans)',
               fontSize: 'clamp(2.8rem, 6.5vw, 5.2rem)',
-              fontWeight: 400,
-              lineHeight: 1.12,
-              letterSpacing: '-.025em',
+              fontWeight: 800,
+              lineHeight: 1.08,
+              letterSpacing: '-0.03em',
               color: 'var(--ink)',
               maxWidth: 820,
               marginBottom: '2rem',
             }}
           >
             Let the people who've seen your work{' '}
-            <em style={{ fontStyle: 'italic', color: 'var(--green2)' }}>speak for you</em>.
+            <span style={{ color: 'var(--green-mid, #52B788)' }}>speak for you</span>.
           </h1>
 
           <p
@@ -162,17 +162,17 @@ export default function LandingPage() {
           </p>
           <h2
             style={{
-              fontFamily: 'var(--serif)',
+              fontFamily: 'var(--sans)',
               fontSize: 'clamp(2rem, 4vw, 3.2rem)',
-              fontWeight: 400,
-              lineHeight: 1.18,
-              letterSpacing: '-.02em',
+              fontWeight: 800,
+              lineHeight: 1.08,
+              letterSpacing: '-0.03em',
               color: 'var(--ink)',
               marginBottom: '1rem',
             }}
           >
             Peer reputation in{' '}
-            <em style={{ fontStyle: 'italic', color: 'var(--green2)' }}>four steps</em>.
+            <span style={{ color: 'var(--green-mid, #52B788)' }}>four steps</span>.
           </h2>
 
           <div
@@ -215,12 +215,12 @@ export default function LandingPage() {
               >
                 <div
                   style={{
-                    fontFamily: 'var(--serif)',
+                    fontFamily: 'var(--sans)',
                     fontSize: '3.5rem',
-                    fontStyle: 'italic',
-                    fontWeight: 400,
-                    color: 'var(--faint)',
+                    fontWeight: 800,
+                    color: 'var(--green-l, #d8f3dc)',
                     lineHeight: 1,
+                    letterSpacing: '-0.03em',
                     marginBottom: '1rem',
                   }}
                 >
@@ -247,11 +247,11 @@ export default function LandingPage() {
             </p>
             <h2
               style={{
-                fontFamily: 'var(--serif)',
+                fontFamily: 'var(--sans)',
                 fontSize: 'clamp(2rem, 4vw, 3.2rem)',
-                fontWeight: 400,
-                lineHeight: 1.18,
-                letterSpacing: '-.02em',
+                fontWeight: 800,
+                lineHeight: 1.08,
+                letterSpacing: '-0.03em',
                 color: 'var(--ink)',
               }}
             >
@@ -304,10 +304,10 @@ export default function LandingPage() {
                   </span>
                   <blockquote
                     style={{
-                      fontFamily: 'var(--serif)',
-                      fontStyle: 'italic',
+                      fontFamily: 'var(--sans)',
                       fontSize: i === 1 ? '1.05rem' : '.93rem',
                       lineHeight: 1.75,
+                      fontWeight: 400,
                       color: i === 1 ? 'rgba(255,255,255,.85)' : 'var(--ink2)',
                       flex: 1,
                     }}
@@ -394,17 +394,17 @@ export default function LandingPage() {
             </p>
             <h2
               style={{
-                fontFamily: 'var(--serif)',
+                fontFamily: 'var(--sans)',
                 fontSize: 'clamp(2rem, 4vw, 3.2rem)',
-                fontWeight: 400,
-                lineHeight: 1.18,
-                letterSpacing: '-.02em',
+                fontWeight: 800,
+                lineHeight: 1.08,
+                letterSpacing: '-0.03em',
                 color: 'var(--ink)',
                 marginBottom: '3rem',
               }}
             >
               Every vouch is{' '}
-              <em style={{ fontStyle: 'italic', color: 'var(--green2)' }}>earned</em>.
+              <span style={{ color: 'var(--green-mid, #52B788)' }}>earned</span>.
             </h2>
 
             <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--rule)' }}>
@@ -484,7 +484,7 @@ export default function LandingPage() {
                 { value: '5', label: 'relationship types' },
               ].map((stat) => (
                 <div key={stat.label} style={{ flex: 1, background: 'var(--paper)', borderRadius: 10, padding: '.9rem .5rem', textAlign: 'center' }}>
-                  <p style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>{stat.value}</p>
+                  <p style={{ fontFamily: 'var(--sans)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--green)', lineHeight: 1, letterSpacing: '-0.02em' }}>{stat.value}</p>
                   <p style={{ fontSize: '.62rem', color: 'var(--muted)', marginTop: '.25rem' }}>{stat.label}</p>
                 </div>
               ))}
@@ -526,11 +526,11 @@ export default function LandingPage() {
         >
           <h2
             style={{
-              fontFamily: 'var(--serif)',
+              fontFamily: 'var(--sans)',
               fontSize: 'clamp(2rem, 4vw, 3.4rem)',
-              fontWeight: 400,
-              lineHeight: 1.2,
-              letterSpacing: '-.02em',
+              fontWeight: 800,
+              lineHeight: 1.08,
+              letterSpacing: '-0.03em',
               color: '#fff',
               marginBottom: '1.2rem',
               maxWidth: 600,
@@ -538,7 +538,7 @@ export default function LandingPage() {
             }}
           >
             Ready to let your work{' '}
-            <em style={{ fontStyle: 'italic', color: 'rgba(255,255,255,.65)' }}>speak for itself</em>?
+            <span style={{ color: '#52B788' }}>speak for itself</span>?
           </h2>
           <p style={{ fontSize: '.95rem', color: 'rgba(255,255,255,.55)', marginBottom: '2.5rem', fontWeight: 300 }}>
             Free to start. No credit card required.
@@ -576,11 +576,9 @@ export default function LandingPage() {
             gap: '1rem',
           }}
         >
-          {/* Brand + social icons together on the left */}
+          {/* Brand + social icons */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
-            <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', color: 'var(--muted)' }}>
-              Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
-            </span>
+            <Logo variant="dark" href="/" size={22} />
             <style>{`
               .footer-social-ig { color: var(--muted); display: flex; align-items: center; transition: color .15s; }
               .footer-social-ig:hover { color: #e1306c; }
@@ -609,6 +607,51 @@ export default function LandingPage() {
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
             </a>
+          </div>
+
+          {/* Get the app */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div>
+              <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '.4rem' }}>Get the app</p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=72x72&color=1a4231&bgcolor=ffffff&data=${encodeURIComponent('https://recommenow.com')}&qzone=1`}
+                alt="Download app QR"
+                width={72}
+                height={72}
+                style={{ borderRadius: 8, border: '1px solid var(--rule)', display: 'block' }}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+              <a
+                href="https://apps.apple.com/app/recommenow"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '.4rem',
+                  background: '#000', color: '#fff', borderRadius: 7,
+                  padding: '.35rem .7rem', textDecoration: 'none',
+                  fontSize: '.62rem', fontWeight: 600, whiteSpace: 'nowrap',
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                App Store
+              </a>
+              <a
+                href="https://play.google.com/store/apps/recommenow"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '.4rem',
+                  background: '#000', color: '#fff', borderRadius: 7,
+                  padding: '.35rem .7rem', textDecoration: 'none',
+                  fontSize: '.62rem', fontWeight: 600, whiteSpace: 'nowrap',
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.24.99.21l12.47-7.2-2.75-2.75-10.71 9.74zM.48 1.61C.18 1.94 0 2.44 0 3.09v17.82c0 .65.18 1.15.49 1.48l.08.07 9.98-9.98v-.24L.56 1.54l-.08.07zM20.12 10.1l-2.83-1.63-3.08 3.08 3.08 3.08 2.85-1.64c.81-.47.81-1.23-.02-1.89zM3.18.24L15.65 7.44l-2.75 2.75L2.19.45c.28-.23.64-.3.99-.21z"/></svg>
+                Google Play
+              </a>
+            </div>
           </div>
 
           <p style={{ fontSize: '.72rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '.6rem' }}>

@@ -34,12 +34,13 @@ export default function Nav() {
 
   return (
     <nav className={`rn-nav${scrolled ? ' scrolled' : ''}`}>
-      <Link href="/" className="rn-logo">
-        <LogoMark size={30} />
-        <span className="rn-logo-text">Recomme<span>Now</span></span>
-      </Link>
+      {/* Left: logo + page links */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+        <Link href="/" className="rn-logo">
+          <LogoMark size={30} />
+          <span className="rn-logo-text">Recomme<span>Now</span></span>
+        </Link>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         <Link href="/#how" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
           How it works
         </Link>
@@ -49,7 +50,10 @@ export default function Nav() {
         <Link href="/pricing" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
           Pricing
         </Link>
+      </div>
 
+      {/* Right: auth actions only */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         {isSignedIn ? (
           <Link href="/dashboard" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>
             Dashboard

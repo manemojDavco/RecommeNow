@@ -1,22 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-
-function LogoMark({ size = 64 }: { size?: number }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={size} height={size}>
-      <rect width="32" height="32" rx="7" fill="#2D6A4F"/>
-      <circle cx="9" cy="10" r="4" fill="#F0EAD6"/>
-      <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#F0EAD6"/>
-      <path d="M14 20 Q18 17 20 17" stroke="#95D5B2" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-      <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#95D5B2"/>
-      <circle cx="23" cy="10" r="4" fill="#95D5B2"/>
-      <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#95D5B2"/>
-      <circle cx="28" cy="5" r="4" fill="#F0EAD6"/>
-      <polyline points="25.8,5 27,6.3 30.2,3" stroke="#2D6A4F" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  )
-}
+import { Logo } from '@/components/Logo'
 
 export default function ComingSoonPage() {
   const [email, setEmail]   = useState('')
@@ -36,7 +21,7 @@ export default function ComingSoonPage() {
       setEarlyAccess(!!data.earlyAccess)
       setPosition(data.position ?? null)
       setStatus('done')
-      setMessage(data.alreadyRegistered ? "You're already on the list — we'll be in touch!" : "You're on the list! We'll reach out when we launch.")
+      setMessage(data.alreadyRegistered ? "You're already on the list. We'll be in touch!" : "You're on the list! We'll reach out when we launch.")
     } catch {
       setStatus('error')
       setMessage('Something went wrong. Please try again.')
@@ -54,13 +39,8 @@ export default function ComingSoonPage() {
       <div style={{ position: 'relative', zIndex: 1, maxWidth: '620px', width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0', flex: 1, justifyContent: 'center' }}>
 
         {/* Logo */}
-        <div style={{ marginBottom: '2rem' }}>
-          <LogoMark size={72} />
-        </div>
-
-        {/* Wordmark */}
-        <div style={{ fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", fontWeight: 800, fontSize: '1.4rem', letterSpacing: '-0.02em', color: '#F0EAD6', marginBottom: '2.5rem' }}>
-          Recomme<span style={{ color: '#52B788' }}>Now</span>
+        <div style={{ marginBottom: '2.5rem', display: 'flex', justifyContent: 'center' }}>
+          <Logo variant="light" href="/" size={54} />
         </div>
 
         {/* Launching Soon badge */}
@@ -88,17 +68,6 @@ export default function ComingSoonPage() {
               <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="11" fill="#52B788"/><polyline points="6,11 9.5,14.5 16,7.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.95rem', fontWeight: 500, color: '#95D5B2' }}>{message}</span>
             </div>
-            {earlyAccess && (
-              <div style={{ background: 'rgba(255,215,0,.1)', border: '1px solid rgba(255,215,0,.3)', borderRadius: '14px', padding: '16px 24px', textAlign: 'center', width: '100%' }}>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '1rem', fontWeight: 700, color: '#ffd700', marginBottom: '4px' }}>
-                  🎁 You&apos;re in the first 100!
-                </p>
-                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.85rem', color: 'rgba(255,215,0,.75)', lineHeight: 1.5 }}>
-                  When we launch, your account automatically gets <strong>1 month of PRO free</strong>.
-                  {position && ` You're #${position} on the list.`}
-                </p>
-              </div>
-            )}
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ width: '100%', display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>

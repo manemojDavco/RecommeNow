@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { LocationPin } from '@/components/Logo'
 
 const INDUSTRIES = [
   'Accounting & Tax', 'Advertising & Marketing', 'Aerospace & Defence', 'Agriculture & Farming',
@@ -35,11 +36,15 @@ type DirectoryProfile = {
   trust_score: number
   verification_rate: number
   top_quote: string | null
+  photo_url: string | null
+  plan: string
+  recruiter_active: boolean
 }
 
 function ProfileCard({ p }: { p: DirectoryProfile }) {
   const initials = p.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
   const summary = p.bio || p.top_quote || null
+  const planLabel = p.recruiter_active ? 'RECRUITER' : p.plan === 'pro' ? 'PRO' : null
 
   return (
     <Link href={`/${p.slug}`} style={{ textDecoration: 'none' }}>
@@ -68,14 +73,18 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
         {/* LEFT: profile info */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '.65rem', minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '.8rem' }}>
+            {/* Avatar: photo or initials */}
             <div style={{
               width: 44, height: 44, borderRadius: '50%',
               background: 'var(--green-l)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700,
+              fontFamily: 'var(--sans)', fontWeight: 700,
               fontSize: '.9rem', color: 'var(--green)', flexShrink: 0,
+              overflow: 'hidden',
             }}>
-              {initials}
+              {p.photo_url
+                ? <img src={p.photo_url} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : initials}
             </div>
             <div style={{ minWidth: 0 }}>
               <p style={{ fontWeight: 700, fontSize: '.88rem', color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.name}</p>
@@ -83,20 +92,27 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '.6rem' }}>
+          <div style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start' }}>
             <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.45rem .6rem', textAlign: 'center' }}>
-              <p style={{ fontFamily: 'var(--serif)', fontSize: '1rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>{p.vouch_count}</p>
+              <p style={{ fontFamily: 'var(--sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--green)', lineHeight: 1 }}>{p.vouch_count}</p>
               <p style={{ fontSize: '.6rem', color: 'var(--muted)', marginTop: '.1rem' }}>vouches</p>
             </div>
             <div style={{ flex: 1, background: 'var(--paper)', borderRadius: 7, padding: '.45rem .6rem', textAlign: 'center' }}>
-              <p style={{ fontFamily: 'var(--serif)', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{p.verification_rate}%</p>
+              <p style={{ fontFamily: 'var(--sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>{p.verification_rate}%</p>
               <p style={{ fontSize: '.6rem', color: 'var(--muted)', marginTop: '.1rem' }}>verified</p>
+              {planLabel && (
+                <p style={{
+                  fontSize: '.55rem', fontWeight: 800, letterSpacing: '.08em',
+                  color: planLabel === 'RECRUITER' ? '#6d28d9' : 'var(--green)',
+                  marginTop: '.25rem',
+                }}>{planLabel}</p>
+              )}
             </div>
           </div>
 
           {(p.location || p.remote_preference) && (
-            <p style={{ fontSize: '.72rem', color: 'var(--muted)' }}>
-              📍 {[p.location, p.remote_preference].filter(Boolean).join(' · ')}
+            <p style={{ fontSize: '.72rem', color: 'var(--muted)', display: 'flex', alignItems: 'center' }}>
+              <LocationPin />{[p.location, p.remote_preference].filter(Boolean).join(' · ')}
             </p>
           )}
 
@@ -120,8 +136,7 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
                 {p.bio ? 'About' : 'From their vouches'}
               </p>
               <p style={{
-                fontFamily: p.top_quote && !p.bio ? 'var(--serif)' : 'var(--sans)',
-                fontStyle: p.top_quote && !p.bio ? 'italic' : 'normal',
+                fontFamily: 'var(--sans)',
                 fontSize: '.85rem',
                 lineHeight: 1.65,
                 color: 'var(--ink2)',
@@ -134,7 +149,7 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
               </p>
             </>
           ) : (
-            <p style={{ fontSize: '.82rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+            <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>
               View profile to read their vouches →
             </p>
           )}
@@ -393,7 +408,7 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
       {/* Results */}
       {profiles.length === 0 && !loading && !aiLoading ? (
         <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-          <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)', fontSize: '1rem', marginBottom: '.5rem' }}>No profiles match your search.</p>
+          <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '1rem', marginBottom: '.5rem' }}>No profiles match your search.</p>
           {aiActive && (
             <button onClick={clearAiSearch} style={{ fontSize: '.8rem', color: 'var(--green)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--sans)', textDecoration: 'underline' }}>
               Clear AI search and show all
