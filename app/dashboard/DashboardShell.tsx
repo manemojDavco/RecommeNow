@@ -1,22 +1,50 @@
 'use client'
 
+import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useClerk } from '@clerk/nextjs'
 import { useState } from 'react'
 import type { Profile } from '@/types'
 import { isProTrial, proTrialDaysLeft } from '@/lib/plans'
+import { Logo } from '@/components/Logo'
 
-const NAV_ITEMS = [
+// Inline SVG icon for the Vouches nav item — two people + verified badge,
+// matching the custom VouchesTabIcon from the mobile app.
+function VouchesNavIcon({ color = 'currentColor', size = 16 }: { color?: string; size?: number }) {
+  const s = size / 32
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill={color} xmlns="http://www.w3.org/2000/svg">
+      {/* Left person head */}
+      <circle cx={9} cy={10} r={4} />
+      {/* Left person body */}
+      <rect x={3} y={20} width={12} height={8} rx={6} />
+      {/* Arrow shaft */}
+      <rect x={14} y={18} width={5} height={2} rx={1} />
+      {/* Arrow head (right-pointing triangle) */}
+      <polygon points="18,14 22,19 18,24" />
+      {/* Right person head */}
+      <circle cx={23} cy={10} r={4} />
+      {/* Right person body */}
+      <rect x={17} y={20} width={12} height={8} rx={6} />
+      {/* Verified badge */}
+      <circle cx={28} cy={4} r={4.5} fill={color} />
+      {/* Badge checkmark */}
+      <polyline points="26,4 27.5,5.5 30.5,2.5" fill="none" stroke="rgba(0,0,0,0.35)" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+const NAV_ITEMS: { label: string; href: string; icon: React.ReactNode }[] = [
   { label: 'Overview', href: '/dashboard', icon: '⊞' },
-  { label: 'Vouches', href: '/dashboard/vouches', icon: '❝' },
+  { label: 'Vouches', href: '/dashboard/vouches', icon: <VouchesNavIcon size={16} /> },
   { label: 'Share & Embed', href: '/dashboard/share', icon: '⤴' },
   { label: 'Approvals', href: '/dashboard/approvals', icon: '✓' },
   { label: 'Flagged', href: '/dashboard/flagged', icon: '⚑' },
   { label: 'Settings', href: '/dashboard/settings', icon: '⚙' },
 ]
 
-const RECRUITER_NAV_ITEMS = [
+const RECRUITER_NAV_ITEMS: { label: string; href: string; icon: React.ReactNode }[] = [
   { label: 'Talent Directory', href: '/directory', icon: '⊛' },
 ]
 
@@ -81,23 +109,9 @@ export default function DashboardShell({
         }}
       >
         {/* Brand */}
-        <Link
-          href="/"
-          style={{
-            padding: '.9rem 1.4rem .7rem',
-            fontFamily: 'var(--serif)',
-            fontStyle: 'italic',
-            fontSize: '1.15rem',
-            color: 'rgba(255,255,255,.5)',
-            borderBottom: '1px solid rgba(255,255,255,.07)',
-            flexShrink: 0,
-            textDecoration: 'none',
-            display: 'block',
-            textAlign: 'center',
-          }}
-        >
-          Recomme<span style={{ color: 'rgba(255,255,255,.9)' }}>Now</span>
-        </Link>
+        <div style={{ padding: '.85rem 1.4rem .75rem', borderBottom: '1px solid rgba(255,255,255,.07)', flexShrink: 0, display: 'flex', justifyContent: 'center' }}>
+          <Logo variant="light" href="/" size={30} />
+        </div>
 
         {/* User info */}
         <div
@@ -121,8 +135,7 @@ export default function DashboardShell({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontFamily: 'var(--serif)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--sans)',
               fontWeight: 700,
               fontSize: '1rem',
               color: 'rgba(255,255,255,.85)',
@@ -135,18 +148,42 @@ export default function DashboardShell({
               ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
               : initials}
           </div>
-          <div
-            style={{
-              fontSize: '.95rem',
-              fontWeight: 700,
-              color: 'rgba(255,255,255,.85)',
-              marginBottom: '.1rem',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            {profile.name}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.35rem', marginBottom: '.1rem', minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: '.95rem',
+                fontWeight: 700,
+                color: 'rgba(255,255,255,.85)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {profile.name}
+            </div>
+            {(isPro || isRecruiter) && (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" style={{ flexShrink: 0 }}>
+                {isRecruiter ? <>
+                  <circle cx="9" cy="10" r="4" fill="#5B21B6"/>
+                  <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#5B21B6"/>
+                  <path d="M14 20 Q18 17 20 17" stroke="#A78BFA" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                  <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#A78BFA"/>
+                  <circle cx="23" cy="10" r="4" fill="#A78BFA"/>
+                  <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#A78BFA"/>
+                  <circle cx="28" cy="5" r="4" fill="#5B21B6"/>
+                  <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                </> : <>
+                  <circle cx="9" cy="10" r="4" fill="#95D5B2"/>
+                  <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#95D5B2"/>
+                  <path d="M14 20 Q18 17 20 17" stroke="#F0EAD6" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                  <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#F0EAD6"/>
+                  <circle cx="23" cy="10" r="4" fill="#F0EAD6"/>
+                  <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#F0EAD6"/>
+                  <circle cx="28" cy="5" r="4" fill="#95D5B2"/>
+                  <polyline points="25.8,5 27,6.3 30.2,3" stroke="#2D6A4F" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                </>}
+              </svg>
+            )}
           </div>
           {(isPro || isRecruiter) ? (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.25rem' }}>
@@ -192,7 +229,29 @@ export default function DashboardShell({
                     fontFamily: 'var(--sans)',
                   }}
                 >
-                  {portalLoading ? '…' : isRecruiter && isPro ? '🔍 Recruiter + ★ Pro · Manage' : isRecruiter ? '🔍 Recruiter · Manage' : '★ Pro · Manage'}
+                  {portalLoading ? '…' : (
+                    <>
+                      {/* SVG icons — rendered as white glyphs matching the sidebar */}
+                      {isRecruiter && isPro ? (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                          {' '}Recruiter{' '}+{' '}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                          {' '}Pro · Manage
+                        </>
+                      ) : isRecruiter ? (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                          {' '}Recruiter · Manage
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                          {' '}Pro · Manage
+                        </>
+                      )}
+                    </>
+                  )}
                 </button>
               )}
               {portalError && (
@@ -368,6 +427,30 @@ export default function DashboardShell({
             flexShrink: 0,
           }}
         >
+          {(isPro || isRecruiter) && (
+            <Link
+              href={`/${profile.slug}/print`}
+              target="_blank"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '.5rem',
+                fontSize: '.78rem',
+                fontWeight: 500,
+                color: 'rgba(255,255,255,.4)',
+                textDecoration: 'none',
+                padding: '.25rem .5rem',
+                borderRadius: 6,
+                transition: 'color .15s',
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              Print to PDF
+            </Link>
+          )}
           <Link
             href={`/${profile.slug}`}
             target="_blank"

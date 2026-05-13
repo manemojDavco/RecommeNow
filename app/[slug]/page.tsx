@@ -271,7 +271,7 @@ export default async function PublicProfilePage({ params }: Props) {
                     </span>
                   )}
                   {((profile as any).recruiter_active || (profile as any).plan === 'pro') && (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="18" height="18" style={{ flexShrink: 0 }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" style={{ flexShrink: 0 }}>
                       {(profile as any).recruiter_active ? <>
                         <circle cx="9" cy="10" r="4" fill="#5B21B6"/>
                         <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#5B21B6"/>
