@@ -91,20 +91,34 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, children }
 
   return (
     <>
-      <div style={{ position: 'relative', width: 72, height: 72, flexShrink: 0 }}>
+      <div style={{ position: 'relative', width: 72, flexShrink: 0 }}>
         {children}
+        {/* Curved "info" label hugging the bottom of the avatar circle */}
         <button
           onClick={() => setShowContact(true)}
           style={{
-            position: 'absolute', bottom: -20, left: '50%', transform: 'translateX(-50%)',
-            background: 'none', border: 'none', cursor: 'pointer', padding: '2px 6px',
-            fontSize: '10px', fontWeight: 700, color: '#2D6A4F',
-            fontFamily: 'var(--sans)', letterSpacing: '.5px',
-            whiteSpace: 'nowrap', lineHeight: 1,
+            position: 'absolute', bottom: -16, left: '50%', transform: 'translateX(-50%)',
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            display: 'block',
           }}
           aria-label="Show contact info"
         >
-          ⓘ info
+          {/* Arc: M 4,20 A 60,60 0 0,0 76,20 curves upward through (40,8) — verified midpoint inside viewBox */}
+          <svg viewBox="0 0 80 22" width="72" height="18" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+            <defs>
+              <path id="rn-info-arc" d="M 4,20 A 60,60 0 0,0 76,20" />
+            </defs>
+            <text
+              fontSize="8.5"
+              fill="#2D6A4F"
+              textAnchor="middle"
+              fontFamily="var(--sans)"
+              fontWeight="700"
+              letterSpacing="2"
+            >
+              <textPath href="#rn-info-arc" startOffset="50%">info</textPath>
+            </text>
+          </svg>
         </button>
       </div>
       {modal}
