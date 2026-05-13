@@ -106,7 +106,7 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, children }
             <defs>
               <path id="infocurve" d="M 8,14 A 36,36 0 0,1 72,14" />
             </defs>
-            <text fontSize="7.5" fill="var(--muted)" textAnchor="middle" fontFamily="var(--sans)" fontWeight="600" letterSpacing="1.5">
+            <text fontSize="7.5" fill="#2D6A4F" textAnchor="middle" fontFamily="var(--sans)" fontWeight="600" letterSpacing="1.5">
               <textPath href="#infocurve" startOffset="50%">ⓘ  info</textPath>
             </text>
           </svg>

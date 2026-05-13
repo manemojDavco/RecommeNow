@@ -181,10 +181,15 @@ export default function BillingClient() {
                 </p>
               )}
 
-              {!subscription && (
+              {!subscription && plan === 'free' && (
                 <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginTop: '.3rem' }}>
                   You are on the Free plan.{' '}
                   <Link href="/pricing" style={{ color: 'var(--green)', fontWeight: 600, textDecoration: 'none' }}>Upgrade →</Link>
+                </p>
+              )}
+              {!subscription && plan !== 'free' && (
+                <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginTop: '.3rem' }}>
+                  Active {planLabel(plan)} plan. Billing details will appear here once a payment has been processed.
                 </p>
               )}
             </div>

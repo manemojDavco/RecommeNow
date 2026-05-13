@@ -195,97 +195,18 @@ export default function DashboardShell({
               </svg>
             )}
           </div>
-          {(isPro || isRecruiter) ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.25rem' }}>
-              {/* Trial users: show days-remaining badge + upgrade CTA */}
-              {isTrial && (
-                <Link
-                  href="/pricing"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '.3rem',
-                    background: 'rgba(255,215,0,.15)',
-                    border: '1px solid rgba(255,215,0,.35)',
-                    borderRadius: 100,
-                    padding: '.18rem .6rem',
-                    fontSize: '.68rem',
-                    fontWeight: 700,
-                    color: '#ffd700',
-                    textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  ✨ PRO Trial · {trialDaysLeft}d left
-                </Link>
-              )}
-              {/* Paid pro/recruiter: show manage button */}
-              {!isTrial && (
-                <button
-                  onClick={openPortal}
-                  disabled={portalLoading}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '.3rem',
-                    background: 'rgba(255,255,255,.15)',
-                    border: '1px solid rgba(255,255,255,.25)',
-                    borderRadius: 100,
-                    padding: '.18rem .6rem',
-                    fontSize: '.72rem',
-                    fontWeight: 700,
-                    color: '#fff',
-                    cursor: portalLoading ? 'not-allowed' : 'pointer',
-                    fontFamily: 'var(--sans)',
-                  }}
-                >
-                  {portalLoading ? '…' : (
-                    <>
-                      {/* SVG icons — rendered as white glyphs matching the sidebar */}
-                      {isRecruiter && isPro ? (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                          {' '}Recruiter{' '}+{' '}
-                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                          {' '}Pro · Manage
-                        </>
-                      ) : isRecruiter ? (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                          {' '}Recruiter · Manage
-                        </>
-                      ) : (
-                        <>
-                          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                          {' '}Pro · Manage
-                        </>
-                      )}
-                    </>
-                  )}
-                </button>
-              )}
-              {portalError && (
-                <p style={{ fontSize: '.72rem', color: 'rgba(255,100,100,.9)', marginTop: '.25rem', lineHeight: 1.3 }}>{portalError}</p>
-              )}
-            </div>
-          ) : (
+          {isTrial && (
             <Link
               href="/pricing"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '.3rem',
-                background: 'rgba(255,255,255,.08)',
-                border: '1px solid rgba(255,255,255,.12)',
-                borderRadius: 100,
-                padding: '.18rem .6rem',
-                fontSize: '.72rem',
-                fontWeight: 600,
-                color: 'rgba(255,255,255,.5)',
-                textDecoration: 'none',
+                display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+                background: 'rgba(255,215,0,.15)', border: '1px solid rgba(255,215,0,.35)',
+                borderRadius: 100, padding: '.18rem .6rem',
+                fontSize: '.68rem', fontWeight: 700, color: '#ffd700',
+                textDecoration: 'none', whiteSpace: 'nowrap',
               }}
             >
-              Free · Upgrade ↑
+              ✨ PRO Trial · {trialDaysLeft}d left
             </Link>
           )}
         </div>
