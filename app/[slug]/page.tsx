@@ -318,7 +318,7 @@ export default async function PublicProfilePage({ params }: Props) {
                   {profile.location && (
                     <span style={{ fontSize: '.75rem', color: 'var(--muted)', display: 'inline-flex', alignItems: 'center' }}><LocationPin />{profile.location}</span>
                   )}
-                  {profile.linkedin_url && (
+                  {profile.linkedin_url && (profile as any).show_linkedin !== false && (
                     <a
                       href={profile.linkedin_url}
                       target="_blank"
