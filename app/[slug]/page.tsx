@@ -234,6 +234,8 @@ export default async function PublicProfilePage({ params }: Props) {
                 linkedinUrl={profile.linkedin_url}
                 phone={(profile as any).phone}
                 email={(profile as any).contact_email}
+                workingPreference={profile.remote_preference ?? null}
+                availability={(profile as any).availability ?? null}
               >
                 <div
                   style={{
@@ -310,9 +312,6 @@ export default async function PublicProfilePage({ params }: Props) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
                   {profile.location && (
                     <span style={{ fontSize: '.75rem', color: 'var(--muted)', display: 'inline-flex', alignItems: 'center' }}><LocationPin />{profile.location}</span>
-                  )}
-                  {profile.remote_preference && (
-                    <span style={{ fontSize: '.75rem', color: 'var(--muted)' }}>· {profile.remote_preference}</span>
                   )}
                   {profile.linkedin_url && (
                     <a

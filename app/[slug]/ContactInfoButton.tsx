@@ -8,10 +8,12 @@ interface Props {
   linkedinUrl?: string | null
   phone?: string | null
   email?: string | null
+  workingPreference?: string | null
+  availability?: string | null
   children: ReactNode
 }
 
-export default function ContactInfoButton({ name, linkedinUrl, phone, email, children }: Props) {
+export default function ContactInfoButton({ name, linkedinUrl, phone, email, workingPreference, availability, children }: Props) {
   const [showContact, setShowContact] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -87,6 +89,20 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, email, chi
               <a href={`mailto:${email}`} style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500, textDecoration: 'none', wordBreak: 'break-all' }}>
                 {email}
               </a>
+            </div>
+          )}
+
+          {workingPreference && (
+            <div>
+              <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Working preference</p>
+              <p style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500 }}>{workingPreference}</p>
+            </div>
+          )}
+
+          {availability && (
+            <div>
+              <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Availability</p>
+              <p style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500 }}>{availability}</p>
             </div>
           )}
         </div>
