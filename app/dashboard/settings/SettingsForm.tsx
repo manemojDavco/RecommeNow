@@ -167,6 +167,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
     availability: profile.availability ?? '',
     bio: profile.bio ?? '',
     linkedin_url: profile.linkedin_url ?? '',
+    contact_email: (profile as any).contact_email ?? '',
     industries: profile.industries ?? [],
     stages: profile.stages ?? [],
   })
@@ -592,6 +593,18 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             placeholder="https://linkedin.com/in/your-name"
           />
           <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Shown on your public profile so recruiters can view your full LinkedIn.</p>
+        </div>
+
+        <div>
+          <label className="field-label">Contact email</label>
+          <input
+            className="field-input"
+            type="email"
+            value={form.contact_email}
+            onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))}
+            placeholder="contact@example.com"
+          />
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Optional. Shown in the contact info popup on your public profile.</p>
         </div>
 
         <div>

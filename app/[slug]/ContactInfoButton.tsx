@@ -7,10 +7,11 @@ interface Props {
   name: string
   linkedinUrl?: string | null
   phone?: string | null
+  email?: string | null
   children: ReactNode
 }
 
-export default function ContactInfoButton({ name, linkedinUrl, phone, children }: Props) {
+export default function ContactInfoButton({ name, linkedinUrl, phone, email, children }: Props) {
   const [showContact, setShowContact] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -76,6 +77,15 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, children }
               <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Phone</p>
               <a href={`tel:${phone.replace(/\s/g, '')}`} style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500, textDecoration: 'none' }}>
                 {phone}
+              </a>
+            </div>
+          )}
+
+          {email && (
+            <div>
+              <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Email</p>
+              <a href={`mailto:${email}`} style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500, textDecoration: 'none', wordBreak: 'break-all' }}>
+                {email}
               </a>
             </div>
           )}

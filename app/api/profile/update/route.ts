@@ -9,11 +9,13 @@ export async function PUT(req: NextRequest) {
   const db = createServiceClient()
   const body = await req.json()
 
-  const { title, years_experience, location, remote_preference, availability, bio, industries, stages, phone, linkedin_url } = body
+  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, phone, linkedin_url, photo_url, contact_email } = body
 
   const { data: profile, error } = await db
     .from('profiles')
     .update({
+      ...(name !== undefined && name?.trim() ? { name: name.trim() } : {}),
+      ...(photo_url !== undefined ? { photo_url } : {}),
       ...(title !== undefined ? { title: title?.trim() || null } : {}),
       ...(years_experience !== undefined ? { years_experience: years_experience?.trim() || null } : {}),
       ...(location !== undefined ? { location: location?.trim() || null } : {}),
@@ -24,6 +26,7 @@ export async function PUT(req: NextRequest) {
       ...(stages !== undefined ? { stages } : {}),
       ...(phone !== undefined ? { phone: phone?.trim() || null } : {}),
       ...(linkedin_url !== undefined ? { linkedin_url: linkedin_url?.trim() || null } : {}),
+      ...(contact_email !== undefined ? { contact_email: contact_email?.trim() || null } : {}),
     })
     .eq('user_id', userId)
     .select()

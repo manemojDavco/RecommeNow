@@ -233,6 +233,7 @@ export default async function PublicProfilePage({ params }: Props) {
                 name={profile.name}
                 linkedinUrl={profile.linkedin_url}
                 phone={(profile as any).phone}
+                email={(profile as any).contact_email}
               >
                 <div
                   style={{
