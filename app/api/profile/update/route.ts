@@ -9,7 +9,7 @@ export async function PUT(req: NextRequest) {
   const db = createServiceClient()
   const body = await req.json()
 
-  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, phone, linkedin_url, photo_url, contact_email } = body
+  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, phone, linkedin_url, photo_url, contact_email, show_phone, show_linkedin, show_contact_email, show_working_pref, show_availability } = body
 
   const { data: profile, error } = await db
     .from('profiles')
@@ -27,6 +27,11 @@ export async function PUT(req: NextRequest) {
       ...(phone !== undefined ? { phone: phone?.trim() || null } : {}),
       ...(linkedin_url !== undefined ? { linkedin_url: linkedin_url?.trim() || null } : {}),
       ...(contact_email !== undefined ? { contact_email: contact_email?.trim() || null } : {}),
+      ...(show_phone !== undefined ? { show_phone: Boolean(show_phone) } : {}),
+      ...(show_linkedin !== undefined ? { show_linkedin: Boolean(show_linkedin) } : {}),
+      ...(show_contact_email !== undefined ? { show_contact_email: Boolean(show_contact_email) } : {}),
+      ...(show_working_pref !== undefined ? { show_working_pref: Boolean(show_working_pref) } : {}),
+      ...(show_availability !== undefined ? { show_availability: Boolean(show_availability) } : {}),
     })
     .eq('user_id', userId)
     .select()

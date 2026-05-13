@@ -10,10 +10,15 @@ interface Props {
   email?: string | null
   workingPreference?: string | null
   availability?: string | null
+  showPhone?: boolean
+  showLinkedin?: boolean
+  showEmail?: boolean
+  showWorkingPref?: boolean
+  showAvailability?: boolean
   children: ReactNode
 }
 
-export default function ContactInfoButton({ name, linkedinUrl, phone, email, workingPreference, availability, children }: Props) {
+export default function ContactInfoButton({ name, linkedinUrl, phone, email, workingPreference, availability, showPhone = true, showLinkedin = true, showEmail = true, showWorkingPref = true, showAvailability = true, children }: Props) {
   const [showContact, setShowContact] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -60,7 +65,7 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, email, wor
             <p style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500 }}>{name}</p>
           </div>
 
-          {linkedinUrl && (
+          {linkedinUrl && showLinkedin && (
             <div>
               <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>LinkedIn</p>
               <a
@@ -74,7 +79,7 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, email, wor
             </div>
           )}
 
-          {phone && (
+          {phone && showPhone && (
             <div>
               <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Phone</p>
               <a href={`tel:${phone.replace(/\s/g, '')}`} style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500, textDecoration: 'none' }}>
@@ -83,7 +88,7 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, email, wor
             </div>
           )}
 
-          {email && (
+          {email && showEmail && (
             <div>
               <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Email</p>
               <a href={`mailto:${email}`} style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500, textDecoration: 'none', wordBreak: 'break-all' }}>
@@ -92,14 +97,14 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, email, wor
             </div>
           )}
 
-          {workingPreference && (
+          {workingPreference && showWorkingPref && (
             <div>
               <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Working preference</p>
               <p style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500 }}>{workingPreference}</p>
             </div>
           )}
 
-          {availability && (
+          {availability && showAvailability && (
             <div>
               <p style={{ fontSize: '.7rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Availability</p>
               <p style={{ fontSize: '.88rem', color: 'var(--ink)', fontWeight: 500 }}>{availability}</p>

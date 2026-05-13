@@ -236,6 +236,11 @@ export default async function PublicProfilePage({ params }: Props) {
                 email={(profile as any).contact_email}
                 workingPreference={profile.remote_preference ?? null}
                 availability={(profile as any).availability ?? null}
+                showPhone={(profile as any).show_phone !== false}
+                showLinkedin={(profile as any).show_linkedin !== false}
+                showEmail={(profile as any).show_contact_email !== false}
+                showWorkingPref={(profile as any).show_working_pref !== false}
+                showAvailability={(profile as any).show_availability !== false}
               >
                 <div
                   style={{

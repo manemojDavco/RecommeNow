@@ -142,6 +142,43 @@ function IndustryPicker({ selected, onChange }: { selected: string[]; onChange: 
   )
 }
 
+function VisibilityToggle({ value, onChange }: { value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!value)}
+      aria-label={value ? 'Public — click to hide' : 'Hidden — click to show'}
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: '.35rem',
+        background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+        fontFamily: 'var(--sans)', fontSize: '.68rem', fontWeight: 700,
+        color: value ? 'var(--green)' : 'var(--muted)',
+        letterSpacing: '.04em', textTransform: 'uppercase',
+        flexShrink: 0,
+      }}
+    >
+      {/* pill track */}
+      <span style={{
+        position: 'relative', display: 'inline-block',
+        width: 32, height: 18, borderRadius: 9,
+        background: value ? 'var(--green)' : '#d1d5db',
+        transition: 'background .2s',
+        flexShrink: 0,
+      }}>
+        {/* thumb */}
+        <span style={{
+          position: 'absolute', top: 3, left: value ? 17 : 3,
+          width: 12, height: 12, borderRadius: '50%',
+          background: '#fff',
+          boxShadow: '0 1px 3px rgba(0,0,0,.2)',
+          transition: 'left .2s',
+        }} />
+      </span>
+      {value ? 'Public' : 'Private'}
+    </button>
+  )
+}
+
 export default function SettingsForm({ profile }: { profile: Profile }) {
   const router = useRouter()
   const isRecruiter = profile.recruiter_active
@@ -173,6 +210,14 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   })
   const [phoneDialCode, setPhoneDialCode] = useState(parsedPhone.dialCode)
   const [phoneNumber, setPhoneNumber] = useState(parsedPhone.number)
+
+  // Visibility toggles for contact info popup
+  const [showPhone, setShowPhone]             = useState<boolean>((profile as any).show_phone !== false)
+  const [showLinkedin, setShowLinkedin]       = useState<boolean>((profile as any).show_linkedin !== false)
+  const [showContactEmail, setShowContactEmail] = useState<boolean>((profile as any).show_contact_email !== false)
+  const [showWorkingPref, setShowWorkingPref] = useState<boolean>((profile as any).show_working_pref !== false)
+  const [showAvailability, setShowAvailability] = useState<boolean>((profile as any).show_availability !== false)
+
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
   const [photoUrl, setPhotoUrl] = useState(profile.photo_url ?? '')
   const [photoStatus, setPhotoStatus] = useState<'idle' | 'uploading' | 'done' | 'error'>('idle')
@@ -286,6 +331,11 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
       body: JSON.stringify({
         ...form,
         phone: phoneNumber.trim() ? `${phoneDialCode} ${phoneNumber.trim()}` : '',
+        show_phone: showPhone,
+        show_linkedin: showLinkedin,
+        show_contact_email: showContactEmail,
+        show_working_pref: showWorkingPref,
+        show_availability: showAvailability,
       }),
     })
     if (res.ok) {
@@ -557,7 +607,10 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
         </div>
 
         <div>
-          <label className="field-label">Mobile number</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.35rem' }}>
+            <label className="field-label" style={{ margin: 0 }}>Mobile number</label>
+            <VisibilityToggle value={showPhone} onChange={setShowPhone} />
+          </div>
           <div style={{ display: 'flex', gap: '.5rem', marginTop: '.25rem' }}>
             <select
               value={phoneDialCode}
@@ -580,11 +633,14 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
               placeholder="7911 123456"
             />
           </div>
-          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Only visible to you. Not shown publicly.</p>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>{showPhone ? 'Shown in your public contact info popup.' : 'Hidden — not shown publicly.'}</p>
         </div>
 
         <div>
-          <label className="field-label">LinkedIn profile URL</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.35rem' }}>
+            <label className="field-label" style={{ margin: 0 }}>LinkedIn profile URL</label>
+            <VisibilityToggle value={showLinkedin} onChange={setShowLinkedin} />
+          </div>
           <input
             className="field-input"
             type="url"
@@ -592,11 +648,14 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             onChange={(e) => setForm((f) => ({ ...f, linkedin_url: e.target.value }))}
             placeholder="https://linkedin.com/in/your-name"
           />
-          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Shown on your public profile so recruiters can view your full LinkedIn.</p>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>{showLinkedin ? 'Shown in your public contact info popup.' : 'Hidden — not shown publicly.'}</p>
         </div>
 
         <div>
-          <label className="field-label">Contact email</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.35rem' }}>
+            <label className="field-label" style={{ margin: 0 }}>Contact email</label>
+            <VisibilityToggle value={showContactEmail} onChange={setShowContactEmail} />
+          </div>
           <input
             className="field-input"
             type="email"
@@ -604,11 +663,14 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             onChange={(e) => setForm((f) => ({ ...f, contact_email: e.target.value }))}
             placeholder="contact@example.com"
           />
-          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Optional. Shown in the contact info popup on your public profile.</p>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>{showContactEmail ? 'Shown in your public contact info popup.' : 'Hidden — not shown publicly.'}</p>
         </div>
 
         <div>
-          <label className="field-label">Working preferences</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.35rem' }}>
+            <label className="field-label" style={{ margin: 0 }}>Working preferences</label>
+            <VisibilityToggle value={showWorkingPref} onChange={setShowWorkingPref} />
+          </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', marginTop: '.4rem' }}>
             {WORK_PREFS.map((r) => (
               <button key={r} onClick={() => setForm((f) => ({ ...f, remote_preference: f.remote_preference === r ? '' : r }))}
@@ -617,10 +679,14 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
               </button>
             ))}
           </div>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>{showWorkingPref ? 'Shown in your public contact info popup.' : 'Hidden — not shown publicly.'}</p>
         </div>
 
         <div>
-          <label className="field-label">Availability</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.35rem' }}>
+            <label className="field-label" style={{ margin: 0 }}>Availability</label>
+            <VisibilityToggle value={showAvailability} onChange={setShowAvailability} />
+          </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', marginTop: '.4rem' }}>
             {AVAILABILITY.map((a) => (
               <button key={a} onClick={() => setForm((f) => ({ ...f, availability: f.availability === a ? '' : a }))}
@@ -629,6 +695,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
               </button>
             ))}
           </div>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>{showAvailability ? 'Shown in your public contact info popup.' : 'Hidden — not shown publicly.'}</p>
         </div>
 
         <div>
