@@ -9,6 +9,7 @@ import FlagVouchButton from './FlagVouchButton'
 import RecruiterContactButton from '@/components/RecruiterContactButton'
 import { Logo, LocationPin } from '@/components/Logo'
 import QrModal from './QrModal'
+import ContactInfoButton from './ContactInfoButton'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -228,27 +229,32 @@ export default async function PublicProfilePage({ params }: Props) {
           {/* Profile header */}
           <div style={{ marginBottom: '2.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
-              <div
-                style={{
-                  width: 72,
-                  height: 72,
-                  borderRadius: '50%',
-                  background: 'var(--green)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'var(--sans)',
-                  fontSize: '1.5rem',
-                  fontWeight: 700,
-                  color: '#fff',
-                  flexShrink: 0,
-                  overflow: 'hidden',
-                }}
+              <ContactInfoButton
+                name={profile.name}
+                linkedinUrl={profile.linkedin_url}
+                phone={(profile as any).phone}
               >
-                {profile.photo_url
-                  ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : initials}
-              </div>
+                <div
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    background: 'var(--green)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontFamily: 'var(--sans)',
+                    fontSize: '1.5rem',
+                    fontWeight: 700,
+                    color: '#fff',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {profile.photo_url
+                    ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : initials}
+                </div>
+              </ContactInfoButton>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', flexWrap: 'wrap', marginBottom: '.4rem' }}>
                   <h1

@@ -197,6 +197,50 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [pwShowConfirm, setPwShowConfirm] = useState(false)
   const [pwOpen, setPwOpen]               = useState(false)
 
+  // Email change
+  const [emailOpen, setEmailOpen]   = useState(false)
+  const [newEmail, setNewEmail]     = useState('')
+  const [emailCode, setEmailCode]   = useState('')
+  const [emailStep, setEmailStep]   = useState<'idle' | 'sending' | 'sent' | 'verifying' | 'done'>('idle')
+  const [emailError, setEmailError] = useState('')
+
+  async function sendEmailCode() {
+    setEmailError('')
+    if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+      setEmailError('Please enter a valid email address.')
+      return
+    }
+    if (!user) return
+    setEmailStep('sending')
+    try {
+      const emailAddr = await user.createEmailAddress({ email: newEmail })
+      await emailAddr.prepareVerification({ strategy: 'email_code' })
+      setEmailStep('sent')
+    } catch (e: any) {
+      setEmailError(e.errors?.[0]?.longMessage ?? 'Failed to send verification code.')
+      setEmailStep('idle')
+    }
+  }
+
+  async function verifyEmailCode() {
+    setEmailError('')
+    if (!emailCode) { setEmailError('Please enter the verification code.'); return }
+    if (!user) return
+    setEmailStep('verifying')
+    try {
+      // Find the newly added email address object
+      const emailAddrObj = user.emailAddresses.find((e) => e.emailAddress === newEmail)
+      if (!emailAddrObj) { setEmailError('Email address not found. Please try again.'); setEmailStep('sent'); return }
+      await emailAddrObj.attemptVerification({ code: emailCode })
+      await user.update({ primaryEmailAddressId: emailAddrObj.id })
+      setEmailStep('done')
+      setTimeout(() => window.location.reload(), 1500)
+    } catch (e: any) {
+      setEmailError(e.errors?.[0]?.longMessage ?? 'Verification failed. Please check the code.')
+      setEmailStep('sent')
+    }
+  }
+
   async function changePassword() {
     setPwError('')
     if (!pwCurrent) { setPwError('Enter your current password.'); return }
@@ -352,6 +396,87 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
       </div>
 
       <div style={{ maxWidth: 560, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+
+        {/* Account email */}
+        <div style={{ borderBottom: '1px solid var(--rule)', paddingBottom: '1.5rem' }}>
+          <label className="field-label">Account email</label>
+          <p style={{ fontSize: '.85rem', color: 'var(--ink)', marginTop: '.35rem', marginBottom: '.75rem' }}>
+            {user?.primaryEmailAddress?.emailAddress ?? '—'}
+          </p>
+          <button
+            type="button"
+            onClick={() => { setEmailOpen(v => !v); setEmailError(''); setEmailStep('idle'); setNewEmail(''); setEmailCode('') }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', background: 'none', border: '1.5px solid var(--rule)', borderRadius: 8, padding: '.5rem 1rem', fontSize: '.8rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--sans)', color: 'var(--ink)' }}
+          >
+            Change email {emailOpen ? '▲' : '↓'}
+          </button>
+
+          {emailOpen && (
+            <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+              {emailStep === 'done' ? (
+                <p style={{ fontSize: '.78rem', color: 'var(--green)', background: 'var(--green-l)', padding: '.5rem .8rem', borderRadius: 7 }}>
+                  ✓ Email updated successfully. Reloading…
+                </p>
+              ) : (
+                <>
+                  <div>
+                    <label style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--ink)', display: 'block', marginBottom: '.3rem' }}>New email address</label>
+                    <div style={{ display: 'flex', gap: '.5rem' }}>
+                      <input
+                        className="field-input"
+                        type="email"
+                        value={newEmail}
+                        onChange={(e) => setNewEmail(e.target.value)}
+                        placeholder="new@example.com"
+                        disabled={emailStep === 'sending' || emailStep === 'sent' || emailStep === 'verifying'}
+                        style={{ flex: 1 }}
+                      />
+                      {(emailStep === 'idle' || emailStep === 'sending') && (
+                        <button
+                          onClick={sendEmailCode}
+                          disabled={emailStep === 'sending'}
+                          style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.78rem', fontWeight: 600, cursor: emailStep === 'sending' ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: emailStep === 'sending' ? 0.6 : 1 }}
+                        >
+                          {emailStep === 'sending' ? 'Sending…' : 'Send code'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {(emailStep === 'sent' || emailStep === 'verifying') && (
+                    <div>
+                      <label style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--ink)', display: 'block', marginBottom: '.3rem' }}>Verification code</label>
+                      <p style={{ fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.4rem' }}>A 6-digit code was sent to {newEmail}.</p>
+                      <div style={{ display: 'flex', gap: '.5rem' }}>
+                        <input
+                          className="field-input"
+                          type="text"
+                          inputMode="numeric"
+                          value={emailCode}
+                          onChange={(e) => setEmailCode(e.target.value)}
+                          placeholder="123456"
+                          disabled={emailStep === 'verifying'}
+                          style={{ flex: 1, maxWidth: 160 }}
+                        />
+                        <button
+                          onClick={verifyEmailCode}
+                          disabled={emailStep === 'verifying'}
+                          style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.78rem', fontWeight: 600, cursor: emailStep === 'verifying' ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: emailStep === 'verifying' ? 0.6 : 1 }}
+                        >
+                          {emailStep === 'verifying' ? 'Verifying…' : 'Verify & switch'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {emailError && (
+                    <p style={{ fontSize: '.75rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.4rem .75rem', borderRadius: 7 }}>{emailError}</p>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Photo */}
         <div>
@@ -538,9 +663,9 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
                   <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600, marginBottom: '.15rem' }}>Recruiter plan</p>
                   <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Directory access · Contact candidates · Includes all Pro features</p>
                 </div>
-                <button onClick={openPortal} disabled={portalLoading} style={{ padding: '.45rem .9rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.75rem', fontWeight: 600, cursor: portalLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', flexShrink: 0 }}>
-                  {portalLoading ? 'Loading…' : 'Invoices & card →'}
-                </button>
+                <Link href="/dashboard/billing" style={{ padding: '.45rem .9rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.75rem', fontWeight: 600, fontFamily: 'var(--sans)', whiteSpace: 'nowrap', flexShrink: 0, textDecoration: 'none' }}>
+                  Invoices &amp; card →
+                </Link>
               </div>
 
               {!cancelDone && (
@@ -574,9 +699,9 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
                 <p style={{ fontSize: '.82rem', color: 'var(--ink)', fontWeight: 600 }}>Pro plan</p>
                 <p style={{ fontSize: '.75rem', color: 'var(--muted)' }}>Unlimited vouches · Custom slug</p>
               </div>
-              <button onClick={openPortal} disabled={portalLoading} style={{ padding: '.5rem 1rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.78rem', fontWeight: 600, cursor: portalLoading ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)' }}>
-                {portalLoading ? 'Loading…' : 'Manage billing →'}
-              </button>
+              <Link href="/dashboard/billing" style={{ padding: '.5rem 1rem', borderRadius: 7, border: '1.5px solid var(--rule)', background: '#fff', color: 'var(--ink)', fontSize: '.78rem', fontWeight: 600, fontFamily: 'var(--sans)', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                Manage billing →
+              </Link>
             </div>
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -586,10 +711,6 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
               </div>
               <Link href="/pricing" style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.78rem', fontWeight: 600, textDecoration: 'none' }}>Upgrade to Pro →</Link>
             </div>
-          )}
-
-          {portalError && (
-            <p style={{ fontSize: '.75rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.5rem .8rem', borderRadius: 7, marginTop: '.75rem' }}>{portalError}</p>
           )}
 
           <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.6rem', lineHeight: 1.5 }}>
