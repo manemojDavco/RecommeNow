@@ -6,16 +6,16 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: {
-    default: "RecommeNow — Don't just apply. Get vouched.",
+    default: "RecommeNow",
     template: '%s · RecommeNow',
   },
   description:
-    "Don't just apply. Get vouched. Build a verified reputation profile from real colleagues, managers and clients — and share it anywhere you apply.",
+    "Don't just apply. Get vouched. Build a verified reputation profile from real colleagues, managers and clients, and share it anywhere you apply.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'),
   openGraph: {
     siteName: 'RecommeNow',
     type: 'website',
-    images: [{ url: '/brand/og-image-default.svg', width: 1200, height: 630, alt: "RecommeNow — Don't just apply. Get vouched." }],
+    images: [{ url: '/brand/og-image-default.svg', width: 1200, height: 630, alt: "RecommeNow: Don't just apply. Get vouched." }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -39,14 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider>
       <html lang="en">
-        <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet"
-          />
-        </head>
+        <head />
         <body>{children}</body>
       </html>
     </ClerkProvider>

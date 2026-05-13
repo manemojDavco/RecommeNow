@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useUser } from '@clerk/nextjs'
 import type { Profile } from '@/types'
 
 const INDUSTRIES = [
@@ -184,6 +185,36 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [cancelDone, setCancelDone] = useState(false)
   const [downgradeLoading, setDowngradeLoading] = useState(false)
 
+  // Change password
+  const { user } = useUser()
+  const [pwCurrent, setPwCurrent] = useState('')
+  const [pwNew, setPwNew]         = useState('')
+  const [pwConfirm, setPwConfirm] = useState('')
+  const [pwStatus, setPwStatus]   = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [pwError, setPwError]     = useState('')
+  const [pwShowCurrent, setPwShowCurrent] = useState(false)
+  const [pwShowNew, setPwShowNew]         = useState(false)
+  const [pwShowConfirm, setPwShowConfirm] = useState(false)
+  const [pwOpen, setPwOpen]               = useState(false)
+
+  async function changePassword() {
+    setPwError('')
+    if (!pwCurrent) { setPwError('Enter your current password.'); return }
+    if (pwNew.length < 8) { setPwError('New password must be at least 8 characters.'); return }
+    if (pwNew !== pwConfirm) { setPwError('Passwords do not match.'); return }
+    if (!user) return
+    setPwStatus('saving')
+    try {
+      await user.updatePassword({ currentPassword: pwCurrent, newPassword: pwNew })
+      setPwStatus('saved')
+      setPwCurrent(''); setPwNew(''); setPwConfirm('')
+      setTimeout(() => setPwStatus('idle'), 3000)
+    } catch (e: any) {
+      setPwError(e.errors?.[0]?.longMessage ?? 'Password update failed.')
+      setPwStatus('error')
+    }
+  }
+
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
@@ -316,7 +347,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>Profile settings</h1>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>Profile settings</h1>
         <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>This information appears on your public profile.</p>
       </div>
 
@@ -338,7 +369,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             >
               {photoUrl
                 ? <img src={photoUrl} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700, fontSize: '1.1rem', color: '#fff' }}>{initials}</span>
+                : <span style={{ fontFamily: 'var(--sans)', fontWeight: 700, fontSize: '1.1rem', color: '#fff' }}>{initials}</span>
               }
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transition: 'opacity .2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
@@ -423,7 +454,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
               placeholder="7911 123456"
             />
           </div>
-          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Only visible to you — not shown publicly.</p>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>Only visible to you. Not shown publicly.</p>
         </div>
 
         <div>
@@ -562,10 +593,135 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
           )}
 
           <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.6rem', lineHeight: 1.5 }}>
-            Cancellations take effect at the end of your billing period — you keep access until then.
+            Cancellations take effect at the end of your billing period. You keep access until then.
           </p>
         </div>
+
+        {/* ── Security ────────────────────────────────────────────────── */}
+        <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.5rem' }}>
+          <button
+            type="button"
+            onClick={() => { setPwOpen(v => !v); setPwError(''); setPwStatus('idle') }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '.65rem 1.25rem', fontSize: '.85rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--sans)' }}
+          >
+            Change password {pwOpen ? '▲' : '↓'}
+          </button>
+          {pwOpen && (
+          <div style={{ marginTop: '1.25rem' }}>
+          <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginBottom: '1rem' }}>
+            If you signed in with Google, you'll need to add a password via Clerk first.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+            {/* Current password */}
+            <div>
+              <label style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--ink)', display: 'block', marginBottom: '.3rem' }}>
+                Current password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={pwShowCurrent ? 'text' : 'password'}
+                  value={pwCurrent}
+                  onChange={e => setPwCurrent(e.target.value)}
+                  autoComplete="current-password"
+                  style={{ width: '100%', padding: '.6rem .6rem .6rem .75rem', paddingRight: '2.5rem', border: '1.5px solid var(--rule)', borderRadius: 8, fontSize: '.85rem', fontFamily: 'var(--sans)', boxSizing: 'border-box' }}
+                />
+                <button type="button" onClick={() => setPwShowCurrent(v => !v)}
+                  style={{ position: 'absolute', right: '.5rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 1, display: 'flex', alignItems: 'center' }}>
+                  <EyeSvg open={pwShowCurrent} />
+                </button>
+              </div>
+            </div>
+
+            {/* New password */}
+            <div>
+              <label style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--ink)', display: 'block', marginBottom: '.3rem' }}>
+                New password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={pwShowNew ? 'text' : 'password'}
+                  value={pwNew}
+                  onChange={e => setPwNew(e.target.value)}
+                  autoComplete="new-password"
+                  placeholder="8+ characters"
+                  style={{ width: '100%', padding: '.6rem .6rem .6rem .75rem', paddingRight: '2.5rem', border: '1.5px solid var(--rule)', borderRadius: 8, fontSize: '.85rem', fontFamily: 'var(--sans)', boxSizing: 'border-box' }}
+                />
+                <button type="button" onClick={() => setPwShowNew(v => !v)}
+                  style={{ position: 'absolute', right: '.5rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 1, display: 'flex', alignItems: 'center' }}>
+                  <EyeSvg open={pwShowNew} />
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm password */}
+            <div>
+              <label style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--ink)', display: 'block', marginBottom: '.3rem' }}>
+                Confirm new password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={pwShowConfirm ? 'text' : 'password'}
+                  value={pwConfirm}
+                  onChange={e => setPwConfirm(e.target.value)}
+                  autoComplete="new-password"
+                  style={{ width: '100%', padding: '.6rem .6rem .6rem .75rem', paddingRight: '2.5rem', border: '1.5px solid var(--rule)', borderRadius: 8, fontSize: '.85rem', fontFamily: 'var(--sans)', boxSizing: 'border-box' }}
+                />
+                <button type="button" onClick={() => setPwShowConfirm(v => !v)}
+                  style={{ position: 'absolute', right: '.5rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 1, display: 'flex', alignItems: 'center' }}>
+                  <EyeSvg open={pwShowConfirm} />
+                </button>
+              </div>
+              {pwConfirm.length > 0 && (
+                <p style={{
+                  fontSize: '.73rem', fontWeight: 600, marginTop: '.3rem',
+                  display: 'flex', alignItems: 'center', gap: '.3rem',
+                  color: pwNew === pwConfirm ? 'var(--green)' : 'var(--red)',
+                }}>
+                  {pwNew === pwConfirm ? (
+                    <><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="6" fill="currentColor" opacity=".15"/><path d="M3 6l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg> Passwords match</>
+                  ) : (
+                    <><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="6" fill="currentColor" opacity=".15"/><path d="M4 4l4 4M8 4l-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg> Passwords do not match</>
+                  )}
+                </p>
+              )}
+            </div>
+
+            {pwError && (
+              <p style={{ fontSize: '.75rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.4rem .75rem', borderRadius: 7 }}>{pwError}</p>
+            )}
+            {pwStatus === 'saved' && (
+              <p style={{ fontSize: '.75rem', color: 'var(--green)', background: '#ecfdf5', padding: '.4rem .75rem', borderRadius: 7 }}>✓ Password updated successfully.</p>
+            )}
+
+            <button
+              onClick={changePassword}
+              disabled={pwStatus === 'saving'}
+              style={{ alignSelf: 'flex-start', padding: '.55rem 1.25rem', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.82rem', fontWeight: 600, cursor: pwStatus === 'saving' ? 'not-allowed' : 'pointer', opacity: pwStatus === 'saving' ? 0.6 : 1, fontFamily: 'var(--sans)' }}
+            >
+              {pwStatus === 'saving' ? 'Updating…' : 'Update password'}
+            </button>
+          </div>
+          </div>
+          )}
+        </div>
+
       </div>
     </div>
+  )
+}
+
+// ── Inline SVG eye icon for web ───────────────────────────────────────────────
+function EyeSvg({ open }: { open: boolean }) {
+  return open ? (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  ) : (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+      <line x1="1" y1="1" x2="23" y2="23"/>
+    </svg>
   )
 }

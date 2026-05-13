@@ -50,6 +50,9 @@ export default function Nav() {
         <Link href="/pricing" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
           Pricing
         </Link>
+        <Link href="/faq" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
+          FAQ
+        </Link>
       </div>
 
       {/* Right: auth actions only */}
