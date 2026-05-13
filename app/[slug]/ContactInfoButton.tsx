@@ -97,19 +97,19 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, children }
         <button
           onClick={() => setShowContact(true)}
           style={{
-            position: 'absolute', bottom: -16, left: '50%', transform: 'translateX(-50%)',
+            position: 'absolute', bottom: -12, left: '50%', transform: 'translateX(-50%)',
             background: 'none', border: 'none', cursor: 'pointer', padding: 0,
             display: 'block',
           }}
           aria-label="Show contact info"
         >
           {/* Arc: M 4,20 A 60,60 0 0,0 76,20 curves upward through (40,8) — verified midpoint inside viewBox */}
-          <svg viewBox="0 0 80 22" width="72" height="18" xmlns="http://www.w3.org/2000/svg" overflow="visible">
+          <svg viewBox="0 0 80 22" width="72" height="24" xmlns="http://www.w3.org/2000/svg" overflow="visible">
             <defs>
               <path id="rn-info-arc" d="M 4,20 A 60,60 0 0,0 76,20" />
             </defs>
             <text
-              fontSize="8.5"
+              fontSize="13"
               fill="#2D6A4F"
               textAnchor="middle"
               fontFamily="var(--sans)"
