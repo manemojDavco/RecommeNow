@@ -96,20 +96,15 @@ export default function ContactInfoButton({ name, linkedinUrl, phone, children }
         <button
           onClick={() => setShowContact(true)}
           style={{
-            position: 'absolute', bottom: -16, left: '50%', transform: 'translateX(-50%)',
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            position: 'absolute', bottom: -20, left: '50%', transform: 'translateX(-50%)',
+            background: 'none', border: 'none', cursor: 'pointer', padding: '2px 6px',
+            fontSize: '10px', fontWeight: 700, color: '#2D6A4F',
+            fontFamily: 'var(--sans)', letterSpacing: '.5px',
+            whiteSpace: 'nowrap', lineHeight: 1,
           }}
-          title="Contact info"
           aria-label="Show contact info"
         >
-          <svg viewBox="0 0 80 18" width="64" height="14" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <path id="infocurve" d="M 8,14 A 36,36 0 0,1 72,14" />
-            </defs>
-            <text fontSize="7.5" fill="#2D6A4F" textAnchor="middle" fontFamily="var(--sans)" fontWeight="600" letterSpacing="1.5">
-              <textPath href="#infocurve" startOffset="50%">ⓘ  info</textPath>
-            </text>
-          </svg>
+          ⓘ info
         </button>
       </div>
       {modal}
