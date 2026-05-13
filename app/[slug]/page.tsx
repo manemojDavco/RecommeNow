@@ -547,7 +547,9 @@ export default async function PublicProfilePage({ params }: Props) {
             candidateSlug={profile.slug}
             candidateName={profile.name}
             candidatePhone={profile.phone ?? null}
-            candidateEmail={candidateEmail}
+            candidateEmail={(profile as any).contact_email ?? null}
+            showPhone={(profile as any).show_phone !== false}
+            showEmail={(profile as any).show_contact_email !== false}
             isRecruiter={isRecruiter}
             isSignedIn={!!userId}
           />

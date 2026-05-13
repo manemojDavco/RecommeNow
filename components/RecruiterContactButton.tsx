@@ -8,11 +8,13 @@ type Props = {
   candidateName: string
   candidatePhone: string | null
   candidateEmail: string | null
+  showPhone?: boolean
+  showEmail?: boolean
   isRecruiter: boolean
   isSignedIn: boolean
 }
 
-export default function RecruiterContactButton({ candidateSlug, candidateName, candidatePhone, candidateEmail, isRecruiter, isSignedIn }: Props) {
+export default function RecruiterContactButton({ candidateSlug, candidateName, candidatePhone, candidateEmail, showPhone = true, showEmail = true, isRecruiter, isSignedIn }: Props) {
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState({ company: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
@@ -57,7 +59,7 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
           textAlign: 'center',
         }}
       >
-        Recruiter plan — Contact {candidateName.split(' ')[0]} →
+        Recruiter plan - Upgrade →
       </Link>
     )
   }
@@ -122,7 +124,7 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
             {status === 'sent' ? (
               <div style={{ textAlign: 'center', padding: '1rem 0' }}>
                 <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✓</div>
-                <p style={{ fontFamily: 'var(--serif)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.5rem' }}>
+                <p style={{ fontFamily: 'var(--sans)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.5rem' }}>
                   Message sent!
                 </p>
                 <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '1.5rem' }}>
@@ -139,7 +141,7 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                   <div>
-                    <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)', margin: 0 }}>
+                    <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)', margin: 0 }}>
                       Contact {candidateName}
                     </h2>
                     <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: '.25rem' }}>
@@ -192,12 +194,12 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
                     {status === 'sending' ? 'Sending…' : 'Send message'}
                   </button>
 
-                  {(candidateEmail || candidatePhone) && (
+                  {((candidateEmail && showEmail) || (candidatePhone && showPhone)) && (
                     <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
                       <p style={{ fontSize: '.68rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.1rem' }}>
                         Direct contact details
                       </p>
-                      {candidateEmail && (
+                      {candidateEmail && showEmail && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
                           <span style={{ fontSize: '.75rem', color: 'var(--muted)', flexShrink: 0 }}>✉</span>
                           <a href={`mailto:${candidateEmail}`} style={{ fontSize: '.82rem', color: 'var(--green2)', textDecoration: 'none', fontWeight: 500, wordBreak: 'break-all' }}>
@@ -205,7 +207,7 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
                           </a>
                         </div>
                       )}
-                      {candidatePhone && (
+                      {candidatePhone && showPhone && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
                           <span style={{ fontSize: '.75rem', color: 'var(--muted)', flexShrink: 0 }}>📱</span>
                           <a href={`tel:${candidatePhone.replace(/\s/g, '')}`} style={{ fontSize: '.82rem', color: 'var(--green2)', textDecoration: 'none', fontWeight: 500 }}>
