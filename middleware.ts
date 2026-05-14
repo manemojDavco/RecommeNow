@@ -13,8 +13,10 @@ const isProtectedRoute = createRouteMatcher([
 // Everything else → /coming-soon redirect.
 const isAlwaysAllowed = createRouteMatcher([
   '/coming-soon',
-  '/api(.*)',    // webhooks, waitlist, cron — must never be blocked
-  '/admin(.*)', // internal admin panel
+  '/api(.*)',        // webhooks, waitlist, cron — must never be blocked
+  '/admin(.*)',      // internal admin panel
+  '/sign-in(.*)',   // Clerk auth — needed to log in to admin
+  '/sign-up(.*)',   // Clerk auth
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
