@@ -9,25 +9,19 @@ const isProtectedRoute = createRouteMatcher([
   '/directory(.*)',
 ])
 
-// In coming-soon mode ONLY these routes stay accessible.
+// In coming-soon mode ONLY the waitlist page and API are accessible.
 // Everything else → /coming-soon redirect.
 const isAlwaysAllowed = createRouteMatcher([
   '/coming-soon',
-  '/api(.*)',        // webhooks, waitlist, cron — must never be blocked
-  '/admin(.*)',      // internal admin panel
-  '/sign-in(.*)',   // Clerk auth — needed to log in to admin
-  '/sign-up(.*)',   // Clerk auth
+  '/api(.*)',   // webhooks, waitlist, cron — must never be blocked
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // Coming-soon gate: block unauthenticated visitors unless route is always allowed
+  // Coming-soon gate: hard lock — only /coming-soon and /api pass through
   if (process.env.COMING_SOON === 'true' && !isAlwaysAllowed(req)) {
-    const { userId } = await auth()
-    if (!userId) {
-      const url = req.nextUrl.clone()
-      url.pathname = '/coming-soon'
-      return NextResponse.redirect(url)
-    }
+    const url = req.nextUrl.clone()
+    url.pathname = '/coming-soon'
+    return NextResponse.redirect(url)
   }
 
   if (isProtectedRoute(req)) {
