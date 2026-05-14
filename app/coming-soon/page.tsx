@@ -46,7 +46,7 @@ export default function ComingSoonPage() {
         {/* Launching Soon badge */}
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(45,106,79,.5)', border: '1px solid rgba(149,213,178,.25)', borderRadius: '100px', padding: '6px 18px', marginBottom: '2rem' }}>
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#52B788', display: 'inline-block', boxShadow: '0 0 8px #52B788' }} />
-          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#95D5B2' }}>Launching Soon</span>
+          <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#95D5B2' }}>Launching Tomorrow</span>
         </div>
 
         {/* Headline */}
