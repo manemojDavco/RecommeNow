@@ -20,11 +20,14 @@ const isAlwaysAllowed = createRouteMatcher([
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // Coming-soon gate: redirect everything except /coming-soon and /api to coming-soon page
+  // Coming-soon gate: block unauthenticated visitors unless route is always allowed
   if (process.env.COMING_SOON === 'true' && !isAlwaysAllowed(req)) {
-    const url = req.nextUrl.clone()
-    url.pathname = '/coming-soon'
-    return NextResponse.redirect(url)
+    const { userId } = await auth()
+    if (!userId) {
+      const url = req.nextUrl.clone()
+      url.pathname = '/coming-soon'
+      return NextResponse.redirect(url)
+    }
   }
 
   if (isProtectedRoute(req)) {
