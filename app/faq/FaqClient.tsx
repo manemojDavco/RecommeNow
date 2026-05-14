@@ -158,8 +158,8 @@ export default function FaqClient() {
           </a>
         </div>
 
-        {/* Get the app */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        {/* Get the app — hidden until app is ready */}
+        <div style={{ display: 'none' }}>
           <div>
             <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '.4rem' }}>Get the app</p>
             {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -119,10 +119,10 @@ export default function LandingPage() {
           >
             <div style={{ display: 'flex' }}>
               {[
-                { bg: '#4a7c59', initials: 'SJ' },
-                { bg: '#2d5a8e', initials: 'MK' },
-                { bg: '#8e5a2d', initials: 'RP' },
-                { bg: '#5a2d8e', initials: 'AL' },
+                { bg: '#4a7c59', initials: 'SJ', photo: '/sample-avatars/sarah.jpg' },
+                { bg: '#2d5a8e', initials: 'MK', photo: '/sample-avatars/marcus.jpg' },
+                { bg: '#8e5a2d', initials: 'RP', photo: '/sample-avatars/riya.jpg' },
+                { bg: '#5a2d8e', initials: 'AL', photo: '/sample-avatars/alex.jpg' },
               ].map((f) => (
                 <div
                   key={f.initials}
@@ -139,9 +139,14 @@ export default function LandingPage() {
                     fontSize: '.6rem',
                     fontWeight: 700,
                     color: '#fff',
+                    overflow: 'hidden',
+                    flexShrink: 0,
                   }}
                 >
-                  {f.initials}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {f.photo
+                    ? <img src={f.photo} alt={f.initials} width={32} height={32} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    : f.initials}
                 </div>
               ))}
             </div>
@@ -336,9 +341,13 @@ export default function LandingPage() {
                         fontWeight: 700,
                         color: '#fff',
                         flexShrink: 0,
+                        overflow: 'hidden',
                       }}
                     >
-                      {v.initials}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      {v.photo
+                        ? <img src={v.photo} alt={v.name} width={36} height={36} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                        : v.initials}
                     </div>
                     <div>
                       <div
@@ -410,22 +419,40 @@ export default function LandingPage() {
             <div style={{ display: 'flex', flexDirection: 'column', borderTop: '1px solid var(--rule)' }}>
               {[
                 {
-                  icon: '✉',
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="2" y="4" width="20" height="16" rx="2"/>
+                      <path d="m2 7 10 7 10-7"/>
+                    </svg>
+                  ),
                   title: 'Work email verification',
                   desc: 'Every vouch giver must verify their email. No anonymous submissions.',
                 },
                 {
-                  icon: '✓',
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                  ),
                   title: 'Candidate approval',
                   desc: 'You review and approve every vouch before it appears on your public profile.',
                 },
                 {
-                  icon: '⚑',
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/>
+                      <line x1="4" y1="22" x2="4" y2="15"/>
+                    </svg>
+                  ),
                   title: 'Community flagging',
                   desc: 'Readers can flag suspicious vouches. Three flags triggers automatic review.',
                 },
                 {
-                  icon: '⚡',
+                  icon: (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+                    </svg>
+                  ),
                   title: 'Rate limited submissions',
                   desc: 'Max 3 vouches per IP per 4 hours prevents coordinated abuse.',
                 },
@@ -449,7 +476,6 @@ export default function LandingPage() {
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.35rem',
                       flexShrink: 0,
                     }}
                   >
@@ -609,8 +635,8 @@ export default function LandingPage() {
             </a>
           </div>
 
-          {/* Get the app */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* Get the app — hidden until app is ready */}
+          <div style={{ display: 'none' }}>
             <div>
               <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '.4rem' }}>Get the app</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -676,6 +702,7 @@ const SAMPLE_VOUCHES = [
     role: 'VP Product · Acme Corp',
     initials: 'SJ',
     avatarColor: '#4a7c59',
+    photo: '/sample-avatars/sarah.jpg',
   },
   {
     relationship: 'Client',
@@ -685,6 +712,7 @@ const SAMPLE_VOUCHES = [
     role: 'CEO · Fold Financial',
     initials: 'MK',
     avatarColor: '#2d5a8e',
+    photo: '/sample-avatars/marcus.jpg',
   },
   {
     relationship: 'Peer / colleague',
@@ -694,5 +722,6 @@ const SAMPLE_VOUCHES = [
     role: 'Senior PM · Stripe',
     initials: 'RP',
     avatarColor: '#8e5a2d',
+    photo: '/sample-avatars/riya.jpg',
   },
 ]
