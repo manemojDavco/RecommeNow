@@ -1,30 +1,16 @@
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)',
-  '/onboarding(.*)',
-  '/admin(.*)',
-  '/directory(.*)',
-])
+// LAUNCH LOCK — remove this block on launch day
+const LOCKED = true
+const ALLOWED_PATHS = ['/coming-soon', '/api/waitlist']
 
-// In coming-soon mode ONLY the waitlist page is accessible.
-const isAlwaysAllowed = createRouteMatcher([
-  '/coming-soon',
-  '/api/waitlist', // waitlist form submission on the coming-soon page
-])
-
-export default clerkMiddleware(async (auth, req: NextRequest) => {
-  // Coming-soon gate: hard lock — only /coming-soon and /api pass through
-  if (process.env.COMING_SOON === 'true' && !isAlwaysAllowed(req)) {
+export default clerkMiddleware(async (_auth, req: NextRequest) => {
+  if (LOCKED && !ALLOWED_PATHS.some(p => req.nextUrl.pathname === p || req.nextUrl.pathname.startsWith(p + '/'))) {
     const url = req.nextUrl.clone()
     url.pathname = '/coming-soon'
     return NextResponse.redirect(url)
-  }
-
-  if (isProtectedRoute(req)) {
-    await auth.protect()
   }
 })
 
