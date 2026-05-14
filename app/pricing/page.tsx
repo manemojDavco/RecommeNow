@@ -3,7 +3,13 @@ import PricingClient from './PricingClient'
 
 export const metadata = { title: 'Pricing' }
 
-export default async function PricingPage() {
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ trial?: string }>
+}) {
   const { userId } = await auth()
-  return <PricingClient isSignedIn={!!userId} />
+  const params = await searchParams
+  const trial = params.trial === '1'
+  return <PricingClient isSignedIn={!!userId} trial={trial} />
 }

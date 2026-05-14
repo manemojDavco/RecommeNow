@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
   const currency: string = (body.currency ?? DEFAULT_CURRENCY).toLowerCase()
   const planType: 'pro' | 'recruiter' = body.planType === 'recruiter' ? 'recruiter' : 'pro'
   const interval: 'month' | 'year' = body.interval === 'year' ? 'year' : 'month'
+  const withTrial: boolean = body.trial === true
 
   const priceMap = interval === 'year'
     ? (planType === 'recruiter' ? RECRUITER_PRICES_YEARLY : PRO_PRICES_YEARLY)
@@ -79,6 +80,9 @@ export async function POST(req: NextRequest) {
       },
       quantity: 1,
     }],
+    ...(withTrial && planType === 'pro' ? {
+      subscription_data: { trial_period_days: 30 },
+    } : {}),
     success_url: `${appUrl}/dashboard?${planType === 'recruiter' ? 'recruiter=1' : 'upgraded=1'}`,
     cancel_url: `${appUrl}/pricing`,
     metadata: { user_id: userId, profile_id: profile.id, plan_type: planType },

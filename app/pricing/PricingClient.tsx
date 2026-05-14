@@ -7,6 +7,23 @@ import { Logo } from '@/components/Logo'
 import Nav from '@/components/Nav'
 import { PRO_PRICES, RECRUITER_PRICES, PRO_PRICES_YEARLY, RECRUITER_PRICES_YEARLY } from '@/lib/plans'
 
+function PlanBadge({ variant, size = 26 }: { variant: 'pro' | 'recruiter'; size?: number }) {
+  const dark  = variant === 'recruiter' ? '#5B21B6' : '#2D6A4F'
+  const light = variant === 'recruiter' ? '#A78BFA' : '#52B788'
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={size} height={size} style={{ flexShrink: 0 }}>
+      <circle cx="9" cy="10" r="4" fill={dark}/>
+      <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill={dark}/>
+      <path d="M14 20 Q18 17 20 17" stroke={light} strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+      <polygon points="20,17 16.5,14.5 16.5,19.5" fill={light}/>
+      <circle cx="23" cy="10" r="4" fill={light}/>
+      <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill={light}/>
+      <circle cx="28" cy="5" r="4" fill={dark}/>
+      <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 const CURRENCY_LABELS: Record<string, string> = {
   aud: '🇦🇺 AUD',
   usd: '🇺🇸 USD',
@@ -17,7 +34,7 @@ const CURRENCY_LABELS: Record<string, string> = {
 type PlanType = 'pro' | 'recruiter'
 type Interval = 'month' | 'year'
 
-export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
+export default function PricingClient({ isSignedIn, trial = false }: { isSignedIn: boolean; trial?: boolean }) {
   const router = useRouter()
   const [currency, setCurrency] = useState('aud')
   const [interval, setInterval] = useState<Interval>('month')
@@ -29,7 +46,8 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
 
   async function handleCheckout(planType: PlanType) {
     if (!isSignedIn) {
-      router.push('/sign-up')
+      const redirect = `/pricing${trial ? '?trial=1' : ''}`
+      router.push(`/sign-up?redirect_url=${encodeURIComponent(redirect)}`)
       return
     }
     setLoading(planType)
@@ -38,7 +56,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ currency, planType, interval }),
+        body: JSON.stringify({ currency, planType, interval, trial: trial && planType === 'pro' }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Failed to start checkout')
@@ -54,6 +72,18 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
       <Nav />
 
       <div style={{ maxWidth: 1060, margin: '0 auto', padding: '4rem 1.5rem' }}>
+        {/* Trial banner */}
+        {trial && (
+          <div style={{ background: '#d8f3dc', border: '1px solid #b2dfbf', borderRadius: 12, padding: '14px 24px', marginBottom: '2rem', textAlign: 'center' }}>
+            <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 700, color: 'var(--ink)' }}>
+              Your first month of Pro is free — welcome to RecommeNow.
+            </p>
+            <p style={{ margin: '.3rem 0 0', fontSize: '.8rem', color: 'var(--muted)' }}>
+              No charge for 30 days. Cancel anytime before your trial ends.
+            </p>
+          </div>
+        )}
+
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h1 style={{ fontFamily: 'var(--sans)', fontSize: 'clamp(2rem, 5vw, 2.8rem)', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem' }}>
@@ -139,34 +169,39 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
           </div>
 
           {/* Pro */}
-          <div style={{ background: 'var(--green)', border: '1px solid var(--green)', borderRadius: 16, padding: '2rem', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: 14, right: 16, background: 'rgba(255,255,255,.15)', color: '#fff', fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.25rem .6rem', borderRadius: 100 }}>
+          <div style={{ background: 'var(--cream)', border: '1px solid #ddd5b8', borderRadius: 16, padding: '2rem', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: 14, right: 16, background: 'var(--ink)', color: '#fff', fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.25rem .6rem', borderRadius: 100 }}>
               Most popular
             </div>
             <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.6)', marginBottom: '.5rem' }}>Pro</div>
-              <div style={{ fontFamily: 'var(--sans)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.5rem' }}>
+                <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>Pro</div>
+                <PlanBadge variant="pro" size={22} />
+              </div>
+              <div style={{ fontFamily: 'var(--sans)', fontSize: '2.5rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>
                 {proPrice.display.split(' ')[0]}
               </div>
               {interval === 'year' ? (
-                <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.7)', marginTop: '.4rem' }}>
-                  {currency.toUpperCase()} / year &nbsp;·&nbsp; <span style={{ color: 'rgba(255,255,255,.5)' }}>{'monthly' in proPrice ? `${(proPrice as {monthly:string}).monthly}/mo` : ''}</span>
+                <div style={{ fontSize: '.8rem', color: 'var(--muted)', marginTop: '.4rem' }}>
+                  {currency.toUpperCase()} / year &nbsp;·&nbsp; <span style={{ color: 'var(--muted)', opacity: 0.7 }}>{'monthly' in proPrice ? `${(proPrice as {monthly:string}).monthly}/mo` : ''}</span>
                 </div>
               ) : (
-                <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.6)', marginTop: '.4rem' }}>{currency.toUpperCase()} / month</div>
+                <div style={{ fontSize: '.8rem', color: 'var(--muted)', marginTop: '.4rem' }}>{currency.toUpperCase()} / month</div>
               )}
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem', display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
               {['Everything in Free', 'Unlimited vouches', 'Custom slug (your-name)', 'Embeddable widget', 'PDF one-pager', 'Priority support'].map((f) => (
-                <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '.55rem', fontSize: '.82rem', color: '#fff' }}>
-                  <span style={{ color: 'rgba(255,255,255,.7)', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
+                <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '.55rem', fontSize: '.82rem', color: 'var(--ink)' }}>
+                  <span style={{ color: 'var(--ink2)', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
                 </li>
               ))}
             </ul>
-            <button onClick={() => handleCheckout('pro')} disabled={loading !== null} style={{ display: 'block', width: '100%', padding: '.8rem', borderRadius: 9, border: 'none', background: '#fff', color: 'var(--green)', fontSize: '.83rem', fontWeight: 700, cursor: loading !== null ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', opacity: loading !== null ? 0.8 : 1 }}>
-              {loading === 'pro' ? 'Redirecting…' : 'Upgrade to Pro →'}
+            <button onClick={() => handleCheckout('pro')} disabled={loading !== null} style={{ display: 'block', width: '100%', padding: '.8rem', borderRadius: 9, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.83rem', fontWeight: 700, cursor: loading !== null ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', opacity: loading !== null ? 0.8 : 1 }}>
+              {loading === 'pro' ? 'Redirecting…' : trial ? 'Start free month →' : 'Upgrade to Pro →'}
             </button>
-            <p style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.45)', textAlign: 'center', marginTop: '.6rem' }}>Cancel anytime</p>
+            <p style={{ fontSize: '.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '.6rem' }}>
+              {trial ? 'Free for 30 days — no charge until trial ends' : 'Cancel anytime'}
+            </p>
           </div>
         </div>
 
@@ -175,25 +210,26 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
           For recruiters
         </p>
         <div style={{ maxWidth: 740, margin: '0 auto' }}>
-          <div style={{ background: 'var(--ink)', border: '1px solid var(--ink)', borderRadius: 16, padding: '2rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
+          <div style={{ background: 'var(--green-l)', border: '1px solid #b2dfbf', borderRadius: 16, padding: '2rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '.75rem' }}>
-                <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.5)' }}>Recruiter</div>
-                <span style={{ background: 'rgba(255,255,255,.1)', color: 'rgba(255,255,255,.7)', fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.2rem .55rem', borderRadius: 100 }}>New</span>
+                <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>Recruiter</div>
+                <PlanBadge variant="recruiter" size={22} />
+                <span style={{ background: 'var(--ink)', color: '#fff', fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.2rem .55rem', borderRadius: 100 }}>New</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '.5rem', marginBottom: '.4rem' }}>
-                <div style={{ fontFamily: 'var(--sans)', fontSize: '2.5rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
+                <div style={{ fontFamily: 'var(--sans)', fontSize: '2.5rem', fontWeight: 700, color: 'var(--ink)', lineHeight: 1 }}>
                   {recPrice.display.split(' ')[0]}
                 </div>
                 {interval === 'year' ? (
-                  <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.5)' }}>
+                  <div style={{ fontSize: '.8rem', color: 'var(--muted)' }}>
                     {currency.toUpperCase()} / year &nbsp;·&nbsp; {'monthly' in recPrice ? `${(recPrice as {monthly:string}).monthly}/mo` : ''}
                   </div>
                 ) : (
-                  <div style={{ fontSize: '.8rem', color: 'rgba(255,255,255,.5)' }}>{currency.toUpperCase()} / month</div>
+                  <div style={{ fontSize: '.8rem', color: 'var(--muted)' }}>{currency.toUpperCase()} / month</div>
                 )}
               </div>
-              <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', marginTop: '.75rem', marginBottom: '.5rem' }}>
+              <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '.75rem', marginBottom: '.5rem' }}>
                 Includes everything in Pro, plus:
               </p>
               <ul style={{ listStyle: 'none', padding: 0, margin: '0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.65rem .75rem' }}>
@@ -205,17 +241,17 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean }) {
                   'View full vouch history',
                   'Candidate reply-to link',
                 ].map((f) => (
-                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.8rem', color: 'rgba(255,255,255,.75)' }}>
-                    <span style={{ color: 'rgba(255,255,255,.4)', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.8rem', color: 'var(--ink)' }}>
+                    <span style={{ color: 'var(--ink2)', fontWeight: 700, flexShrink: 0 }}>✓</span>{f}
                   </li>
                 ))}
               </ul>
             </div>
             <div style={{ flexShrink: 0 }}>
-              <button onClick={() => handleCheckout('recruiter')} disabled={loading !== null} style={{ display: 'block', padding: '.9rem 2rem', borderRadius: 9, border: 'none', background: '#fff', color: 'var(--ink)', fontSize: '.85rem', fontWeight: 700, cursor: loading !== null ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: loading !== null ? 0.8 : 1 }}>
+              <button onClick={() => handleCheckout('recruiter')} disabled={loading !== null} style={{ display: 'block', padding: '.9rem 2rem', borderRadius: 9, border: 'none', background: 'var(--ink)', color: '#fff', fontSize: '.85rem', fontWeight: 700, cursor: loading !== null ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: loading !== null ? 0.8 : 1 }}>
                 {loading === 'recruiter' ? 'Redirecting…' : 'Get Recruiter access →'}
               </button>
-              <p style={{ fontSize: '.7rem', color: 'rgba(255,255,255,.35)', textAlign: 'center', marginTop: '.6rem' }}>Cancel anytime</p>
+              <p style={{ fontSize: '.7rem', color: 'var(--muted)', textAlign: 'center', marginTop: '.6rem' }}>Cancel anytime</p>
             </div>
           </div>
         </div>

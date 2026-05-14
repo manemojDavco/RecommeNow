@@ -95,8 +95,21 @@ export default function OperationsClient() {
       {tab === 'waitlist' && (
         <div style={S.card}>
           <div style={S.cardHead}>
-            <span style={S.cardTitle}>Waitlist — {waitlist.length} entries</span>
-            <a href="/api/admin/waitlist?format=csv" style={{ ...S.btn, textDecoration: 'none' }}>⬇ Export CSV</a>
+            <span style={S.cardTitle}>Waitlist: {waitlist.length} entries</span>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <a href="/api/admin/waitlist?format=csv" style={{ ...S.btn, textDecoration: 'none' }}>⬇ Export CSV</a>
+              <button
+                style={{ ...S.btn, background: '#1B4332', color: '#fff', border: 'none' }}
+                onClick={async () => {
+                  if (!confirm(`Send launch email to all ${waitlist.length} waitlist users?\n\nEach will receive a "1 month free Pro" offer.`)) return
+                  const res = await fetch('/api/admin/send-launch-emails', { method: 'POST' })
+                  const data = await res.json()
+                  alert(`Done! Sent: ${data.sent}, Failed: ${data.failed ?? 0}, Total: ${data.total}`)
+                }}
+              >
+                Send launch email
+              </button>
+            </div>
           </div>
           {loading ? <div style={{ padding: 24, color: '#52705C', fontSize: '0.85rem' }}>Loading…</div> : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -128,7 +141,7 @@ export default function OperationsClient() {
       {tab === 'users' && (
         <div style={S.card}>
           <div style={S.cardHead}>
-            <span style={S.cardTitle}>Users — {users.length} total</span>
+            <span style={S.cardTitle}>Users: {users.length} total</span>
           </div>
           {loading ? <div style={{ padding: 24, color: '#52705C', fontSize: '0.85rem' }}>Loading…</div> : (
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
