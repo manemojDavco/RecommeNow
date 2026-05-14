@@ -9,11 +9,10 @@ const isProtectedRoute = createRouteMatcher([
   '/directory(.*)',
 ])
 
-// In coming-soon mode ONLY the waitlist page and API are accessible.
-// Everything else → /coming-soon redirect.
+// In coming-soon mode ONLY the waitlist page is accessible.
 const isAlwaysAllowed = createRouteMatcher([
   '/coming-soon',
-  '/api(.*)',   // webhooks, waitlist, cron — must never be blocked
+  '/api/waitlist', // waitlist form submission on the coming-soon page
 ])
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
