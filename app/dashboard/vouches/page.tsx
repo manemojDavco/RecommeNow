@@ -103,7 +103,7 @@ export default function VouchesPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', borderBottom: '1px solid var(--rule)', marginBottom: '1.5rem' }}>
+      <div className="rn-vouches-tabs" style={{ display: 'flex', borderBottom: '1px solid var(--rule)', marginBottom: '1.5rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch' as const }}>
         {tabs.map((t) => (
           <button
             key={t.key}

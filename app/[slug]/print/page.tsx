@@ -121,10 +121,10 @@ export default async function PrintPage({ params }: Props) {
       `}</style>
 
       {/* Print trigger button — hidden when printing */}
-      <div className="no-print" style={{ background: '#1b4332', padding: '.75rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="no-print rn-print-topbar" style={{ background: '#1b4332', padding: '.75rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '.75rem' }}>
         <Logo variant="light" href="/" size={22} />
-        <div style={{ display: 'flex', gap: '.75rem', alignItems: 'center' }}>
-          <span style={{ fontSize: '.78rem', color: 'rgba(255,255,255,.5)' }}>Use Ctrl+P / ⌘+P to save as PDF</span>
+        <div style={{ display: 'flex', gap: '.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span className="rn-print-hint" style={{ fontSize: '.78rem', color: 'rgba(255,255,255,.5)' }}>Use Ctrl+P / ⌘+P to save as PDF</span>
           <PrintButton />
         </div>
       </div>

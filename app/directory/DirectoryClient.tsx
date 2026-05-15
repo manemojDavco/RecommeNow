@@ -394,7 +394,7 @@ export default function DirectoryClient({ initial }: { initial: DirectoryProfile
       </div>
 
       {/* ── Sort bar ── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1rem', padding: '.6rem .9rem', background: 'var(--paper)', borderRadius: 8, border: '1px solid var(--rule)' }}>
+      <div className="rn-sort-bar" style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1rem', padding: '.6rem .9rem', background: 'var(--paper)', borderRadius: 8, border: '1px solid var(--rule)', flexWrap: 'wrap' }}>
         <span style={{ fontSize: '.72rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', flexShrink: 0 }}>Sort by</span>
         {[
           { value: 'vouches', label: 'Most vouches' },

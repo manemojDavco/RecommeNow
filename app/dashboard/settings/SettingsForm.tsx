@@ -595,10 +595,12 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
           <label className="field-label">Your profile URL</label>
           {isPro ? (
             <>
-              <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
-                <span style={{ fontSize: '.83rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>{appUrl}/</span>
-                <input className="field-input" style={{ flex: 1 }} value={slug} onChange={(e) => { setSlug(e.target.value.toLowerCase()); setSlugStatus('idle'); setSlugError('') }} placeholder="your-name" />
-                <button onClick={saveSlug} disabled={slugStatus === 'saving' || slug === profile.slug} style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: slugStatus === 'saved' ? 'var(--green-l)' : 'var(--green)', color: slugStatus === 'saved' ? 'var(--green2)' : '#fff', fontSize: '.78rem', fontWeight: 600, cursor: slugStatus === 'saving' || slug === profile.slug ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: slug === profile.slug ? 0.5 : 1 }}>
+              <div className="rn-slug-row" style={{ display: 'flex', gap: '.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center', flex: 1, minWidth: 0 }}>
+                  <span style={{ fontSize: '.83rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>{appUrl}/</span>
+                  <input className="field-input" style={{ flex: 1, minWidth: 0 }} value={slug} onChange={(e) => { setSlug(e.target.value.toLowerCase()); setSlugStatus('idle'); setSlugError('') }} placeholder="your-name" />
+                </div>
+                <button onClick={saveSlug} disabled={slugStatus === 'saving' || slug === profile.slug} className="rn-slug-update-btn" style={{ padding: '.5rem 1rem', borderRadius: 7, border: 'none', background: slugStatus === 'saved' ? 'var(--green-l)' : 'var(--green)', color: slugStatus === 'saved' ? 'var(--green2)' : '#fff', fontSize: '.78rem', fontWeight: 600, cursor: slugStatus === 'saving' || slug === profile.slug ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: slug === profile.slug ? 0.5 : 1 }}>
                   {slugStatus === 'saving' ? '…' : slugStatus === 'saved' ? '✓ Saved' : 'Update'}
                 </button>
               </div>

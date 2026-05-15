@@ -57,7 +57,7 @@ export default async function DashboardOverviewPage({
       {profile.recruiter_active && <RecruiterDirectoryCard />}
 
       {/* Stats row — full width */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '.75rem', marginBottom: '1rem' }}>
+      <div className="rn-dash-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '.75rem', marginBottom: '1rem' }}>
         {[
           { label: 'Approved vouches', value: approved.length, sub: 'live on your profile', href: '/dashboard/vouches' },
           { label: 'Unique vouchers', value: new Set(approved.map((v) => v.giver_email)).size, sub: 'distinct people', href: null },
@@ -85,7 +85,7 @@ export default async function DashboardOverviewPage({
       </div>
 
       {/* Two-column: recent vouches + right sidebar */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem' }}>
+      <div className="rn-dash-overview-cols" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem' }}>
 
         {/* Recent vouches */}
         <div>

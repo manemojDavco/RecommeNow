@@ -480,6 +480,27 @@ body {
     align-items: flex-start !important;
   }
 
+  /* Dashboard overview — stats 2×2 on mobile, then below 480 full 1 col */
+  .rn-dash-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .rn-dash-overview-cols {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Vouches tabs — scrollable on mobile */
+  .rn-vouches-tabs {
+    scrollbar-width: none;
+  }
+  .rn-vouches-tabs::-webkit-scrollbar { display: none; }
+  .rn-vouches-tabs button { flex-shrink: 0; }
+
+  /* Sort bar — wrap chips */
+  .rn-sort-bar { gap: .5rem !important; }
+
+  /* Print page top bar — hide hint text on small screens */
+  .rn-print-hint { display: none; }
+
   /* Pricing: stack recruiter card */
   .rn-pricing-recruiter {
     grid-template-columns: 1fr !important;
@@ -498,4 +519,5 @@ body {
 @media (max-width: 480px) {
   h1 { font-size: 1.85rem !important; }
   .rn-logo-text { font-size: .98rem; }
+  .rn-dash-stats { grid-template-columns: 1fr !important; }
 }
