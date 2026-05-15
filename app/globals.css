@@ -508,7 +508,7 @@ body {
 
   /* Vouches heading — Give Vouch button stretches full width */
   .rn-vouches-heading { flex-direction: column !important; align-items: stretch !important; }
-  .rn-vouches-heading > a { text-align: center !important; }
+  .rn-vouches-heading > a { text-align: center !important; width: 100% !important; box-sizing: border-box; }
 
   /* Empty-state vouch card — reduce side padding so button text fits */
   .rn-vouches-empty { padding: 2rem 1.25rem !important; }
