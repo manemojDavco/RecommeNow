@@ -65,7 +65,7 @@ export default function Nav() {
           ) : (
             <>
               <Link href="/sign-in" style={navLinkStyle}>Sign in</Link>
-              <Link href="/sign-up" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>Get started free</Link>
+              <Link href="/sign-up" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem', background: 'var(--green)', color: '#fff' }}>Get started free</Link>
             </>
           )}
         </div>

@@ -362,7 +362,13 @@ body {
     text-decoration: none;
     padding: .5rem 0;
   }
-  .rn-mobile-menu .btn-primary { text-align: center; padding: .9rem 1.2rem; font-size: 1rem; }
+  .rn-mobile-menu .btn-primary {
+    text-align: center;
+    padding: .9rem 1.2rem;
+    font-size: 1rem;
+    background: var(--green) !important;
+    color: #fff !important;
+  }
 
   /* Body padding-top buffer for fixed nav */
   body { padding-top: 0; }
