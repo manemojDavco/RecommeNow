@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
 import type { Profile } from '@/types'
+import LocationInput from '@/components/LocationInput'
 
 const INDUSTRIES = [
   'Accounting & Tax', 'Advertising & Marketing', 'Aerospace & Defence', 'Agriculture & Farming',
@@ -186,13 +187,29 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Map a location string (e.g. "Gold Coast, Australia") to a dial code.
+  // Returns undefined if no country in the location matches our list.
+  function dialCodeFromLocation(loc: string | null | undefined): string | undefined {
+    if (!loc) return undefined
+    const lower = loc.toLowerCase()
+    // Try last comma-segment first (typically the country), then full string
+    const lastPart = loc.split(',').pop()?.trim().toLowerCase() ?? ''
+    const match = COUNTRY_CODES.find(
+      (c) => lastPart === c.name.toLowerCase() || lower.includes(c.name.toLowerCase())
+    )
+    return match?.dial
+  }
+
+  const locationDial = dialCodeFromLocation(profile.location)
+
   // Parse stored phone (e.g. "+44 7911 123456") into dial code + number
   function parsePhone(stored: string | null): { dialCode: string; number: string } {
-    if (!stored) return { dialCode: '+44', number: '' }
+    const defaultDial = locationDial ?? '+44'
+    if (!stored) return { dialCode: defaultDial, number: '' }
     const match = COUNTRY_CODES.find((c) => stored.startsWith(c.dial + ' '))
     if (match) return { dialCode: match.dial, number: stored.slice(match.dial.length + 1) }
     // fallback: treat everything as number
-    return { dialCode: '+44', number: stored }
+    return { dialCode: defaultDial, number: stored }
   }
   const parsedPhone = parsePhone(profile.phone ?? null)
 
@@ -602,7 +619,16 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
           </div>
           <div>
             <label className="field-label">Location</label>
-            <input className="field-input" value={form.location} onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))} placeholder="London, UK" />
+            <LocationInput
+              value={form.location}
+              onChange={(v) => {
+                setForm((f) => ({ ...f, location: v }))
+                // Auto-update phone dial code from location's country (only if number is empty)
+                const newDial = dialCodeFromLocation(v)
+                if (newDial && !phoneNumber) setPhoneDialCode(newDial)
+              }}
+              placeholder="London, UK"
+            />
           </div>
         </div>
 
