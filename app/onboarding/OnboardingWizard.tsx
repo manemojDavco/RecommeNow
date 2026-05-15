@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
 import { Logo, LocationPin } from '@/components/Logo'
+import LocationInput from '@/components/LocationInput'
 
 const INDUSTRIES = [
   'Accounting & Tax', 'Advertising & Marketing', 'Aerospace & Defence', 'Agriculture & Farming',
@@ -281,7 +282,7 @@ export default function OnboardingWizard() {
                   </div>
                   <div>
                     <label className="field-label">Location</label>
-                    <input className="field-input" value={form.location} onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))} placeholder="London, UK" />
+                    <LocationInput value={form.location} onChange={(v) => setForm((f) => ({ ...f, location: v }))} placeholder="London, UK" />
                   </div>
                 </div>
               </div>
