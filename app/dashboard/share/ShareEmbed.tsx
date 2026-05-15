@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, KeyboardEvent } from 'react'
 import Link from 'next/link'
 import type { Profile } from '@/types'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
+
+function isValidEmail(v: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())
+}
 
 export default function ShareEmbed({ profile }: { profile: Profile }) {
   const isPro = profile.plan === 'pro' || profile.recruiter_active
@@ -12,6 +16,57 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
   const vouchUrl = `${APP_URL}/vouch/${profile.slug}`
   const referralUrl = profile.slug ? `${APP_URL}/referredby/${profile.slug}` : null
   const [copied, setCopied] = useState<string | null>(null)
+
+  // Vouch request emailer state
+  const [emailInput, setEmailInput] = useState('')
+  const [emails, setEmails] = useState<string[]>([])
+  const [sendStatus, setSendStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
+  const [sendResult, setSendResult] = useState<{ sent: number; total: number } | null>(null)
+  const emailInputRef = useRef<HTMLInputElement>(null)
+
+  function addEmail(raw: string) {
+    const val = raw.trim().replace(/,+$/, '')
+    if (!val) return
+    if (!isValidEmail(val)) return
+    if (emails.includes(val)) { setEmailInput(''); return }
+    if (emails.length >= 10) return
+    setEmails(prev => [...prev, val])
+    setEmailInput('')
+  }
+
+  function handleEmailKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault()
+      addEmail(emailInput)
+    } else if (e.key === 'Backspace' && emailInput === '' && emails.length > 0) {
+      setEmails(prev => prev.slice(0, -1))
+    }
+  }
+
+  function removeEmail(email: string) {
+    setEmails(prev => prev.filter(e => e !== email))
+  }
+
+  async function sendEmails() {
+    const toSend = emailInput.trim() ? [...emails, ...(isValidEmail(emailInput) ? [emailInput.trim()] : [])] : emails
+    if (!toSend.length) return
+    setSendStatus('sending')
+    try {
+      const res = await fetch('/api/share/send-vouch-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ emails: toSend }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      setSendResult({ sent: data.sent, total: data.total })
+      setSendStatus('done')
+      setEmails([])
+      setEmailInput('')
+    } catch {
+      setSendStatus('error')
+    }
+  }
 
   function copy(text: string, key: string) {
     navigator.clipboard.writeText(text)
@@ -75,6 +130,118 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
         {freeItems.map((item) => (
           <CopyCard key={item.key} item={item} copied={copied} onCopy={copy} />
         ))}
+
+        {/* ── Send vouch request emails ── */}
+        <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1.25rem' }}>
+          <p style={{ fontSize: '.85rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.2rem' }}>
+            Send vouch request
+          </p>
+          <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '1rem' }}>
+            Enter email addresses and we'll send them a short email with your vouch link. Up to 10 at a time.
+          </p>
+
+          {/* Email tag input */}
+          <div
+            onClick={() => emailInputRef.current?.focus()}
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '.35rem',
+              minHeight: 44,
+              background: 'var(--paper)',
+              border: '1.5px solid var(--rule)',
+              borderRadius: 8,
+              padding: '.45rem .6rem',
+              cursor: 'text',
+              marginBottom: '.75rem',
+            }}
+          >
+            {emails.map(email => (
+              <span
+                key={email}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '.25rem',
+                  background: 'var(--green)',
+                  color: '#fff',
+                  borderRadius: 100,
+                  padding: '2px 10px 2px 10px',
+                  fontSize: '.75rem',
+                  fontWeight: 500,
+                }}
+              >
+                {email}
+                <button
+                  onClick={(e) => { e.stopPropagation(); removeEmail(email) }}
+                  style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.7)', cursor: 'pointer', fontSize: '.9rem', padding: '0 0 0 2px', lineHeight: 1 }}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+            <input
+              ref={emailInputRef}
+              value={emailInput}
+              onChange={e => { setEmailInput(e.target.value); setSendStatus('idle') }}
+              onKeyDown={handleEmailKeyDown}
+              onBlur={() => addEmail(emailInput)}
+              placeholder={emails.length === 0 ? 'colleague@company.com, another@email.com…' : ''}
+              disabled={emails.length >= 10}
+              style={{
+                flex: 1,
+                minWidth: 180,
+                border: 'none',
+                background: 'transparent',
+                outline: 'none',
+                fontSize: '.8rem',
+                color: 'var(--ink)',
+                fontFamily: 'var(--sans)',
+                padding: '2px 4px',
+              }}
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', flexWrap: 'wrap' }}>
+            <button
+              onClick={sendEmails}
+              disabled={sendStatus === 'sending' || (emails.length === 0 && !emailInput.trim())}
+              style={{
+                background: 'var(--green)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 7,
+                padding: '.55rem 1.2rem',
+                fontSize: '.8rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                fontFamily: 'var(--sans)',
+                opacity: sendStatus === 'sending' || (emails.length === 0 && !emailInput.trim()) ? 0.5 : 1,
+                transition: 'opacity .15s',
+              }}
+            >
+              {sendStatus === 'sending' ? 'Sending…' : 'Send request'}
+            </button>
+            {sendStatus === 'done' && sendResult && (
+              <span style={{ fontSize: '.78rem', color: 'var(--green2)', fontWeight: 600 }}>
+                ✓ Sent to {sendResult.sent} {sendResult.sent === 1 ? 'person' : 'people'}
+              </span>
+            )}
+            {sendStatus === 'error' && (
+              <span style={{ fontSize: '.78rem', color: 'var(--red)' }}>
+                Something went wrong. Please try again.
+              </span>
+            )}
+            {emails.length > 0 && sendStatus === 'idle' && (
+              <span style={{ fontSize: '.75rem', color: 'var(--muted)' }}>
+                {emails.length} recipient{emails.length !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.6rem' }}>
+            Press Enter or comma to add each email. Replies go to your email address.
+          </p>
+        </div>
 
         {/* ── Pro-gated: Embeddable widget ── */}
         <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.25rem', marginTop: '.25rem' }}>
