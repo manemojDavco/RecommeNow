@@ -236,6 +236,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [showAvailability, setShowAvailability] = useState<boolean>((profile as any).show_availability !== false)
 
   const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const [saveErrorMsg, setSaveErrorMsg] = useState('')
   const [photoUrl, setPhotoUrl] = useState(profile.photo_url ?? '')
   const [photoStatus, setPhotoStatus] = useState<'idle' | 'uploading' | 'done' | 'error'>('idle')
 
@@ -360,6 +361,10 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
       router.refresh()
       setTimeout(() => setStatus('idle'), 2000)
     } else {
+      try {
+        const json = await res.json()
+        setSaveErrorMsg(json.error ?? 'Failed to save. Please try again.')
+      } catch { setSaveErrorMsg('Failed to save. Please try again.') }
       setStatus('error')
     }
   }
@@ -749,7 +754,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
         </div>
 
         {status === 'error' && (
-          <p style={{ fontSize: '.8rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.6rem .9rem', borderRadius: 7 }}>Failed to save. Please try again.</p>
+          <p style={{ fontSize: '.8rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.6rem .9rem', borderRadius: 7 }}>{saveErrorMsg || 'Failed to save. Please try again.'}</p>
         )}
 
         <button onClick={save} disabled={status === 'saving'}

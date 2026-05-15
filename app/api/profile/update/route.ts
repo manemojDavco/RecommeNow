@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest) {
 
   if (error) {
     console.error('Profile update error:', error)
-    return NextResponse.json({ error: 'Failed to update profile.' }, { status: 500 })
+    return NextResponse.json({ error: `Failed to update profile: ${error.message}${error.code ? ` (${error.code})` : ''}` }, { status: 500 })
   }
 
   return NextResponse.json({ profile })
