@@ -6,6 +6,7 @@ export const metadata = { title: 'Create account' }
 export default function SignUpPage() {
   return (
     <div
+      className="rn-auth-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
@@ -15,6 +16,7 @@ export default function SignUpPage() {
     >
       {/* Left — green panel */}
       <div
+        className="rn-auth-left"
         style={{
           background: 'var(--green)',
           padding: '3rem',

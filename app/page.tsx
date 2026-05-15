@@ -10,6 +10,7 @@ export default function LandingPage() {
       <main>
         {/* ─── HERO ─── */}
         <section
+          className="rn-hero"
           style={{
             minHeight: '100vh',
             display: 'flex',
@@ -181,6 +182,7 @@ export default function LandingPage() {
           </h2>
 
           <div
+            className="rn-grid-4"
             style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
@@ -264,6 +266,7 @@ export default function LandingPage() {
             </h2>
 
             <div
+              className="rn-grid-3"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
@@ -396,7 +399,7 @@ export default function LandingPage() {
         <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', maxWidth: 1100, margin: '0 auto' }} />
 
         {/* ─── TRUST SIGNALS ─── */}
-        <section style={{ padding: '7rem 2.5rem', maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
+        <section className="rn-grid-2" style={{ padding: '7rem 2.5rem', maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
           <div>
             <p style={{ fontSize: '.68rem', fontWeight: 600, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem' }}>
               Built for trust

@@ -377,17 +377,28 @@ body {
     padding: 3.5rem 1.25rem !important;
   }
   section { padding: 3rem 1.25rem !important; }
+  .rn-hero { padding: 7rem 1.25rem 4rem !important; min-height: auto !important; }
 
   /* Stack any 2/3/4-column grid to one column */
-  .rn-grid-2, .rn-grid-3, .rn-grid-4,
-  [style*="grid-template-columns: 1fr 1fr"],
-  [style*="gridTemplateColumns: '1fr 1fr'"],
-  [style*="repeat(2, 1fr)"],
-  [style*="repeat(3, 1fr)"],
-  [style*="repeat(4, 1fr)"] {
+  .rn-grid-2, .rn-grid-3, .rn-grid-4 {
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
   }
+
+  /* How-it-works steps: remove right borders when stacked */
+  .rn-grid-4 > * {
+    border-right: none !important;
+    border-bottom: 1px solid var(--rule);
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .rn-grid-4 > *:last-child { border-bottom: none; }
+
+  /* Auth pages: single column, hide left panel */
+  .rn-auth-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .rn-auth-left { display: none !important; }
 
   /* Pricing/feature card padding */
   .pricing-card, .vouch-card { padding: 1.25rem !important; }

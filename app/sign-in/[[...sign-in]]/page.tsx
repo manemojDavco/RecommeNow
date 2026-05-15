@@ -6,6 +6,7 @@ export const metadata = { title: 'Sign in' }
 export default function SignInPage() {
   return (
     <div
+      className="rn-auth-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
@@ -15,6 +16,7 @@ export default function SignInPage() {
     >
       {/* Left — green panel */}
       <div
+        className="rn-auth-left"
         style={{
           background: 'var(--green)',
           padding: '3rem',
