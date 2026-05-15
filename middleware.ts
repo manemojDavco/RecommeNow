@@ -2,8 +2,8 @@ import { clerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-// LAUNCH LOCK — set to false on launch day
-const LOCKED = process.env.NODE_ENV === 'production'
+// LAUNCH LOCK — site is live
+const LOCKED = false
 const ALLOWED_PATHS = ['/coming-soon', '/api/waitlist']
 
 export default clerkMiddleware(async (_auth, req: NextRequest) => {
