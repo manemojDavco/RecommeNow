@@ -15,11 +15,9 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: 'RecommeNow',
     type: 'website',
-    images: [{ url: '/brand/og-image-default.svg', width: 1200, height: 630, alt: "RecommeNow: Don't just apply. Get vouched." }],
   },
   twitter: {
     card: 'summary_large_image',
-    images: ['/brand/og-image-default.svg'],
   },
   icons: {
     icon: [
