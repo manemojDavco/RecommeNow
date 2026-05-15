@@ -418,8 +418,13 @@ body {
   .rn-dashboard-wrap {
     grid-template-columns: 1fr !important;
     height: auto !important;
-    min-height: 100dvh;
     overflow: visible !important;
+  }
+  /* Remove forced height so flex:1 children don't create empty space */
+  .rn-dashboard-wrap > main {
+    display: block !important;
+    overflow-y: visible !important;
+    min-height: 100dvh;
   }
 
   /* Sidebar becomes a fixed slide-in drawer */
