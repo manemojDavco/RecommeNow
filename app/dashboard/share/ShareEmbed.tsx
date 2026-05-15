@@ -126,11 +126,6 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: 680 }}>
 
-        {/* Free share links */}
-        {freeItems.map((item) => (
-          <CopyCard key={item.key} item={item} copied={copied} onCopy={copy} />
-        ))}
-
         {/* ── Send vouch request emails ── */}
         <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1.25rem' }}>
           <p style={{ fontSize: '.85rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.2rem' }}>
@@ -242,6 +237,11 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
             Press Enter or comma to add each email. Replies go to your email address.
           </p>
         </div>
+
+        {/* Free share links */}
+        {freeItems.map((item) => (
+          <CopyCard key={item.key} item={item} copied={copied} onCopy={copy} />
+        ))}
 
         {/* ── Pro-gated: Embeddable widget ── */}
         <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.25rem', marginTop: '.25rem' }}>

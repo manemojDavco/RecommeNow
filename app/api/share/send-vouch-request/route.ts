@@ -95,7 +95,7 @@ function buildVouchRequestEmail({ name, firstName, vouchUrl, appUrl }: {
               <strong style="color:#1b4332">${name}</strong> has built a verified professional profile on RecommeNow and is asking if you'd be willing to share a few words about working together.
             </p>
             <p style="margin:0 0 28px;font-size:15px;color:#374151;line-height:1.7">
-              It takes about 2 minutes — just click the button below, fill in a short vouch, and ${firstName}'s profile will be updated automatically once verified.
+              It takes about 2 minutes. Just click the button below, fill in a short vouch, and ${firstName}'s profile will be updated automatically once verified.
             </p>
           </td>
         </tr>
