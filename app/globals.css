@@ -489,13 +489,28 @@ body {
   /* Public profile page */
   .rn-profile-nav-qr { display: none !important; }
   .rn-profile-nav-build { display: none !important; }
+  .rn-profile-nav { padding: .75rem 1rem !important; }
+
   .rn-profile-grid {
     grid-template-columns: 1fr !important;
-    padding: 1.5rem 1rem 3rem !important;
+    padding: 1rem 1rem 3rem !important;
+    gap: 1.5rem !important;
   }
-  .rn-profile-nav {
-    padding: .75rem 1rem !important;
+
+  /* Sidebar above vouches on mobile */
+  .rn-profile-sidebar { order: -1; }
+  .rn-profile-main { order: 0; }
+
+  /* Profile header: tighter avatar row */
+  .rn-profile-header-flex { gap: 1rem !important; }
+  .rn-profile-header-flex h1 { font-size: 1.35rem !important; }
+
+  /* Vouches heading — wrap button to new line */
+  .rn-vouches-heading {
+    flex-wrap: wrap !important;
+    gap: .75rem !important;
   }
+  .rn-vouches-heading > a { align-self: flex-start; }
 
   /* Dashboard overview — stats 2×2 on mobile, then below 480 full 1 col */
   .rn-dash-stats {

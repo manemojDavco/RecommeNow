@@ -227,10 +227,10 @@ export default async function PublicProfilePage({ params }: Props) {
         }}
       >
         {/* ─── LEFT COLUMN ─── */}
-        <div>
+        <div className="rn-profile-main">
           {/* Profile header */}
           <div style={{ marginBottom: '2.5rem' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div className="rn-profile-header-flex" style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
               <ContactInfoButton
                 name={profile.name}
                 linkedinUrl={profile.linkedin_url}
@@ -377,7 +377,7 @@ export default async function PublicProfilePage({ params }: Props) {
           <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', marginBottom: '2.5rem' }} />
 
           {/* Vouches header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <div className="rn-vouches-heading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
             <div>
               <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)' }}>
                 {vouches.length} verified vouch{vouches.length !== 1 ? 'es' : ''}
@@ -455,7 +455,7 @@ export default async function PublicProfilePage({ params }: Props) {
         </div>
 
         {/* ─── RIGHT SIDEBAR ─── */}
-        <aside style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+        <aside className="rn-profile-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           {/* Vouch summary card */}
           <div
             style={{
