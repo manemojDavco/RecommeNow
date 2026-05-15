@@ -162,6 +162,7 @@ export default async function PublicProfilePage({ params }: Props) {
     <>
       {/* Sticky nav */}
       <nav
+        className="rn-profile-nav"
         style={{
           position: 'sticky',
           top: 0,
@@ -177,7 +178,7 @@ export default async function PublicProfilePage({ params }: Props) {
       >
         <Logo variant="dark" href="/" size={30} />
         <div style={{ display: 'flex', gap: '.6rem', alignItems: 'center' }}>
-          <QrModal slug={profile.slug} name={profile.name.split(' ')[0]} />
+          <span className="rn-profile-nav-qr"><QrModal slug={profile.slug} name={profile.name.split(' ')[0]} /></span>
           <Link
             href={`/vouch/${profile.slug}`}
             style={{
@@ -194,7 +195,7 @@ export default async function PublicProfilePage({ params }: Props) {
           >
             Vouch for {profile.name.split(' ')[0]}
           </Link>
-          <Link
+          <span className="rn-profile-nav-build"><Link
             href="/sign-up"
             style={{
               border: '1px solid var(--rule)',
@@ -209,11 +210,12 @@ export default async function PublicProfilePage({ params }: Props) {
             }}
           >
             Build my profile
-          </Link>
+          </Link></span>
         </div>
       </nav>
 
       <div
+        className="rn-profile-grid"
         style={{
           maxWidth: 1060,
           margin: '0 auto',

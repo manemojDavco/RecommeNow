@@ -480,6 +480,23 @@ body {
     align-items: flex-start !important;
   }
 
+  /* Settings slug row — force Update button to new line on mobile */
+  .rn-slug-update-btn {
+    flex: 0 0 100% !important;
+    width: 100% !important;
+  }
+
+  /* Public profile page */
+  .rn-profile-nav-qr { display: none !important; }
+  .rn-profile-nav-build { display: none !important; }
+  .rn-profile-grid {
+    grid-template-columns: 1fr !important;
+    padding: 1.5rem 1rem 3rem !important;
+  }
+  .rn-profile-nav {
+    padding: .75rem 1rem !important;
+  }
+
   /* Dashboard overview — stats 2×2 on mobile, then below 480 full 1 col */
   .rn-dash-stats {
     grid-template-columns: repeat(2, 1fr) !important;

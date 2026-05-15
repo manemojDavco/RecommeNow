@@ -113,6 +113,9 @@ export default async function PrintPage({ params }: Props) {
 
         .rn-brand { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 9pt; color: #1b4332; }
 
+        @media screen {
+          .print-only-col { display: none; }
+        }
         @media print {
           body { background: #fff; }
           .no-print { display: none !important; }
@@ -147,7 +150,7 @@ export default async function PrintPage({ params }: Props) {
               {profile.availability && <span>Available: {profile.availability}</span>}
             </div>
           </div>
-          <div style={{ textAlign: 'right', flexShrink: 0 }}>
+          <div className="print-only-col" style={{ textAlign: 'right', flexShrink: 0 }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', marginBottom: '.45rem' }}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={20} height={20} style={{ display: 'block', flexShrink: 0 }}>
                 <rect width="32" height="32" rx="7" fill="#2D6A4F"/>
