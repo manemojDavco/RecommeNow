@@ -133,6 +133,7 @@ export default function SignUpPage() {
 
       {/* Right — Clerk sign-up */}
       <div
+        className="rn-auth-right"
         style={{
           display: 'flex',
           alignItems: 'center',

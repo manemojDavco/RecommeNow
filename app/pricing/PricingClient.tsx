@@ -148,7 +148,7 @@ export default function PricingClient({ isSignedIn, trial = false }: { isSignedI
         <p style={{ fontSize: '.65rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem', textAlign: 'center' }}>
           For candidates
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', maxWidth: 740, marginBottom: '3rem', margin: '0 auto 3rem' }}>
+        <div className="rn-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', maxWidth: 740, marginBottom: '3rem', margin: '0 auto 3rem' }}>
           {/* Free */}
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 16, padding: '2rem' }}>
             <div style={{ marginBottom: '1.5rem' }}>
@@ -210,7 +210,7 @@ export default function PricingClient({ isSignedIn, trial = false }: { isSignedI
           For recruiters
         </p>
         <div style={{ maxWidth: 740, margin: '0 auto' }}>
-          <div style={{ background: 'var(--green-l)', border: '1px solid #b2dfbf', borderRadius: 16, padding: '2rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
+          <div className="rn-pricing-recruiter" style={{ background: 'var(--green-l)', border: '1px solid #b2dfbf', borderRadius: 16, padding: '2rem', display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'center' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '.75rem' }}>
                 <div style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>Recruiter</div>
@@ -232,7 +232,7 @@ export default function PricingClient({ isSignedIn, trial = false }: { isSignedI
               <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginTop: '.75rem', marginBottom: '.5rem' }}>
                 Includes everything in Pro, plus:
               </p>
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.65rem .75rem' }}>
+              <ul className="rn-grid-2" style={{ listStyle: 'none', padding: 0, margin: '0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.65rem .75rem' }}>
                 {[
                   'Full talent directory access',
                   'Advanced search & filters',

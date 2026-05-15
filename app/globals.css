@@ -400,11 +400,24 @@ body {
   }
   .rn-grid-4 > *:last-child { border-bottom: none; }
 
-  /* Auth pages: single column, hide left panel */
+  /* Auth pages: single column, hide left panel, center form */
   .rn-auth-grid {
     grid-template-columns: 1fr !important;
+    min-height: 100dvh;
   }
   .rn-auth-left { display: none !important; }
+  .rn-auth-right {
+    min-height: 100dvh;
+    padding: 5rem 1.5rem 2rem !important;
+  }
+
+  /* Pricing: stack recruiter card */
+  .rn-pricing-recruiter {
+    grid-template-columns: 1fr !important;
+  }
+  .rn-pricing-recruiter > div:last-child button {
+    width: 100%;
+  }
 
   /* Pricing/feature card padding */
   .pricing-card, .vouch-card { padding: 1.25rem !important; }

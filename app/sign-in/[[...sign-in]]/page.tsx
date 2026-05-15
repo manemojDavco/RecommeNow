@@ -134,6 +134,7 @@ export default function SignInPage() {
 
       {/* Right — Clerk sign-in */}
       <div
+        className="rn-auth-right"
         style={{
           display: 'flex',
           alignItems: 'center',
