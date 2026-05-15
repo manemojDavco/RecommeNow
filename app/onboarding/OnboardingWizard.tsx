@@ -156,7 +156,7 @@ export default function OnboardingWizard() {
     const res = await fetch('/api/profile/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, ...(referred_by_slug ? { referred_by_slug } : {}) }),
+      body: JSON.stringify({ ...form, photo_url: photoUrl || undefined, ...(referred_by_slug ? { referred_by_slug } : {}) }),
     })
     const json = await res.json()
     if (!res.ok) {

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, referred_by_slug: refSlug } = body
+  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, photo_url, referred_by_slug: refSlug } = body
 
   if (!name?.trim()) {
     return NextResponse.json({ error: 'Name is required.' }, { status: 400 })
@@ -73,6 +73,7 @@ export async function POST(req: NextRequest) {
       bio: bio?.trim() || null,
       industries: industries ?? [],
       stages: stages ?? [],
+      photo_url: photo_url || null,
       referral_code: nanoid(8),
       referred_by: referredBy,
     })
