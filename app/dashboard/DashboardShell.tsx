@@ -206,7 +206,7 @@ export default function DashboardShell({
                 textDecoration: 'none', whiteSpace: 'nowrap',
               }}
             >
-              ✨ PRO Trial · {trialDaysLeft}d left
+              PRO Trial · {trialDaysLeft}d left
             </Link>
           )}
         </div>
@@ -317,7 +317,7 @@ export default function DashboardShell({
                 textAlign: 'center',
               }}
             >
-              <p style={{ fontSize: '.82rem', fontWeight: 700, color: 'var(--cream)', marginBottom: '.2rem' }}>✨ {trialDaysLeft} days left in trial</p>
+              <p style={{ fontSize: '.82rem', fontWeight: 700, color: 'var(--cream)', marginBottom: '.2rem' }}>{trialDaysLeft} days left in trial</p>
               <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.5 }}>Lock in PRO before it ends</p>
               <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'rgba(240,234,214,.85)', marginTop: '.4rem' }}>Upgrade now →</p>
             </Link>
