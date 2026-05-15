@@ -268,7 +268,7 @@ export default function OnboardingWizard() {
 
                 <div>
                   <label className="field-label">Full name *</label>
-                  <input className="field-input" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="Nick Baker" style={{ fontSize: '1rem' }} />
+                  <input className="field-input" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} placeholder="First Last" style={{ fontSize: '1rem' }} />
                 </div>
                 <div>
                   <label className="field-label">Current role / title</label>
