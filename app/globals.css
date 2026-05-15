@@ -418,7 +418,8 @@ body {
   .rn-auth-left { display: none !important; }
   .rn-auth-right {
     min-height: 100dvh;
-    padding: 5rem 1.5rem 2rem !important;
+    padding: 4.5rem 1.5rem 2rem !important;
+    align-items: flex-start !important;
   }
 
   /* Pricing: stack recruiter card */
