@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   title: 'Trust & Verification Policy',
@@ -9,11 +10,11 @@ export const metadata: Metadata = {
 const sections = [
   {
     title: 'What is a vouch?',
-    body: `A vouch is a structured reference from someone who has directly worked with a candidate — as a manager, colleague, direct report, or client. Vouches include a written quote, a star rating (1–5), relationship context, and optional trait tags. They are collected via a unique link sent by the candidate.`,
+    body: `A vouch is a structured reference from someone who has directly worked with a candidate: a manager, colleague, direct report, or client. Vouches include a written quote, a star rating (1–5), relationship context, and optional trait tags. They are collected via a unique link sent by the candidate.`,
   },
   {
     title: 'How email verification works',
-    body: `Every vouch giver receives an email asking them to confirm their submission. Until they click the confirmation link, the vouch is marked as unverified. Verified vouches display a checkmark and contribute to the candidate's verification rate. This step makes it significantly harder to fabricate references — the vouch giver must access their inbox.`,
+    body: `Every vouch giver receives an email asking them to confirm their submission. Until they click the confirmation link, the vouch is marked as unverified. Verified vouches display a checkmark and contribute to the candidate's verification rate. This step makes it significantly harder to fabricate references, as the vouch giver must access their inbox.`,
   },
   {
     title: 'How the Trust Score is calculated',
@@ -21,7 +22,7 @@ const sections = [
   },
   {
     title: 'Vouch approval & moderation',
-    body: `Candidates review every incoming vouch before it becomes public. They can approve (make it live), hide (remove it from the public view without deleting), or let it remain pending. Candidates cannot edit vouch content — they can only decide whether it appears publicly. This prevents cherry-picking by rewording negative feedback.`,
+    body: `Candidates review every incoming vouch before it becomes public. They can approve (make it live), hide (remove it from the public view without deleting), or let it remain pending. Candidates cannot edit vouch content: they can only decide whether it appears publicly. This prevents cherry-picking by rewording negative feedback.`,
   },
   {
     title: 'Flagging & the 48-hour review queue',
@@ -45,10 +46,8 @@ export default function TrustPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)' }}>
       {/* Nav */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
-        <Link href="/" style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1.1rem', color: 'var(--ink)', textDecoration: 'none' }}>
-          Recomme<span style={{ color: 'var(--green)' }}>Now</span>
-        </Link>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2.5rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
+        <Logo variant="dark" href="/" size={30} />
         <Link href="/directory" style={{ fontSize: '.82rem', color: 'var(--muted)', textDecoration: 'none' }}>Directory →</Link>
       </nav>
 
@@ -58,7 +57,7 @@ export default function TrustPage() {
           <p style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '.6rem' }}>
             Trust & Verification
           </p>
-          <h1 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem' }}>
+          <h1 style={{ fontFamily: 'var(--sans)', fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem' }}>
             How we keep vouches real
           </h1>
           <p style={{ fontSize: '.95rem', color: 'var(--muted)', lineHeight: 1.7 }}>
@@ -85,7 +84,7 @@ export default function TrustPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           {sections.map(({ title, body }) => (
             <div key={title}>
-              <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.6rem' }}>
+              <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.6rem' }}>
                 {title}
               </h2>
               <p style={{ fontSize: '.88rem', color: 'var(--ink2)', lineHeight: 1.75 }}>{body}</p>
@@ -95,7 +94,7 @@ export default function TrustPage() {
 
         {/* Footer CTA */}
         <div style={{ marginTop: '4rem', padding: '2rem', background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 12, textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.5rem' }}>
+          <p style={{ fontFamily: 'var(--sans)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.5rem' }}>
             Have a question about a specific vouch or profile?
           </p>
           <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '1.25rem' }}>

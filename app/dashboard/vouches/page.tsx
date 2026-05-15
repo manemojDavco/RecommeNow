@@ -96,7 +96,7 @@ export default function VouchesPage() {
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
           All vouches
         </h1>
         <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>Manage all vouches across every status.</p>
@@ -134,7 +134,7 @@ export default function VouchesPage() {
             <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
           ) : givenVouches.length === 0 ? (
             <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '2.5rem', textAlign: 'center' }}>
-              <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)', fontSize: '.9rem' }}>You haven&apos;t given any vouches yet.</p>
+              <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '.9rem' }}>You haven&apos;t given any vouches yet.</p>
               <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: '.5rem' }}>When you vouch for someone on their profile page, it will appear here.</p>
             </div>
           ) : (
@@ -187,7 +187,7 @@ export default function VouchesPage() {
         <>
           {showDragHint && (
             <p style={{ fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.75rem', display: 'flex', alignItems: 'center', gap: '.35rem' }}>
-              <span style={{ fontSize: '.9rem' }}>⠿</span> Drag vouches to reorder how they appear on your public profile — changes save automatically.
+              <span style={{ fontSize: '.9rem' }}>⠿</span> Drag vouches to reorder how they appear on your public profile. Changes save automatically.
             </p>
           )}
 
@@ -195,7 +195,7 @@ export default function VouchesPage() {
             <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
           ) : displayVouches.length === 0 ? (
             <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '3rem', textAlign: 'center' }}>
-              <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)' }}>No vouches in this category.</p>
+              <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)' }}>No vouches in this category.</p>
             </div>
           ) : (
             <div

@@ -45,7 +45,7 @@ export default async function DashboardOverviewPage({
 
       {/* Header */}
       <div style={{ marginBottom: '1rem' }}>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.15rem' }}>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.15rem' }}>
           Good to see you, {profile.name.split(' ')[0]}
         </h1>
         <p style={{ fontSize: '.78rem', color: 'var(--muted)' }}>
@@ -67,7 +67,7 @@ export default async function DashboardOverviewPage({
           const inner = (
             <>
               <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.5rem' }}>{stat.label}</p>
-              <p style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', fontWeight: 700, color: stat.highlight ? 'var(--amber)' : 'var(--green)', lineHeight: 1, marginBottom: '.15rem' }}>{stat.value}</p>
+              <p style={{ fontFamily: 'var(--sans)', fontSize: '1.6rem', fontWeight: 700, color: stat.highlight ? 'var(--amber)' : 'var(--green)', lineHeight: 1, marginBottom: '.15rem' }}>{stat.value}</p>
               <p style={{ fontSize: '.65rem', color: 'var(--muted)' }}>{stat.sub}</p>
             </>
           )
@@ -97,7 +97,7 @@ export default async function DashboardOverviewPage({
 
             {recentVouches.length === 0 ? (
               <div style={{ padding: '2.5rem 1.1rem', textAlign: 'center' }}>
-                <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1rem' }}>No vouches yet</p>
+                <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '.9rem', marginBottom: '1rem' }}>No vouches yet</p>
                 <Link href={`/vouch/${profile.slug}`} style={{ background: 'var(--green)', color: '#fff', borderRadius: 7, padding: '.6rem 1.2rem', fontSize: '.78rem', fontWeight: 600, textDecoration: 'none' }}>
                   Share your vouch link →
                 </Link>
@@ -105,7 +105,7 @@ export default async function DashboardOverviewPage({
             ) : (
               recentVouches.map((v) => (
                 <div key={v.id} style={{ padding: '.75rem 1.1rem', borderBottom: '1px solid var(--rule)', display: 'flex', alignItems: 'flex-start', gap: '.75rem' }}>
-                  <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'var(--green-l)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.62rem', fontWeight: 700, color: 'var(--green)', flexShrink: 0, marginTop: '1px' }}>
+                  <div style={{ width: 30, height: 30, borderRadius: '50%', background: ['#4a7c59','#2d5a8e','#8e5a2d','#5a2d8e','#7c4a4a','#4a7c7c'][v.giver_name.split('').reduce((a:number,c:string)=>a+c.charCodeAt(0),0)%6], display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.62rem', fontWeight: 700, color: '#fff', flexShrink: 0, marginTop: '1px' }}>
                     {v.giver_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -163,6 +163,34 @@ export default async function DashboardOverviewPage({
               Share & Embed options
             </Link>
           </div>
+
+          {(profile.plan === 'pro' || profile.recruiter_active) && (
+            <a
+              href={`/${profile.slug}/print`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: 'var(--green-l)',
+                border: '1px solid var(--green-m)',
+                borderRadius: 10,
+                padding: '1rem',
+                textDecoration: 'none',
+                gap: '.75rem',
+              }}
+            >
+              <div>
+                <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.3rem' }}>PDF one-pager</p>
+                <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--ink)' }}>Print to PDF →</p>
+                <p style={{ fontSize: '.68rem', color: 'var(--muted)', marginTop: '.15rem' }}>Profile + top vouches, print-ready</p>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+              </svg>
+            </a>
+          )}
 
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1rem' }}>
             <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.6rem' }}>Profile completeness</p>

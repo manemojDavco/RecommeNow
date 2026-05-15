@@ -35,9 +35,9 @@ export default function VouchVerifiedPage() {
       </div>
       <h1
         style={{
-          fontFamily: 'var(--serif)',
+          fontFamily: 'var(--sans)',
           fontSize: '1.8rem',
-          fontWeight: 400,
+          fontWeight: 800,
           color: 'var(--ink)',
           marginBottom: '.75rem',
         }}

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { getVouchRateLimit } from '@/lib/rate-limit'
 import { sendVouchVerificationEmail, sendNewVouchNotification } from '@/lib/email'
+import { sendNewVouchNotification as sendPushNewVouch } from '@/lib/push'
 import { nanoid } from 'nanoid'
 import { calculateVouchScore } from '@/lib/vouch-score'
 
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
   // Verify profile exists
   const { data: profile } = await db
     .from('profiles')
-    .select('id, name, slug, user_id, plan')
+    .select('id, name, slug, user_id, plan, push_token')
     .eq('id', profile_id)
     .single()
 
@@ -134,6 +135,11 @@ export async function POST(req: NextRequest) {
     }
   } catch {
     // Non-fatal — vouch was already saved
+  }
+
+  // Send mobile push notification if the profile owner has the app installed
+  if ((profile as any).push_token) {
+    await sendPushNewVouch((profile as any).push_token, giver_name.trim()).catch(console.error)
   }
 
   return NextResponse.json({ success: true, vouch_id: vouch.id })

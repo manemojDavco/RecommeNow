@@ -66,7 +66,7 @@ export default function ContentClient({ settings }: { settings: Record<string, s
     await fetch('/api/admin/settings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: 'coming_soon', value: val ? 'true' : 'false' }) })
     await fetch('/api/admin/deploy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ comingSoon: val }) })
     setDeploying(false)
-    setToast(val ? 'Coming Soon enabled — redeploying…' : 'Site is now LIVE — redeploying…')
+    setToast(val ? 'Coming Soon enabled. Redeploying…' : 'Site is now LIVE. Redeploying…')
     setTimeout(() => setToast(null), 5000)
   }
 

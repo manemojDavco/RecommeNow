@@ -27,7 +27,7 @@ export default function FlaggedPage() {
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
           Flagged vouches
         </h1>
         <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>
@@ -39,7 +39,7 @@ export default function FlaggedPage() {
         <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
       ) : vouches.length === 0 ? (
         <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '4rem', textAlign: 'center' }}>
-          <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)' }}>No flagged vouches.</p>
+          <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)' }}>No flagged vouches.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -65,7 +65,7 @@ export default function FlaggedPage() {
                 </span>
               </div>
 
-              <blockquote style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', lineHeight: 1.65, color: 'var(--ink2)', borderLeft: '3px solid var(--red)', paddingLeft: '1rem', marginBottom: '1rem' }}>
+              <blockquote style={{ fontFamily: 'var(--sans)', fontSize: '.9rem', lineHeight: 1.65, color: 'var(--ink2)', borderLeft: '3px solid var(--red)', paddingLeft: '1rem', marginBottom: '1rem' }}>
                 "{v.quote}"
               </blockquote>
 

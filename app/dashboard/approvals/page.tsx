@@ -27,7 +27,7 @@ export default function ApprovalsPage() {
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
           Pending approvals
         </h1>
         <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>
@@ -47,8 +47,8 @@ export default function ApprovalsPage() {
             textAlign: 'center',
           }}
         >
-          <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', color: 'var(--muted)', fontSize: '1rem' }}>
-            All caught up — no vouches pending.
+          <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)', fontSize: '1rem' }}>
+            All caught up. No vouches pending.
           </p>
         </div>
       ) : (
@@ -86,8 +86,7 @@ export default function ApprovalsPage() {
 
               <blockquote
                 style={{
-                  fontFamily: 'var(--serif)',
-                  fontStyle: 'italic',
+                  fontFamily: 'var(--sans)',
                   fontSize: '.93rem',
                   lineHeight: 1.7,
                   color: 'var(--ink2)',

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { Logo } from '@/components/Logo'
 
 const TRAITS = [
   'Strategic thinking',
@@ -135,9 +136,9 @@ export default function VouchForm({ profile }: { profile: Profile }) {
         </div>
         <h1
           style={{
-            fontFamily: 'var(--serif)',
+            fontFamily: 'var(--sans)',
             fontSize: '1.8rem',
-            fontWeight: 400,
+            fontWeight: 800,
             color: 'var(--ink)',
             marginBottom: '.75rem',
           }}
@@ -145,7 +146,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
           Vouch submitted!
         </h1>
         <p style={{ fontSize: '.9rem', color: 'var(--muted)', lineHeight: 1.7, maxWidth: 400, marginBottom: '2rem' }}>
-          Thanks for vouching for {firstName}. Check your inbox — we've sent a verification email to confirm your submission.
+          Thanks for vouching for {firstName}. Check your inbox. We've sent a verification email to confirm your submission.
         </p>
         <Link
           href={`/${profile.slug}`}
@@ -170,7 +171,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
       {/* Top bar */}
       <div
         style={{
-          padding: '1.1rem 1.5rem',
+          padding: '1rem 2.5rem',
           borderBottom: '1px solid var(--rule)',
           display: 'flex',
           alignItems: 'center',
@@ -181,9 +182,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
           zIndex: 20,
         }}
       >
-        <Link href="/" style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.9rem', color: 'var(--muted)', textDecoration: 'none' }}>
-          Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
-        </Link>
+        <Logo variant="dark" href="/" size={30} />
         <span style={{ fontSize: '.68rem', fontWeight: 600, color: 'var(--muted)', letterSpacing: '.06em' }}>
           STEP {step} OF 4
         </span>
@@ -236,8 +235,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontFamily: 'var(--serif)',
-              fontStyle: 'italic',
+              fontFamily: 'var(--sans)',
               fontWeight: 700,
               fontSize: '.9rem',
               color: '#fff',
@@ -259,7 +257,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
         {/* ── STEP 1: About you ── */}
         {step === 1 && (
           <div className="animate-fade-up">
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.45rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+            <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.45rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
               First, tell us about yourself
             </h2>
             <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '2rem', fontWeight: 300 }}>
@@ -341,7 +339,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
         {/* ── STEP 2: Traits ── */}
         {step === 2 && (
           <div className="animate-fade-up">
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.45rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+            <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.45rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
               How would you describe {firstName}?
             </h2>
             <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '2rem', fontWeight: 300 }}>
@@ -387,11 +385,11 @@ export default function VouchForm({ profile }: { profile: Profile }) {
         {/* ── STEP 3: Quote + Rating ── */}
         {step === 3 && (
           <div className="animate-fade-up">
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.45rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+            <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.45rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
               Write your vouch for {firstName}
             </h2>
             <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '2rem', fontWeight: 300 }}>
-              Be specific — the best vouches describe a situation, skill or outcome.
+              Be specific: the best vouches describe a situation, skill or outcome.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -420,7 +418,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
         {/* ── STEP 4: Review ── */}
         {step === 4 && (
           <div className="animate-fade-up">
-            <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.45rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+            <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.45rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
               Review your vouch
             </h2>
             <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '2rem', fontWeight: 300 }}>
@@ -438,7 +436,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
                 </p>
               </div>
 
-              <blockquote style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.93rem', lineHeight: 1.7, color: 'var(--ink2)' }}>
+              <blockquote style={{ fontFamily: 'var(--sans)', fontSize: '.93rem', lineHeight: 1.7, color: 'var(--ink2)' }}>
                 "{form.quote}"
               </blockquote>
 

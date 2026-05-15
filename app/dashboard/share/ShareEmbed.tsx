@@ -10,7 +10,7 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
   const isPro = profile.plan === 'pro' || profile.recruiter_active
   const profileUrl = `${APP_URL}/${profile.slug}`
   const vouchUrl = `${APP_URL}/vouch/${profile.slug}`
-  const referralUrl = profile.referral_code ? `${APP_URL}/r/${profile.referral_code}` : null
+  const referralUrl = profile.slug ? `${APP_URL}/referredby/${profile.slug}` : null
   const [copied, setCopied] = useState<string | null>(null)
 
   function copy(text: string, key: string) {
@@ -23,13 +23,13 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
 
   const emailSignature = `Verified reputation: ${profileUrl}`
 
-  const linkedinPost = `I've built a verified reputation profile on RecommeNow — real vouches from colleagues, managers and clients.\n\nSee what people say about working with me: ${profileUrl}`
+  const linkedinPost = `I've built a verified reputation profile on RecommeNow. Real vouches from colleagues, managers and clients.\n\nSee what people say about working with me: ${profileUrl}`
 
   const freeItems = [
     {
       key: 'profile',
       title: 'Your public profile link',
-      desc: 'Share this anywhere — job applications, LinkedIn, email signatures.',
+      desc: 'Share this anywhere: job applications, LinkedIn, email signatures.',
       value: profileUrl,
     },
     {
@@ -61,7 +61,7 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
   return (
     <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
           Share & Embed
         </h1>
         <p style={{ fontSize: '.82rem', color: 'var(--muted)' }}>
@@ -122,7 +122,7 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
                   Open PDF view →
                 </a>
                 <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.5rem' }}>
-                  Opens in a new tab — use your browser's Print / Save as PDF (Ctrl+P or ⌘+P).
+                  Opens in a new tab. Use your browser's Print / Save as PDF (Ctrl+P or ⌘+P).
                 </p>
               </div>
             </>

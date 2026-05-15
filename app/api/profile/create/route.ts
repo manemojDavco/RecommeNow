@@ -8,21 +8,31 @@ export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  console.log('[/api/profile/create] userId from Bearer token:', userId)
+
   const db = createServiceClient()
 
-  // Check if profile already exists
-  const { data: existing } = await db
+  // Check if profile already exists.
+  // We select only base-schema columns here to work even if optional-column
+  // migrations (phase2, linkedin, availability-photo) haven't been applied yet.
+  const { data: existing, error: existingErr } = await db
     .from('profiles')
-    .select('id, slug')
+    .select('id, slug, name, title, location, bio, industries')
     .eq('user_id', userId)
     .single()
 
   if (existing) {
+    console.log('[/api/profile/create] existing profile found:', existing.id)
     return NextResponse.json({ profile: existing })
+  }
+  if (existingErr && existingErr.code !== 'PGRST116') {
+    // PGRST116 = "no rows found" — anything else is a real DB error
+    console.error('[/api/profile/create] DB error:', existingErr.code, existingErr.message)
+    return NextResponse.json({ error: `DB error: ${existingErr.message}` }, { status: 500 })
   }
 
   const body = await req.json()
-  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, referral_code: refCode } = body
+  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, referred_by_slug: refSlug } = body
 
   if (!name?.trim()) {
     return NextResponse.json({ error: 'Name is required.' }, { status: 400 })
@@ -38,13 +48,13 @@ export async function POST(req: NextRequest) {
     attempts++
   }
 
-  // Resolve referrer if a referral code was provided
+  // Resolve referrer by slug
   let referredBy: string | null = null
-  if (refCode) {
+  if (refSlug) {
     const { data: referrer } = await db
       .from('profiles')
       .select('user_id')
-      .eq('referral_code', refCode)
+      .eq('slug', refSlug)
       .single()
     if (referrer) referredBy = referrer.user_id
   }

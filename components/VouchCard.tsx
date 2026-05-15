@@ -45,8 +45,7 @@ export default function VouchCard({ vouch, giverSlug }: { vouch: Vouch; giverSlu
       {/* quote */}
       <blockquote
         style={{
-          fontFamily: 'var(--serif)',
-          fontStyle: 'italic',
+          fontFamily: 'var(--sans)',
           fontSize: '.93rem',
           lineHeight: 1.75,
           color: 'var(--ink2)',

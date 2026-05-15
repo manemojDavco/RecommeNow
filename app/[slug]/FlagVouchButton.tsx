@@ -65,7 +65,7 @@ export default function FlagVouchButton({ vouchId }: { vouchId: string }) {
     >
       {status === 'done' ? (
         <p style={{ fontSize: '.85rem', color: 'var(--green2)', fontWeight: 500 }}>
-          ✓ Flag submitted — thank you.
+          ✓ Flag submitted. Thank you.
         </p>
       ) : (
         <>

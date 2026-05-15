@@ -17,9 +17,8 @@ export default function NotFound() {
     >
       <p
         style={{
-          fontFamily: 'var(--serif)',
+          fontFamily: 'var(--sans)',
           fontSize: '5rem',
-          fontStyle: 'italic',
           color: 'var(--faint)',
           lineHeight: 1,
           marginBottom: '1.5rem',
@@ -29,9 +28,9 @@ export default function NotFound() {
       </p>
       <h1
         style={{
-          fontFamily: 'var(--serif)',
+          fontFamily: 'var(--sans)',
           fontSize: '1.6rem',
-          fontWeight: 400,
+          fontWeight: 800,
           color: 'var(--ink)',
           marginBottom: '.75rem',
         }}

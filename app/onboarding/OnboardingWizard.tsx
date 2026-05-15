@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import Link from 'next/link'
+import { Logo, LocationPin } from '@/components/Logo'
 
 const INDUSTRIES = [
   'Accounting & Tax', 'Advertising & Marketing', 'Aerospace & Defence', 'Agriculture & Farming',
@@ -150,11 +151,11 @@ export default function OnboardingWizard() {
     setStatus('loading')
     setErrorMsg('')
     const refMatch = document.cookie.match(/(?:^|;\s*)ref=([^;]+)/)
-    const referral_code = refMatch ? refMatch[1] : undefined
+    const referred_by_slug = refMatch ? decodeURIComponent(refMatch[1]) : undefined
     const res = await fetch('/api/profile/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, ...(referral_code ? { referral_code } : {}) }),
+      body: JSON.stringify({ ...form, ...(referred_by_slug ? { referred_by_slug } : {}) }),
     })
     const json = await res.json()
     if (!res.ok) {
@@ -185,7 +186,7 @@ export default function OnboardingWizard() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            padding: '1.4rem 3rem',
+            padding: '1rem 2.5rem',
             borderBottom: '1px solid var(--rule)',
             flexShrink: 0,
             background: '#fff',
@@ -194,9 +195,7 @@ export default function OnboardingWizard() {
             zIndex: 10,
           }}
         >
-          <Link href="/" style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1rem', color: 'var(--muted)', textDecoration: 'none' }}>
-            Recomme<span style={{ color: 'var(--ink)' }}>Now</span>
-          </Link>
+          <Logo variant="dark" href="/" size={30} />
 
           {/* Step dots */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
@@ -236,7 +235,7 @@ export default function OnboardingWizard() {
           {/* ── STEP 1: Basics ── */}
           {step === 1 && (
             <div className="animate-fade-up">
-              <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.7rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+              <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.7rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
                 Let's build your profile
               </h1>
               <p style={{ fontSize: '.88rem', color: 'var(--muted)', marginBottom: '2.5rem', fontWeight: 300, lineHeight: 1.7 }}>
@@ -292,7 +291,7 @@ export default function OnboardingWizard() {
           {/* ── STEP 2: Background ── */}
           {step === 2 && (
             <div className="animate-fade-up">
-              <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.7rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+              <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.7rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
                 Tell your story
               </h1>
               <p style={{ fontSize: '.88rem', color: 'var(--muted)', marginBottom: '2.5rem', fontWeight: 300, lineHeight: 1.7 }}>
@@ -359,7 +358,7 @@ export default function OnboardingWizard() {
           {/* ── STEP 3: Industries & stages ── */}
           {step === 3 && (
             <div className="animate-fade-up">
-              <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.7rem', fontWeight: 400, color: 'var(--ink)', marginBottom: '.5rem' }}>
+              <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.7rem', fontWeight: 800, color: 'var(--ink)', marginBottom: '.5rem' }}>
                 Your expertise
               </h1>
               <p style={{ fontSize: '.88rem', color: 'var(--muted)', marginBottom: '2.5rem', fontWeight: 300, lineHeight: 1.7 }}>
@@ -427,20 +426,20 @@ export default function OnboardingWizard() {
 
         <div style={{ padding: '1.5rem', flex: 1 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 700, fontSize: '1.1rem', color: '#fff', flexShrink: 0, overflow: 'hidden' }}>
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--sans)', fontWeight: 700, fontSize: '1.1rem', color: '#fff', flexShrink: 0, overflow: 'hidden' }}>
               {photoUrl
                 ? <img src={photoUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 : form.name ? form.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase() : '?'
               }
             </div>
             <div>
-              <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)' }}>{form.name || 'Your name'}</p>
+              <p style={{ fontFamily: 'var(--sans)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--ink)' }}>{form.name || 'Your name'}</p>
               <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: 2 }}>{form.title || 'Your title'}{form.years_experience && ` · ${form.years_experience} yrs`}</p>
             </div>
           </div>
 
           {form.location && (
-            <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.4rem' }}>📍 {form.location} {form.remote_preference && `· ${form.remote_preference}`}</p>
+            <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.4rem', display: 'flex', alignItems: 'center' }}><LocationPin />{form.location} {form.remote_preference && `· ${form.remote_preference}`}</p>
           )}
           {form.availability && (
             <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.75rem' }}>⏱ Available: {form.availability}</p>
@@ -462,7 +461,7 @@ export default function OnboardingWizard() {
 
           <div style={{ background: '#fff', border: '1px solid var(--rule)', borderRadius: 10, padding: '1rem', opacity: 0.5 }}>
             <p style={{ fontSize: '.62rem', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--green2)', marginBottom: '.6rem' }}>● Former manager</p>
-            <p style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.82rem', lineHeight: 1.65, color: 'var(--ink2)', marginBottom: '.75rem' }}>"Your first vouch will appear here once a colleague verifies their email."</p>
+            <p style={{ fontFamily: 'var(--sans)', fontSize: '.82rem', lineHeight: 1.65, color: 'var(--ink2)', marginBottom: '.75rem' }}>"Your first vouch will appear here once a colleague verifies their email."</p>
             <div style={{ display: 'flex', gap: 2, color: 'var(--amber)', fontSize: '1rem' }}>
               {'★★★★★'.split('').map((s, i) => <span key={i}>{s}</span>)}
             </div>

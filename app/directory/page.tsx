@@ -4,6 +4,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase-server'
 import DirectoryClient from './DirectoryClient'
+import { Logo } from '@/components/Logo'
 
 export const metadata: Metadata = {
   title: 'Talent Directory',
@@ -31,10 +32,8 @@ export default async function DirectoryPage() {
   if (!isRecruiter) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)', display: 'flex', flexDirection: 'column' }}>
-        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
-          <Link href="/" style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1.1rem', color: 'var(--ink)', textDecoration: 'none' }}>
-            Recomme<span style={{ color: 'var(--green)' }}>Now</span>
-          </Link>
+        <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2.5rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
+          <Logo variant="dark" href="/" size={30} />
           <Link href="/dashboard" style={{ fontSize: '.82rem', color: 'var(--muted)', textDecoration: 'none' }}>← Dashboard</Link>
         </nav>
 
@@ -43,7 +42,7 @@ export default async function DirectoryPage() {
             <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--green-l)', border: '2px solid var(--green-m)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.5rem' }}>
               ⊛
             </div>
-            <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem', lineHeight: 1.2 }}>
+            <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem', lineHeight: 1.2 }}>
               Talent Directory
             </h1>
             <p style={{ fontSize: '.9rem', color: 'var(--muted)', lineHeight: 1.7, marginBottom: '2rem' }}>
@@ -77,10 +76,8 @@ export default async function DirectoryPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)' }}>
       {/* Nav */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
-        <Link href="/" style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1.1rem', color: 'var(--ink)', textDecoration: 'none' }}>
-          Recomme<span style={{ color: 'var(--green)' }}>Now</span>
-        </Link>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 2.5rem', borderBottom: '1px solid var(--rule)', background: 'var(--white)' }}>
+        <Logo variant="dark" href="/" size={30} />
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link href="/dashboard" style={{ fontSize: '.82rem', color: 'var(--muted)', textDecoration: 'none' }}>← Dashboard</Link>
         </div>
@@ -92,11 +89,11 @@ export default async function DirectoryPage() {
           <p style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase', color: 'var(--green)', marginBottom: '.5rem' }}>
             Talent directory
           </p>
-          <h1 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 700, color: 'var(--ink)', marginBottom: '.6rem' }}>
+          <h1 style={{ fontFamily: 'var(--sans)', fontSize: 'clamp(1.8rem, 4vw, 2.4rem)', fontWeight: 700, color: 'var(--ink)', marginBottom: '.6rem' }}>
             Professionals with verified reputations
           </h1>
-          <p style={{ fontSize: '.9rem', color: 'var(--muted)', maxWidth: 520 }}>
-            Every profile here has real vouches from managers, clients and colleagues — verified by email.
+          <p style={{ fontSize: '.9rem', color: 'var(--muted)' }}>
+            Every profile has real vouches from managers, clients and colleagues, <strong style={{ color: 'var(--ink)', fontWeight: 600 }}>verified by email</strong>.
           </p>
         </div>
 

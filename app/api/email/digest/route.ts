@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL ?? 'vouches@recommenow.com',
       to: candidateEmail,
-      subject: `Your RecommeNow digest — ${newCount} new ${newCount === 1 ? 'vouch' : 'vouches'} this week`,
+      subject: `Your RecommeNow digest: ${newCount} new ${newCount === 1 ? 'vouch' : 'vouches'} this week`,
       html,
     }).catch(console.error)
 

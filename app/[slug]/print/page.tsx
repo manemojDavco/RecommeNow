@@ -3,12 +3,13 @@ import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import type { Profile, Vouch } from '@/types'
 import PrintButton from './PrintButton'
+import { Logo, LocationPin } from '@/components/Logo'
 
 type Props = { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
-  return { title: `${slug} — PDF Profile` }
+  return { title: `${slug} | PDF Profile` }
 }
 
 export default async function PrintPage({ params }: Props) {
@@ -41,10 +42,6 @@ export default async function PrintPage({ params }: Props) {
     .order('created_at', { ascending: false })
 
   const vouches = (vouchData ?? []) as Vouch[]
-  const trustScore =
-    vouches.length > 0
-      ? Math.round((vouches.reduce((s, v) => s + v.star_rating, 0) / vouches.length) * 10) / 10
-      : 0
   const verificationRate =
     vouches.length > 0
       ? Math.round((vouches.filter((v) => v.verified).length / vouches.length) * 100)
@@ -57,7 +54,7 @@ export default async function PrintPage({ params }: Props) {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -74,21 +71,21 @@ export default async function PrintPage({ params }: Props) {
 
         .header { display: flex; align-items: flex-start; gap: 1.25rem; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 2px solid #2d6a4f; }
 
-        .avatar { width: 64px; height: 64px; border-radius: 50%; background: #2d6a4f; display: flex; align-items: center; justify-content: center; font-family: 'Libre Baskerville', serif; font-style: italic; font-weight: 700; font-size: 1.2rem; color: #fff; flex-shrink: 0; overflow: hidden; }
+        .avatar { width: 64px; height: 64px; border-radius: 50%; background: #2d6a4f; display: flex; align-items: center; justify-content: center; font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 1.2rem; color: #fff; flex-shrink: 0; overflow: hidden; }
 
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .name { font-family: 'Libre Baskerville', serif; font-size: 18pt; font-weight: 700; color: #1b4332; line-height: 1.15; margin-bottom: .2rem; }
+        .name { font-family: 'Manrope', sans-serif; font-size: 18pt; font-weight: 800; color: #1b4332; line-height: 1.15; margin-bottom: .2rem; letter-spacing: -.02em; }
 
         .title { font-size: 10pt; color: #52705c; margin-bottom: .4rem; }
 
         .meta { display: flex; gap: 1rem; flex-wrap: wrap; font-size: 8.5pt; color: #52705c; }
 
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
+        .stats-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
 
         .stat { background: #f5f7f5; border: 1px solid #b7dfc6; border-radius: 6px; padding: .65rem .85rem; }
 
-        .stat-value { font-family: 'Libre Baskerville', serif; font-size: 16pt; font-weight: 700; color: #2d6a4f; line-height: 1; margin-bottom: .15rem; }
+        .stat-value { font-family: 'Manrope', sans-serif; font-size: 16pt; font-weight: 700; color: #2d6a4f; line-height: 1; margin-bottom: .15rem; }
 
         .stat-label { font-size: 7pt; color: #52705c; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
 
@@ -104,7 +101,7 @@ export default async function PrintPage({ params }: Props) {
 
         .vouch-role { font-size: 8pt; color: #52705c; margin-bottom: .35rem; }
 
-        .vouch-quote { font-size: 9pt; color: #2d6a4f; line-height: 1.55; font-style: italic; margin-bottom: .5rem; }
+        .vouch-quote { font-size: 9pt; color: #2d6a4f; line-height: 1.55; margin-bottom: .5rem; }
 
         .traits { display: flex; flex-wrap: wrap; gap: .3rem; }
 
@@ -114,7 +111,7 @@ export default async function PrintPage({ params }: Props) {
 
         .footer { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #b7dfc6; display: flex; justify-content: space-between; align-items: center; font-size: 7.5pt; color: #52705c; }
 
-        .rn-brand { font-family: 'Libre Baskerville', serif; font-style: italic; font-size: 9pt; color: #1b4332; }
+        .rn-brand { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 9pt; color: #1b4332; }
 
         @media print {
           body { background: #fff; }
@@ -125,9 +122,7 @@ export default async function PrintPage({ params }: Props) {
 
       {/* Print trigger button — hidden when printing */}
       <div className="no-print" style={{ background: '#1b4332', padding: '.75rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontFamily: '"Libre Baskerville", serif', fontStyle: 'italic', fontSize: '.95rem', color: 'rgba(255,255,255,.6)' }}>
-          Recomme<span style={{ color: 'rgba(255,255,255,.9)' }}>Now</span>
-        </span>
+        <Logo variant="light" href="/" size={22} />
         <div style={{ display: 'flex', gap: '.75rem', alignItems: 'center' }}>
           <span style={{ fontSize: '.78rem', color: 'rgba(255,255,255,.5)' }}>Use Ctrl+P / ⌘+P to save as PDF</span>
           <PrintButton />
@@ -146,24 +141,36 @@ export default async function PrintPage({ params }: Props) {
             <div className="name">{profile.name}</div>
             {profile.title && <div className="title">{profile.title}</div>}
             <div className="meta">
-              {profile.location && <span>📍 {profile.location}</span>}
+              {profile.location && <span style={{ display: 'inline-flex', alignItems: 'center' }}><LocationPin color="#52705c" size={11} />{profile.location}</span>}
               {profile.years_experience && <span>{profile.years_experience} yrs experience</span>}
               {profile.remote_preference && <span>{profile.remote_preference}</span>}
               {profile.availability && <span>Available: {profile.availability}</span>}
             </div>
           </div>
           <div style={{ textAlign: 'right', flexShrink: 0 }}>
-            <div style={{ fontSize: '7pt', color: '#52705c', marginBottom: '.2rem' }}>Verified profile</div>
-            <div style={{ fontSize: '8pt', color: '#2d6a4f', fontWeight: 600 }}>{profileUrl}</div>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', marginBottom: '.45rem' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={20} height={20} style={{ display: 'block', flexShrink: 0 }}>
+                <rect width="32" height="32" rx="7" fill="#2D6A4F"/>
+                <circle cx="9" cy="10" r="4" fill="#F0EAD6"/>
+                <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#F0EAD6"/>
+                <path d="M14 20 Q18 17 20 17" stroke="#95D5B2" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#95D5B2"/>
+                <circle cx="23" cy="10" r="4" fill="#95D5B2"/>
+                <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#95D5B2"/>
+                <circle cx="28" cy="5" r="4" fill="#F0EAD6"/>
+                <polyline points="25.8,5 27,6.3 30.2,3" stroke="#2D6A4F" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span style={{ fontFamily: 'Manrope, sans-serif', fontSize: '12px', fontWeight: 800, color: '#1B4332', letterSpacing: '-0.02em', lineHeight: 1 }}>
+                Recomme<span style={{ color: '#52B788' }}>Now</span>
+              </span>
+            </span>
+            <div style={{ fontSize: '8pt', color: '#2d6a4f', fontWeight: 600, marginBottom: '.2rem' }}>{profileUrl}</div>
+            <div style={{ fontSize: '7pt', color: '#52705c' }}>Verified profile</div>
           </div>
         </div>
 
         {/* Stats */}
         <div className="stats-row">
-          <div className="stat">
-            <div className="stat-value">{trustScore > 0 ? `${trustScore}/5` : '—'}</div>
-            <div className="stat-label">Trust score</div>
-          </div>
           <div className="stat">
             <div className="stat-value">{vouches.length}</div>
             <div className="stat-label">Approved vouches</div>
@@ -192,7 +199,7 @@ export default async function PrintPage({ params }: Props) {
         {/* Vouches — up to 6 to fit on one page */}
         {vouches.length > 0 && (
           <div>
-            <div className="section-title">Vouches ({vouches.length} total — showing top {Math.min(vouches.length, 6)})</div>
+            <div className="section-title">Vouches ({vouches.length} total, showing top {Math.min(vouches.length, 6)})</div>
             {vouches.slice(0, 6).map((v) => (
               <div key={v.id} className="vouch">
                 <div className="vouch-header">
@@ -220,7 +227,22 @@ export default async function PrintPage({ params }: Props) {
 
         {/* Footer */}
         <div className="footer">
-          <span className="rn-brand">Recomme<span style={{ color: '#2d6a4f' }}>Now</span></span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={16} height={16} style={{ display: 'block', flexShrink: 0 }}>
+              <rect width="32" height="32" rx="7" fill="#2D6A4F"/>
+              <circle cx="9" cy="10" r="4" fill="#F0EAD6"/>
+              <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#F0EAD6"/>
+              <path d="M14 20 Q18 17 20 17" stroke="#95D5B2" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+              <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#95D5B2"/>
+              <circle cx="23" cy="10" r="4" fill="#95D5B2"/>
+              <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#95D5B2"/>
+              <circle cx="28" cy="5" r="4" fill="#F0EAD6"/>
+              <polyline points="25.8,5 27,6.3 30.2,3" stroke="#2D6A4F" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ fontFamily: 'Manrope, sans-serif', fontSize: '9pt', fontWeight: 800, color: '#1B4332', letterSpacing: '-0.02em', lineHeight: 1 }}>
+              Recomme<span style={{ color: '#52B788' }}>Now</span>
+            </span>
+          </span>
           <span>All vouches email-verified · {profileUrl}</span>
           <span>{new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
         </div>

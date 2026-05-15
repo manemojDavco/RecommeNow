@@ -3,6 +3,23 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
+function PlanBadge({ variant, size = 22 }: { variant: 'pro' | 'recruiter'; size?: number }) {
+  const dark  = variant === 'recruiter' ? '#5B21B6' : '#2D6A4F'
+  const light = variant === 'recruiter' ? '#A78BFA' : '#52B788'
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={size} height={size} style={{ flexShrink: 0 }}>
+      <circle cx="9" cy="10" r="4" fill={dark}/>
+      <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill={dark}/>
+      <path d="M14 20 Q18 17 20 17" stroke={light} strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+      <polygon points="20,17 16.5,14.5 16.5,19.5" fill={light}/>
+      <circle cx="23" cy="10" r="4" fill={light}/>
+      <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill={light}/>
+      <circle cx="28" cy="5" r="4" fill={dark}/>
+      <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 interface Subscription {
   id: string
   status: string
@@ -156,6 +173,7 @@ export default function BillingClient() {
                 <p style={{ fontFamily: 'var(--sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)' }}>
                   {planLabel(plan)} plan
                 </p>
+                {plan !== 'free' && <PlanBadge variant={plan} />}
                 {subscription && (
                   <span style={{
                     fontSize: '.68rem', fontWeight: 700, padding: '2px 8px', borderRadius: 100,
