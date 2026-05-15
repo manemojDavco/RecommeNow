@@ -498,7 +498,7 @@ body {
   }
 
   /* Reorder profile sections on mobile via display:contents + order */
-  .rn-profile-grid { display: flex !important; flex-direction: column; }
+  .rn-profile-grid { display: flex !important; flex-direction: column; align-items: stretch !important; }
   .rn-profile-main, .rn-profile-sidebar { display: contents !important; }
   .rn-profile-header-section { order: 1; margin-bottom: 0 !important; }
   .rn-profile-sidebar-top { order: 2; display: flex !important; flex-direction: column; gap: 0; width: 100% !important; box-sizing: border-box; }

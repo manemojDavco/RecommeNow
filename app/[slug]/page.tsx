@@ -10,6 +10,7 @@ import RecruiterContactButton from '@/components/RecruiterContactButton'
 import { Logo, LocationPin } from '@/components/Logo'
 import QrModal from './QrModal'
 import ContactInfoButton from './ContactInfoButton'
+import TagsSection from '@/components/TagsSection'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -352,26 +353,10 @@ export default async function PublicProfilePage({ params }: Props) {
             )}
 
             {/* Industries + stages */}
-            {(profile.industries?.length > 0 || profile.stages?.length > 0) && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.4rem', marginTop: '1rem' }}>
-                {[...(profile.industries ?? []), ...(profile.stages ?? [])].map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      background: 'var(--paper)',
-                      border: '1px solid var(--rule)',
-                      borderRadius: 100,
-                      padding: '3px 10px',
-                      fontSize: '.7rem',
-                      color: 'var(--muted)',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            <TagsSection
+              industries={profile.industries ?? []}
+              stages={profile.stages ?? []}
+            />
           </div>
 
           <div className="rn-profile-vouches-section">
