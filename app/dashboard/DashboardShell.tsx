@@ -69,6 +69,7 @@ export default function DashboardShell({
   const { signOut } = useClerk()
   const [portalLoading, setPortalLoading] = useState(false)
   const [portalError, setPortalError] = useState('')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   async function openPortal() {
     setPortalLoading(true)
@@ -101,7 +102,17 @@ export default function DashboardShell({
     .toUpperCase()
 
   return (
+    <>
+      {/* Mobile backdrop */}
+      {mobileMenuOpen && (
+        <div
+          className="rn-dash-backdrop"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
     <div
+      className="rn-dashboard-wrap"
       style={{
         display: 'grid',
         gridTemplateColumns: '220px 1fr',
@@ -111,6 +122,7 @@ export default function DashboardShell({
     >
       {/* ── SIDEBAR ── */}
       <aside
+        className={`rn-dash-sidebar${mobileMenuOpen ? ' open' : ''}`}
         style={{
           background: 'var(--green)',
           display: 'flex',
@@ -232,6 +244,7 @@ export default function DashboardShell({
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setMobileMenuOpen(false)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -434,8 +447,25 @@ export default function DashboardShell({
           flexDirection: 'column',
         }}
       >
+        {/* Mobile top bar — logo + hamburger */}
+        <div className="rn-dash-topbar">
+          <Logo variant="light" href="/" size={26} />
+          <button
+            className="rn-dash-hamburger"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMobileMenuOpen((o) => !o)}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {mobileMenuOpen
+                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
+            </svg>
+          </button>
+        </div>
+
         {children}
       </main>
     </div>
+    </>
   )
 }
