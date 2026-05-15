@@ -229,7 +229,7 @@ export default async function PublicProfilePage({ params }: Props) {
         {/* ─── LEFT COLUMN ─── */}
         <div className="rn-profile-main">
           {/* Profile header */}
-          <div style={{ marginBottom: '2.5rem' }}>
+          <div className="rn-profile-header-section" style={{ marginBottom: '2.5rem' }}>
             <div className="rn-profile-header-flex" style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', marginBottom: '1.5rem' }}>
               <ContactInfoButton
                 name={profile.name}
@@ -374,6 +374,7 @@ export default async function PublicProfilePage({ params }: Props) {
             )}
           </div>
 
+          <div className="rn-profile-vouches-section">
           <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', marginBottom: '2.5rem' }} />
 
           {/* Vouches header */}
@@ -452,11 +453,13 @@ export default async function PublicProfilePage({ params }: Props) {
               ))}
             </div>
           )}
+          </div>{/* close rn-profile-vouches-section */}
         </div>
 
         {/* ─── RIGHT SIDEBAR ─── */}
         <aside className="rn-profile-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           {/* Vouch summary card */}
+          <div className="rn-profile-sidebar-top" style={{ display: 'contents' }}>
           <div
             style={{
               background: 'var(--green)',
@@ -491,7 +494,9 @@ export default async function PublicProfilePage({ params }: Props) {
               )}
             </div>
           </div>
+          </div>{/* close rn-profile-sidebar-top */}
 
+          <div className="rn-profile-sidebar-bottom" style={{ display: 'contents' }}>
           {/* Relationship breakdown */}
           {Object.keys(relationshipCounts).length > 0 && (
             <div className="card">
@@ -581,6 +586,7 @@ export default async function PublicProfilePage({ params }: Props) {
               Build my profile →
             </Link>
           </div>
+          </div>{/* close rn-profile-sidebar-bottom */}
         </aside>
       </div>
     </>

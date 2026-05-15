@@ -497,9 +497,13 @@ body {
     gap: 1.5rem !important;
   }
 
-  /* Sidebar above vouches on mobile */
-  .rn-profile-sidebar { order: -1; }
-  .rn-profile-main { order: 0; }
+  /* Reorder profile sections on mobile via display:contents + order */
+  .rn-profile-grid { display: flex !important; flex-direction: column; }
+  .rn-profile-main, .rn-profile-sidebar { display: contents !important; }
+  .rn-profile-header-section { order: 1; margin-bottom: 0 !important; }
+  .rn-profile-sidebar-top { order: 2; display: flex !important; flex-direction: column; gap: 0; }
+  .rn-profile-vouches-section { order: 3; }
+  .rn-profile-sidebar-bottom { order: 4; display: flex !important; flex-direction: column; gap: 1.2rem; }
 
   /* Profile header: tighter avatar row */
   .rn-profile-header-flex { gap: 1rem !important; }
