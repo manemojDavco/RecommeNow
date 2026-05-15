@@ -20,25 +20,21 @@ export default async function OgImage() {
           fontFamily: 'sans-serif',
         }}
       >
-        {/* Logo + brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '60px' }}>
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 16,
-              background: '#52b788',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 36,
-              fontWeight: 800,
-              color: '#1b4332',
-            }}
-          >
-            R
-          </div>
-          <div style={{ display: 'flex', fontSize: 44, fontWeight: 800, letterSpacing: '-0.02em' }}>
+        {/* Logo mark + wordmark */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '22px', marginBottom: '60px' }}>
+          <svg width="84" height="84" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" rx="40" fill="#2D6A4F" />
+            <circle cx="58" cy="62" r="24" fill="#F0EAD6" />
+            <path d="M22 160 Q22 108 58 108 Q94 108 94 160 Z" fill="#F0EAD6" />
+            <path d="M90 122 Q107 112 114 112" stroke="#95D5B2" strokeWidth="7" fill="none" strokeLinecap="round" />
+            <polygon points="114,112 104,104 104,120" fill="#95D5B2" />
+            <circle cx="142" cy="62" r="24" fill="#95D5B2" />
+            <path d="M106 160 Q106 108 142 108 Q178 108 178 160 Z" fill="#95D5B2" />
+            <circle cx="166" cy="36" r="17" fill="#F0EAD6" />
+            <circle cx="166" cy="36" r="13" fill="#2D6A4F" />
+            <polyline points="159,36 163,41 173,28" stroke="#F0EAD6" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <div style={{ display: 'flex', fontSize: 52, fontWeight: 800, letterSpacing: '-0.02em' }}>
             <span style={{ color: '#f0ead6' }}>Recomme</span>
             <span style={{ color: '#52b788' }}>Now</span>
           </div>
