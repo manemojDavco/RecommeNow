@@ -546,6 +546,27 @@ body {
 
   /* Footer stack */
   footer { padding: 2rem 1.25rem !important; flex-direction: column !important; gap: 1.5rem !important; align-items: flex-start !important; }
+
+  /* Clerk auth card — prevent OTP/verify screen overflow */
+  .rn-auth-right { overflow: hidden; }
+  .rn-auth-right > div { width: 100% !important; max-width: 100% !important; }
+  .cl-rootBox, .cl-card, .cl-cardBox { max-width: 100% !important; width: 100% !important; box-sizing: border-box !important; }
+  .cl-otpCodeField { gap: .3rem !important; }
+  .cl-otpCodeFieldInput { width: 38px !important; height: 44px !important; font-size: 1.1rem !important; }
+
+  /* Onboarding — single column, hide preview panel */
+  .rn-onboarding-wrap {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    min-height: 100dvh;
+    overflow: auto !important;
+  }
+  .rn-onboarding-preview { display: none !important; }
+  .rn-onboarding-form { overflow-y: visible !important; }
+  .rn-onboarding-form > div:first-child { padding: .75rem 1rem !important; }
+  .rn-onboarding-content { padding: 1.5rem 1rem 2rem !important; max-width: 100% !important; }
+  .rn-onboarding-steps { display: none !important; }
+  .rn-onboarding-2col { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 480px) {

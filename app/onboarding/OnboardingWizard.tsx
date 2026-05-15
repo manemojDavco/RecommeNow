@@ -171,6 +171,7 @@ export default function OnboardingWizard() {
 
   return (
     <div
+      className="rn-onboarding-wrap"
       style={{
         display: 'grid',
         gridTemplateColumns: '1fr 420px',
@@ -180,7 +181,7 @@ export default function OnboardingWizard() {
       }}
     >
       {/* ── LEFT — form ── */}
-      <div style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+      <div className="rn-onboarding-form" style={{ display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
         {/* Top bar */}
         <div
           style={{
@@ -199,7 +200,7 @@ export default function OnboardingWizard() {
           <Logo variant="dark" href="/" size={30} />
 
           {/* Step dots */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+          <div className="rn-onboarding-steps" style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
             {stepLabels.map((label, i) => {
               const n = i + 1
               const done = step > n
@@ -232,7 +233,7 @@ export default function OnboardingWizard() {
         </div>
 
         {/* Form content */}
-        <div style={{ flex: 1, padding: '3rem', maxWidth: 520 }}>
+        <div className="rn-onboarding-content" style={{ flex: 1, padding: '3rem', maxWidth: 520 }}>
           {/* ── STEP 1: Basics ── */}
           {step === 1 && (
             <div className="animate-fade-up">
@@ -275,7 +276,7 @@ export default function OnboardingWizard() {
                   <label className="field-label">Current role / title</label>
                   <input className="field-input" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} placeholder="Head of Product" />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div className="rn-onboarding-2col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label className="field-label">Years of experience</label>
                     <input className="field-input" type="number" min="0" max="50" value={form.years_experience} onChange={(e) => setForm((f) => ({ ...f, years_experience: e.target.value }))} placeholder="8" />
@@ -420,7 +421,7 @@ export default function OnboardingWizard() {
       </div>
 
       {/* ── RIGHT — preview ── */}
-      <div style={{ background: 'var(--paper)', borderLeft: '1px solid var(--rule)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+      <div className="rn-onboarding-preview" style={{ background: 'var(--paper)', borderLeft: '1px solid var(--rule)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--rule)', flexShrink: 0 }}>
           <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)' }}>Live preview</p>
         </div>
