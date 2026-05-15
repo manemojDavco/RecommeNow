@@ -5,10 +5,8 @@ import Link from 'next/link'
 import { useAuth } from '@clerk/nextjs'
 
 function LogoMark({ size = 28 }: { size?: number }) {
-  const s = size
-  const scale = s / 32
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={s} height={s} className="rn-logo-mark">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={size} height={size} className="rn-logo-mark">
       <rect width="32" height="32" rx="7" fill="#2D6A4F"/>
       <circle cx="9" cy="10" r="4" fill="#F0EAD6"/>
       <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#F0EAD6"/>
@@ -25,6 +23,7 @@ function LogoMark({ size = 28 }: { size?: number }) {
 export default function Nav() {
   const { isSignedIn } = useAuth()
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -32,46 +31,88 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Close menu on resize to desktop
+  useEffect(() => {
+    const onResize = () => { if (window.innerWidth > 768) setMenuOpen(false) }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  function closeMenu() { setMenuOpen(false) }
+
   return (
-    <nav className={`rn-nav${scrolled ? ' scrolled' : ''}`}>
-      {/* Left: logo + page links */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
-        <Link href="/" className="rn-logo">
-          <LogoMark size={30} />
-          <span className="rn-logo-text">Recomme<span>Now</span></span>
-        </Link>
-
-        <Link href="/#how" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
-          How it works
-        </Link>
-        <Link href="/#proof" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
-          Examples
-        </Link>
-        <Link href="/pricing" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
-          Pricing
-        </Link>
-        <Link href="/faq" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
-          FAQ
-        </Link>
-      </div>
-
-      {/* Right: auth actions only */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        {isSignedIn ? (
-          <Link href="/dashboard" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>
-            Dashboard
+    <>
+      <nav className={`rn-nav${scrolled ? ' scrolled' : ''}`}>
+        {/* Left: logo + desktop links */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+          <Link href="/" className="rn-logo" onClick={closeMenu}>
+            <LogoMark size={30} />
+            <span className="rn-logo-text">Recomme<span>Now</span></span>
           </Link>
-        ) : (
-          <>
-            <Link href="/sign-in" style={{ fontSize: '.78rem', fontWeight: 500, color: 'var(--muted)', textDecoration: 'none' }}>
-              Sign in
-            </Link>
-            <Link href="/sign-up" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>
-              Get started free
-            </Link>
-          </>
-        )}
-      </div>
-    </nav>
+
+          <div className="rn-desktop-only" style={{ alignItems: 'center', gap: '1.75rem' }}>
+            <Link href="/#how" style={navLinkStyle}>How it works</Link>
+            <Link href="/#proof" style={navLinkStyle}>Examples</Link>
+            <Link href="/pricing" style={navLinkStyle}>Pricing</Link>
+            <Link href="/faq" style={navLinkStyle}>FAQ</Link>
+          </div>
+        </div>
+
+        {/* Right: auth actions (desktop) + hamburger (mobile) */}
+        <div className="rn-desktop-only" style={{ alignItems: 'center', gap: '1rem' }}>
+          {isSignedIn ? (
+            <Link href="/dashboard" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>Dashboard</Link>
+          ) : (
+            <>
+              <Link href="/sign-in" style={navLinkStyle}>Sign in</Link>
+              <Link href="/sign-up" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>Get started free</Link>
+            </>
+          )}
+        </div>
+
+        <button
+          className="rn-mobile-toggle"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((o) => !o)}
+          style={{
+            background: 'transparent', border: 'none', cursor: 'pointer',
+            padding: '.4rem', borderRadius: 6, color: 'var(--ink)',
+            display: 'none',
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {menuOpen
+              ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+              : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
+          </svg>
+        </button>
+      </nav>
+
+      {menuOpen && (
+        <div className="rn-mobile-menu rn-mobile-only" onClick={(e) => { if (e.target === e.currentTarget) closeMenu() }}>
+          <Link href="/#how" onClick={closeMenu}>How it works</Link>
+          <Link href="/#proof" onClick={closeMenu}>Examples</Link>
+          <Link href="/pricing" onClick={closeMenu}>Pricing</Link>
+          <Link href="/faq" onClick={closeMenu}>FAQ</Link>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', margin: '.5rem 0' }} />
+          {isSignedIn ? (
+            <Link href="/dashboard" className="btn-primary" onClick={closeMenu}>Dashboard</Link>
+          ) : (
+            <>
+              <Link href="/sign-in" onClick={closeMenu}>Sign in</Link>
+              <Link href="/sign-up" className="btn-primary" onClick={closeMenu}>Get started free</Link>
+            </>
+          )}
+        </div>
+      )}
+    </>
   )
+}
+
+const navLinkStyle: React.CSSProperties = {
+  fontSize: '.78rem',
+  fontWeight: 500,
+  color: 'var(--muted)',
+  textDecoration: 'none',
 }
