@@ -200,9 +200,9 @@ export default function DashboardShell({
               href="/pricing"
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '.3rem',
-                background: 'rgba(255,215,0,.15)', border: '1px solid rgba(255,215,0,.35)',
+                background: 'rgba(240,234,214,.15)', border: '1px solid rgba(240,234,214,.35)',
                 borderRadius: 100, padding: '.18rem .6rem',
-                fontSize: '.68rem', fontWeight: 700, color: '#ffd700',
+                fontSize: '.68rem', fontWeight: 700, color: 'var(--cream)',
                 textDecoration: 'none', whiteSpace: 'nowrap',
               }}
             >
@@ -309,17 +309,17 @@ export default function DashboardShell({
               href="/pricing"
               style={{
                 display: 'block',
-                background: 'rgba(255,215,0,.1)',
-                border: '1px solid rgba(255,215,0,.25)',
+                background: 'rgba(240,234,214,.1)',
+                border: '1px solid rgba(240,234,214,.25)',
                 borderRadius: 10,
                 padding: '.6rem',
                 textDecoration: 'none',
                 textAlign: 'center',
               }}
             >
-              <p style={{ fontSize: '.82rem', fontWeight: 700, color: '#ffd700', marginBottom: '.2rem' }}>✨ {trialDaysLeft} days left in trial</p>
+              <p style={{ fontSize: '.82rem', fontWeight: 700, color: 'var(--cream)', marginBottom: '.2rem' }}>✨ {trialDaysLeft} days left in trial</p>
               <p style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)', lineHeight: 1.5 }}>Lock in PRO before it ends</p>
-              <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'rgba(255,215,0,.7)', marginTop: '.4rem' }}>Upgrade now →</p>
+              <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'rgba(240,234,214,.85)', marginTop: '.4rem' }}>Upgrade now →</p>
             </Link>
           </div>
         )}
