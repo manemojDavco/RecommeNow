@@ -417,6 +417,7 @@ export default async function PublicProfilePage({ params }: Props) {
 
           {vouches.length === 0 ? (
             <div
+              className="rn-vouches-empty"
               style={{
                 background: 'var(--paper)',
                 border: '1px solid var(--rule)',
