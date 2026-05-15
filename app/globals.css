@@ -334,6 +334,9 @@ body {
 .rn-mobile-only { display: none; }
 .rn-desktop-only { display: flex; }
 
+/* Auth mobile logo — hidden on desktop (left panel has the logo) */
+.rn-auth-mobile-logo { display: none; }
+
 @media (max-width: 768px) {
   .rn-mobile-toggle { display: inline-flex; }
   .rn-mobile-only { display: flex; }
@@ -399,6 +402,13 @@ body {
     padding-right: 0 !important;
   }
   .rn-grid-4 > *:last-child { border-bottom: none; }
+
+  /* Auth pages: mobile logo — hidden on desktop, shown on mobile */
+  .rn-auth-mobile-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
 
   /* Auth pages: single column, hide left panel, center form */
   .rn-auth-grid {

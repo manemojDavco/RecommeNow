@@ -144,6 +144,9 @@ export default function SignInPage() {
         }}
       >
         <div style={{ width: '100%', maxWidth: '380px' }}>
+          <div className="rn-auth-mobile-logo">
+            <Logo variant="dark" href="/" size={28} />
+          </div>
           <p
             style={{
               fontFamily: 'var(--sans)',
