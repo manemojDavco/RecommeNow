@@ -78,7 +78,16 @@ function buildVouchRequestEmail({ name, firstName, vouchUrl, appUrl }: {
         <!-- Header -->
         <tr>
           <td style="background:#1b4332;padding:28px 36px 24px">
-            <span style="font-size:20px;font-weight:700;color:#f0ead6;letter-spacing:-0.02em">Recomme<span style="color:#52b788">Now</span></span>
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding-right:10px;vertical-align:middle">
+                  <img src="${appUrl}/logo.png" width="36" height="36" alt="RecommeNow" style="border-radius:8px;display:block" />
+                </td>
+                <td style="vertical-align:middle">
+                  <span style="font-size:20px;font-weight:700;color:#f0ead6;letter-spacing:-0.02em">Recomme<span style="color:#52b788">Now</span></span>
+                </td>
+              </tr>
+            </table>
           </td>
         </tr>
 
