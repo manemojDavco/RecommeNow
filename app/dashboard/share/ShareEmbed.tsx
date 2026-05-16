@@ -35,7 +35,7 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
   }
 
   function handleEmailKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
       e.preventDefault()
       addEmail(emailInput)
     } else if (e.key === 'Backspace' && emailInput === '' && emails.length > 0) {
