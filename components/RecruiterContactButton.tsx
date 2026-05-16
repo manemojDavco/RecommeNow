@@ -16,7 +16,7 @@ type Props = {
 
 export default function RecruiterContactButton({ candidateSlug, candidateName, candidatePhone, candidateEmail, showPhone = true, showEmail = true, isRecruiter, isSignedIn }: Props) {
   const [open, setOpen] = useState(false)
-  const [form, setForm] = useState({ company: '', message: '' })
+  const [form, setForm] = useState({ senderEmail: '', company: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -65,6 +65,11 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
   }
 
   async function send() {
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.senderEmail.trim())
+    if (!emailValid) {
+      setErrorMsg('Please enter a valid email address.')
+      return
+    }
     if (!form.message.trim() || form.message.trim().length < 20) {
       setErrorMsg('Message must be at least 20 characters.')
       return
@@ -74,7 +79,7 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
     const res = await fetch('/api/recruiter/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ candidateSlug, company: form.company, message: form.message }),
+      body: JSON.stringify({ candidateSlug, senderEmail: form.senderEmail.trim(), company: form.company, message: form.message }),
     })
     if (res.ok) {
       setStatus('sent')
@@ -131,7 +136,7 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
                   {candidateName} will receive your message and can reply directly to your email.
                 </p>
                 <button
-                  onClick={() => { setOpen(false); setStatus('idle'); setForm({ company: '', message: '' }) }}
+                  onClick={() => { setOpen(false); setStatus('idle'); setForm({ senderEmail: '', company: '', message: '' }) }}
                   style={{ background: 'var(--green)', color: '#fff', border: 'none', borderRadius: 8, padding: '.7rem 1.5rem', fontSize: '.83rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--sans)' }}
                 >
                   Done
@@ -152,6 +157,16 @@ export default function RecruiterContactButton({ candidateSlug, candidateName, c
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <label className="field-label">Your email *</label>
+                    <input
+                      className="field-input"
+                      type="email"
+                      value={form.senderEmail}
+                      onChange={(e) => { setForm((f) => ({ ...f, senderEmail: e.target.value })); setErrorMsg('') }}
+                      placeholder="you@company.com"
+                    />
+                  </div>
                   <div>
                     <label className="field-label">Company (optional)</label>
                     <input

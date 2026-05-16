@@ -27,8 +27,8 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  const { candidateSlug, company, message } = await req.json()
-  if (!candidateSlug || !message?.trim()) {
+  const { candidateSlug, senderEmail, company, message } = await req.json()
+  if (!candidateSlug || !message?.trim() || !senderEmail?.trim()) {
     return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 })
   }
   if (message.trim().length < 20) {
@@ -100,10 +100,9 @@ export async function POST(req: NextRequest) {
             <p style="margin:0;font-size:15px;color:#1c1917;line-height:1.7;white-space:pre-wrap">${message.trim()}</p>
           </div>
 
-          ${recruiterEmail ? `
           <p style="margin:0 0 24px;font-size:14px;color:#6b7280">
-            Reply directly to <a href="mailto:${recruiterEmail}" style="color:#1a5c3a;font-weight:600">${recruiterEmail}</a>
-          </p>` : ''}
+            Reply directly to <a href="mailto:${senderEmail || recruiterEmail}" style="color:#1a5c3a;font-weight:600">${senderEmail || recruiterEmail}</a>
+          </p>
 
           <table cellpadding="0" cellspacing="0">
             <tr>
@@ -129,7 +128,7 @@ export async function POST(req: NextRequest) {
   await getResend().emails.send({
     from: process.env.RESEND_FROM_EMAIL ?? 'vouches@recommenow.com',
     to: candidateEmail,
-    replyTo: recruiterEmail,
+    replyTo: senderEmail || recruiterEmail,
     subject: `${recruiterName}${companyLabel} wants to connect on RecommeNow`,
     html,
   })
