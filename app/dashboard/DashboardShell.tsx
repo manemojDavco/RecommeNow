@@ -135,8 +135,10 @@ export default function DashboardShell({
           <Logo variant="light" href="/" size={30} />
         </div>
 
-        {/* User info */}
-        <div
+        {/* User info — entire section links to public profile */}
+        <Link
+          href={`/${profile.slug}`}
+          target="_blank"
           style={{
             padding: '.75rem 1rem',
             borderBottom: '1px solid rgba(255,255,255,.07)',
@@ -145,37 +147,33 @@ export default function DashboardShell({
             flexDirection: 'column',
             alignItems: 'center',
             textAlign: 'center',
+            textDecoration: 'none',
+            cursor: 'pointer',
           }}
         >
-          <Link
-            href={`/${profile.slug}`}
-            target="_blank"
-            style={{ textDecoration: 'none', marginBottom: '.4rem', flexShrink: 0 }}
+          <div
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              background: 'rgba(255,255,255,.12)',
+              border: '1.5px solid rgba(255,255,255,.2)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--sans)',
+              fontWeight: 700,
+              fontSize: '1rem',
+              color: 'rgba(255,255,255,.85)',
+              overflow: 'hidden',
+              flexShrink: 0,
+              marginBottom: '.4rem',
+            }}
           >
-            <div
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,.12)',
-                border: '1.5px solid rgba(255,255,255,.2)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'var(--sans)',
-                fontWeight: 700,
-                fontSize: '1rem',
-                color: 'rgba(255,255,255,.85)',
-                overflow: 'hidden',
-                flexShrink: 0,
-                cursor: 'pointer',
-              }}
-            >
-              {profile.photo_url
-                ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                : initials}
-            </div>
-          </Link>
+            {profile.photo_url
+              ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              : initials}
+          </div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.35rem', marginBottom: '.1rem', minWidth: 0 }}>
             <div
               style={{
@@ -214,20 +212,19 @@ export default function DashboardShell({
             )}
           </div>
           {isTrial && (
-            <Link
-              href="/pricing"
+            <span
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: '.3rem',
                 background: 'rgba(240,234,214,.15)', border: '1px solid rgba(240,234,214,.35)',
                 borderRadius: 100, padding: '.18rem .6rem',
                 fontSize: '.68rem', fontWeight: 700, color: 'var(--cream)',
-                textDecoration: 'none', whiteSpace: 'nowrap',
+                whiteSpace: 'nowrap',
               }}
             >
               PRO Trial · {trialDaysLeft}d left
-            </Link>
+            </span>
           )}
-        </div>
+        </Link>
 
         {/* Nav items */}
         <nav style={{ flex: 1, padding: '.4rem 0', overflowY: 'auto' }}>
