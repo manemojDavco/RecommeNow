@@ -259,6 +259,7 @@ export default async function PublicProfilePage({ params }: Props) {
                     fontWeight: 700,
                     color: '#fff',
                     overflow: 'hidden',
+                    boxShadow: '0 0 0 3px var(--green)',
                   }}
                 >
                   {profile.photo_url

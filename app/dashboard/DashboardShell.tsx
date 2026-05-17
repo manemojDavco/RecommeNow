@@ -147,29 +147,35 @@ export default function DashboardShell({
             textAlign: 'center',
           }}
         >
-          <div
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,.12)',
-              border: '1.5px solid rgba(255,255,255,.2)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: 'var(--sans)',
-              fontWeight: 700,
-              fontSize: '1rem',
-              color: 'rgba(255,255,255,.85)',
-              marginBottom: '.4rem',
-              overflow: 'hidden',
-              flexShrink: 0,
-            }}
+          <Link
+            href={`/${profile.slug}`}
+            target="_blank"
+            style={{ textDecoration: 'none', marginBottom: '.4rem', flexShrink: 0 }}
           >
-            {profile.photo_url
-              ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-              : initials}
-          </div>
+            <div
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,.12)',
+                border: '1.5px solid rgba(255,255,255,.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'var(--sans)',
+                fontWeight: 700,
+                fontSize: '1rem',
+                color: 'rgba(255,255,255,.85)',
+                overflow: 'hidden',
+                flexShrink: 0,
+                cursor: 'pointer',
+              }}
+            >
+              {profile.photo_url
+                ? <img src={profile.photo_url} alt={profile.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                : initials}
+            </div>
+          </Link>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.35rem', marginBottom: '.1rem', minWidth: 0 }}>
             <div
               style={{
@@ -403,13 +409,16 @@ export default function DashboardShell({
               alignItems: 'center',
               justifyContent: 'center',
               gap: '.5rem',
-              fontSize: '.88rem',
-              fontWeight: 500,
-              color: 'rgba(255,255,255,.5)',
+              fontSize: '.82rem',
+              fontWeight: 600,
               textDecoration: 'none',
-              padding: '.25rem .5rem',
-              borderRadius: 6,
-              transition: 'color .15s',
+              padding: '.5rem .75rem',
+              borderRadius: 10,
+              background: isRecruiter ? '#ede9fe' : isPro ? '#d1fae5' : '#fff',
+              color: isRecruiter ? '#5B21B6' : isPro ? '#2D6A4F' : '#374151',
+              marginBottom: '.25rem',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
             ↗ View public profile
