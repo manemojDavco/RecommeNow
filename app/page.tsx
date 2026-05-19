@@ -1,8 +1,12 @@
 import Link from 'next/link'
 import Nav from '@/components/Nav'
 import { Logo } from '@/components/Logo'
+import { FeedbackSection } from '@/components/FeedbackSection'
+import { currentUser } from '@clerk/nextjs/server'
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const user = await currentUser()
+  const prefillEmail = user?.emailAddresses?.[0]?.emailAddress
   return (
     <>
       <Nav />
@@ -590,6 +594,10 @@ export default function LandingPage() {
             Build your profile free →
           </Link>
         </section>
+
+        {/* ─── FEEDBACK ─── */}
+        <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', maxWidth: 1100, margin: '0 auto' }} />
+        <FeedbackSection prefillEmail={prefillEmail} />
 
         {/* ─── FOOTER ─── */}
         <footer
