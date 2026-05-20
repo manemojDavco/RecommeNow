@@ -256,7 +256,7 @@ export default function DashboardShell({
                   padding: '.45rem 1rem',
                   fontSize: '.9rem',
                   fontWeight: active ? 600 : 500,
-                  color: active ? '#fff' : 'rgba(255,255,255,.5)',
+                  color: active ? '#95D5B2' : '#fff',
                   textDecoration: 'none',
                   background: active ? 'rgba(255,255,255,.1)' : 'transparent',
                   borderRadius: 7,
@@ -264,7 +264,7 @@ export default function DashboardShell({
                   transition: 'all .15s',
                 }}
               >
-                <span style={{ fontSize: '1rem', opacity: active ? 1 : 0.6 }}>{item.icon}</span>
+                <span style={{ fontSize: '1rem', opacity: 1 }}>{item.icon}</span>
                 {item.label}
               </Link>
             )
@@ -301,7 +301,7 @@ export default function DashboardShell({
                       padding: '.6rem 1rem',
                       fontSize: '.78rem',
                       fontWeight: active ? 600 : 500,
-                      color: active ? '#fff' : 'rgba(255,255,255,.5)',
+                      color: active ? '#95D5B2' : '#fff',
                       textDecoration: 'none',
                       background: active ? 'rgba(255,255,255,.1)' : 'transparent',
                       borderRadius: 7,
@@ -309,7 +309,7 @@ export default function DashboardShell({
                       transition: 'all .15s',
                     }}
                   >
-                    <span style={{ fontSize: '.85rem', opacity: active ? 1 : 0.6 }}>{item.icon}</span>
+                    <span style={{ fontSize: '.85rem', opacity: 1 }}>{item.icon}</span>
                     {item.label}
                   </Link>
                 )
