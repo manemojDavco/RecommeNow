@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       giver_relationship: giver_relationship || null,
       traits: traits ?? [],
       quote: quote.trim(),
-      star_rating,
+      star_rating: Math.round(star_rating),
       verified: false,
       verification_token,
       status: 'pending',
