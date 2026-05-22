@@ -4,7 +4,6 @@ import { getVouchRateLimit } from '@/lib/rate-limit'
 import { sendVouchVerificationEmail, sendNewVouchNotification } from '@/lib/email'
 import { sendNewVouchNotification as sendPushNewVouch } from '@/lib/push'
 import { nanoid } from 'nanoid'
-import { calculateVouchScore } from '@/lib/vouch-score'
 
 export async function POST(req: NextRequest) {
   // Rate limit by IP
@@ -36,15 +35,6 @@ export async function POST(req: NextRequest) {
   if (quote.trim().length < 30) {
     return NextResponse.json({ error: 'Quote must be at least 30 characters.' }, { status: 400 })
   }
-
-  // Calculate credibility score from objective factors (voucher cannot set this)
-  const { score: star_rating } = calculateVouchScore({
-    relationship: giver_relationship ?? null,
-    quoteLength: quote.trim().length,
-    traitCount: (traits ?? []).length,
-    email: giver_email.trim().toLowerCase(),
-    verified: false,
-  })
 
   const db = createServiceClient()
 
@@ -88,7 +78,6 @@ export async function POST(req: NextRequest) {
       giver_relationship: giver_relationship || null,
       traits: traits ?? [],
       quote: quote.trim(),
-      star_rating: Math.round(star_rating),
       verified: false,
       verification_token,
       status: 'pending',

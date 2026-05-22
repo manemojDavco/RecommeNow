@@ -32,14 +32,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     .order('created_at', { ascending: false })
 
   const approved = vouches ?? []
-  const trustScore =
-    approved.length > 0
-      ? Math.round((approved.reduce((s: number, v: { star_rating: number }) => s + v.star_rating, 0) / approved.length) * 10) / 10
-      : 0
   const verificationRate =
     approved.length > 0
       ? Math.round((approved.filter((v: { verified: boolean }) => v.verified).length / approved.length) * 100)
       : 0
 
-  return NextResponse.json({ profile, vouches: approved, trustScore, verificationRate })
+  return NextResponse.json({ profile, vouches: approved, verificationRate })
 }

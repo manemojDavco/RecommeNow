@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   // Get all profiles that have new vouches in the last 7 days
   const { data: recentVouches } = await db
     .from('vouches')
-    .select('profile_id, giver_name, giver_title, giver_company, star_rating, status, created_at')
+    .select('profile_id, giver_name, giver_title, giver_company, status, created_at')
     .gte('created_at', since)
 
   if (!recentVouches || recentVouches.length === 0) {
@@ -92,12 +92,11 @@ function buildDigestEmail(opts: {
   slug: string
   newCount: number
   pending: number
-  vouches: Array<{ giver_name: string; giver_title: string | null; giver_company: string | null; star_rating: number }>
+  vouches: Array<{ giver_name: string; giver_title: string | null; giver_company: string | null }>
   appUrl: string
 }) {
   const { name, slug, newCount, pending, vouches, appUrl } = opts
   const firstName = name.split(' ')[0]
-  const stars = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n)
 
   return `<!DOCTYPE html>
 <html>
@@ -126,7 +125,6 @@ function buildDigestEmail(opts: {
           <div style="background:#f8f7f3;border-radius:8px;padding:16px 20px;margin-bottom:12px">
             <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#1c1917">${v.giver_name}${v.giver_company ? ` · ${v.giver_company}` : ''}</p>
             ${v.giver_title ? `<p style="margin:0 0 6px;font-size:13px;color:#6b7280">${v.giver_title}</p>` : ''}
-            <p style="margin:0;color:#1a5c3a;font-size:16px;letter-spacing:.05em">${stars(v.star_rating)}</p>
           </div>`).join('')}
 
           <table cellpadding="0" cellspacing="0" style="margin-top:28px">
