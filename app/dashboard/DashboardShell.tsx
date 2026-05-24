@@ -455,19 +455,25 @@ export default function DashboardShell({
         <div className="rn-dash-topbar">
           <Logo variant="light" href="/" size={26} />
           <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-            {/* Profile icon — quick link to public profile */}
+            {/* Profile icon — quick link to public profile; tinted by plan */}
             <Link
               href={`/${profile.slug}`}
               aria-label="View public profile"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 width: 34, height: 34, borderRadius: 8,
-                background: 'rgba(255,255,255,.12)',
-                color: 'rgba(255,255,255,.85)',
+                background: isRecruiter
+                  ? 'rgba(167,139,250,.28)'
+                  : (isPro || isTrial)
+                    ? 'rgba(149,213,178,.28)'
+                    : 'rgba(255,255,255,.12)',
                 textDecoration: 'none',
               }}
             >
-              <VouchesNavIcon color="rgba(255,255,255,.85)" size={18} />
+              <VouchesNavIcon
+                color={isRecruiter ? '#A78BFA' : (isPro || isTrial) ? '#95D5B2' : 'rgba(255,255,255,.75)'}
+                size={18}
+              />
             </Link>
             <button
               className="rn-dash-hamburger"

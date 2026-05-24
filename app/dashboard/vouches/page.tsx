@@ -265,14 +265,14 @@ export default function VouchesPage() {
                     {v.giver_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.2rem', gap: '.5rem' }}>
+                    <div className="rn-vouch-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '.2rem', gap: '.5rem', flexWrap: 'wrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', minWidth: 0 }}>
                         <span style={{ fontSize: '.85rem', fontWeight: 600, color: 'var(--ink)' }}>{v.giver_name}</span>
                         {v.verified && (
                           <span className="badge-verified" style={{ fontSize: '.58rem' }}>✓ Verified</span>
                         )}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexShrink: 0 }}>
+                      <div className="rn-vouch-card-actions" style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexShrink: 0 }}>
                         {/* Hide button for approved vouches */}
                         {isApprovedTab && (
                           <button

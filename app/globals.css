@@ -547,6 +547,12 @@ body {
   /* Vouches page — tighter padding on mobile */
   .rn-dash-content-page { padding: 1.25rem 1rem !important; }
 
+  /* Vouches tabs — smaller tap targets so all 6 fit */
+  .rn-vouches-tabs button { padding: .55rem .7rem !important; font-size: .72rem !important; }
+
+  /* Vouch card header — wrap actions onto second line on small screens */
+  .rn-vouch-card-actions { flex-wrap: wrap; }
+
   /* Public profile nav buttons — smaller on mobile */
   .rn-profile-nav-btn {
     padding: .4rem .7rem !important;
