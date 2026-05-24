@@ -119,11 +119,7 @@ export default async function DashboardOverviewPage({
                     <p style={{
                       fontSize: '.74rem',
                       color: 'var(--muted)',
-                      overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      lineHeight: 1.45,
+                      lineHeight: 1.55,
                     }}>"{v.quote}"</p>
                   </div>
                 </div>

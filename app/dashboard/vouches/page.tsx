@@ -25,6 +25,8 @@ export default function VouchesPage() {
   const [givenVouches, setGivenVouches] = useState<GivenVouch[]>([])
   const [givenLoading, setGivenLoading] = useState(true)
   const [localVouches, setLocalVouches] = useState<Vouch[]>([])
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const dragItem = useRef<number | null>(null)
   const dragOver = useRef<number | null>(null)
 
@@ -69,7 +71,7 @@ export default function VouchesPage() {
   function handleDragEnter(index: number) {
     if (dragItem.current === null || dragItem.current === index) return
     const from = dragItem.current
-    dragItem.current = index   // update synchronously so rapid events don't double-fire
+    dragItem.current = index
     setLocalVouches((prev) => {
       const updated = [...prev]
       const dragged = updated.splice(from, 1)[0]
@@ -81,7 +83,6 @@ export default function VouchesPage() {
   async function handleDragEnd() {
     dragItem.current = null
     dragOver.current = null
-    // Auto-save new order
     await fetch('/api/dashboard/vouches/reorder', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -89,7 +90,25 @@ export default function VouchesPage() {
     })
   }
 
+  async function handleAction(id: string, action: 'approve' | 'hide') {
+    setActionLoading(id)
+    await fetch(`/api/vouches/${id}/${action}`, { method: 'POST' })
+    setVouches((v) => v.filter((x) => x.id !== id))
+    setLocalVouches((v) => v.filter((x) => x.id !== id))
+    setActionLoading(null)
+  }
+
+  async function handleDelete(id: string) {
+    setActionLoading(id)
+    await fetch(`/api/vouches/${id}/delete`, { method: 'DELETE' })
+    setVouches((v) => v.filter((x) => x.id !== id))
+    setLocalVouches((v) => v.filter((x) => x.id !== id))
+    setActionLoading(null)
+    setConfirmDelete(null)
+  }
+
   const isApprovedTab = tab === 'approved'
+  const isHiddenTab = tab === 'hidden'
   const displayVouches = isApprovedTab ? localVouches : vouches
   const showDragHint = isApprovedTab && displayVouches.length > 1
 
@@ -120,6 +139,7 @@ export default function VouchesPage() {
               fontFamily: 'var(--sans)',
               marginBottom: -1,
               transition: 'all .15s',
+              whiteSpace: 'nowrap',
             }}
           >
             {t.label}
@@ -171,7 +191,7 @@ export default function VouchesPage() {
                         <span style={{ fontSize: '.68rem', color: 'var(--green2)', fontWeight: 600 }}>{v.giver_relationship}</span>
                       )}
                     </div>
-                    <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.6 }}>
                       &ldquo;{v.quote}&rdquo;
                     </p>
                   </div>
@@ -190,6 +210,11 @@ export default function VouchesPage() {
               <span style={{ fontSize: '.9rem' }}>⠿</span> Drag vouches to reorder how they appear on your public profile. Changes save automatically.
             </p>
           )}
+          {isHiddenTab && (
+            <p style={{ fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.75rem' }}>
+              Hidden vouches are not visible on your public profile. You can re-approve or permanently delete them.
+            </p>
+          )}
 
           {loading ? (
             <p style={{ color: 'var(--muted)', fontSize: '.85rem' }}>Loading…</p>
@@ -198,14 +223,7 @@ export default function VouchesPage() {
               <p style={{ fontFamily: 'var(--sans)', color: 'var(--muted)' }}>No vouches in this category.</p>
             </div>
           ) : (
-            <div
-              style={{
-                background: 'var(--white)',
-                border: '1px solid var(--rule)',
-                borderRadius: 10,
-                overflow: 'hidden',
-              }}
-            >
+            <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, overflow: 'hidden' }}>
               {displayVouches.map((v, i) => (
                 <div
                   key={v.id}
@@ -227,37 +245,78 @@ export default function VouchesPage() {
                   {isApprovedTab && (
                     <span style={{ fontSize: '1rem', color: 'var(--muted)', flexShrink: 0, alignSelf: 'center', cursor: 'grab' }}>⠿</span>
                   )}
-                  <div
-                    style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: '50%',
-                      background: 'var(--green-l)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '.7rem',
-                      fontWeight: 700,
-                      color: 'var(--green)',
-                      flexShrink: 0,
-                    }}
-                  >
+                  <div style={{
+                    width: 38, height: 38, borderRadius: '50%',
+                    background: 'var(--green-l)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '.7rem', fontWeight: 700, color: 'var(--green)', flexShrink: 0,
+                  }}>
                     {v.giver_name.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.2rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.2rem', gap: '.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', minWidth: 0 }}>
                         <span style={{ fontSize: '.85rem', fontWeight: 600, color: 'var(--ink)' }}>{v.giver_name}</span>
                         {v.verified && (
                           <span className="badge-verified" style={{ fontSize: '.58rem' }}>✓ Verified</span>
                         )}
                       </div>
-                      <StatusPill status={v.status} />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexShrink: 0 }}>
+                        {/* Hide button for approved vouches */}
+                        {isApprovedTab && (
+                          <button
+                            onClick={() => handleAction(v.id, 'hide')}
+                            disabled={actionLoading === v.id}
+                            title="Hide from public profile"
+                            style={{
+                              background: 'none', border: '1px solid var(--rule)',
+                              borderRadius: 6, padding: '2px 8px',
+                              fontSize: '.65rem', fontWeight: 600, color: 'var(--muted)',
+                              cursor: 'pointer', fontFamily: 'var(--sans)',
+                              opacity: actionLoading === v.id ? 0.5 : 1,
+                            }}
+                          >
+                            Hide
+                          </button>
+                        )}
+                        {/* Re-approve + Delete for hidden vouches */}
+                        {isHiddenTab && (
+                          <>
+                            <button
+                              onClick={() => handleAction(v.id, 'approve')}
+                              disabled={actionLoading === v.id}
+                              style={{
+                                background: 'var(--green-l)', border: '1px solid var(--green-m)',
+                                borderRadius: 6, padding: '2px 8px',
+                                fontSize: '.65rem', fontWeight: 600, color: 'var(--green2)',
+                                cursor: 'pointer', fontFamily: 'var(--sans)',
+                                opacity: actionLoading === v.id ? 0.5 : 1,
+                              }}
+                            >
+                              Re-approve
+                            </button>
+                            <button
+                              onClick={() => setConfirmDelete(v.id)}
+                              disabled={actionLoading === v.id}
+                              style={{
+                                background: 'var(--red-l)', border: '1px solid var(--red)',
+                                borderRadius: 6, padding: '2px 8px',
+                                fontSize: '.65rem', fontWeight: 600, color: 'var(--red)',
+                                cursor: 'pointer', fontFamily: 'var(--sans)',
+                                opacity: actionLoading === v.id ? 0.5 : 1,
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                        <StatusPill status={v.status} />
+                      </div>
                     </div>
-                    <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.3rem' }}>
+                    <p style={{ fontSize: '.75rem', color: 'var(--muted)', marginBottom: '.4rem' }}>
                       {[v.giver_title, v.giver_company, v.giver_relationship].filter(Boolean).join(' · ')}
                     </p>
-                    <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.6 }}>
                       &ldquo;{v.quote}&rdquo;
                     </p>
                   </div>
@@ -266,6 +325,51 @@ export default function VouchesPage() {
             </div>
           )}
         </>
+      )}
+
+      {/* ── Delete confirmation modal ── */}
+      {confirmDelete && (
+        <div style={{
+          position: 'fixed', inset: 0, background: 'rgba(0,0,0,.45)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 1000,
+        }}>
+          <div style={{
+            background: 'var(--white)', borderRadius: 12, padding: '2rem',
+            maxWidth: 380, width: '90%', boxShadow: '0 8px 40px rgba(0,0,0,.18)',
+          }}>
+            <h3 style={{ fontFamily: 'var(--sans)', fontSize: '1rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.5rem' }}>
+              Delete this vouch permanently?
+            </h3>
+            <p style={{ fontSize: '.82rem', color: 'var(--muted)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+              This cannot be undone. The vouch will be removed from your profile and cannot be recovered.
+            </p>
+            <div style={{ display: 'flex', gap: '.75rem' }}>
+              <button
+                onClick={() => handleDelete(confirmDelete)}
+                disabled={actionLoading === confirmDelete}
+                style={{
+                  background: 'var(--red)', color: '#fff', border: 'none',
+                  borderRadius: 7, padding: '.55rem 1.1rem',
+                  fontSize: '.8rem', fontWeight: 600, cursor: 'pointer',
+                  fontFamily: 'var(--sans)', opacity: actionLoading === confirmDelete ? 0.6 : 1,
+                }}
+              >
+                {actionLoading === confirmDelete ? 'Deleting…' : 'Yes, delete permanently'}
+              </button>
+              <button
+                onClick={() => setConfirmDelete(null)}
+                style={{
+                  background: 'var(--white)', color: 'var(--muted)',
+                  border: '1px solid var(--rule)', borderRadius: 7, padding: '.55rem 1.1rem',
+                  fontSize: '.8rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--sans)',
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
