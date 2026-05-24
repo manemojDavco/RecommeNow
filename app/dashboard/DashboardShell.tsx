@@ -138,7 +138,6 @@ export default function DashboardShell({
         {/* User info — entire section links to public profile */}
         <Link
           href={`/${profile.slug}`}
-          target="_blank"
           style={{
             padding: '.75rem 1rem',
             borderBottom: '1px solid rgba(255,255,255,.07)',
@@ -400,7 +399,6 @@ export default function DashboardShell({
           )}
           <Link
             href={`/${profile.slug}`}
-            target="_blank"
             style={{
               display: 'flex',
               alignItems: 'center',
