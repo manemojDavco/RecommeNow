@@ -27,6 +27,7 @@ export default function VouchesPage() {
   const [localVouches, setLocalVouches] = useState<Vouch[]>([])
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [resentEmail, setResentEmail] = useState<string | null>(null)
   const dragItem = useRef<number | null>(null)
   const dragOver = useRef<number | null>(null)
 
@@ -105,6 +106,16 @@ export default function VouchesPage() {
     setLocalVouches((v) => v.filter((x) => x.id !== id))
     setActionLoading(null)
     setConfirmDelete(null)
+  }
+
+  async function handleResendEmail(id: string) {
+    setActionLoading(id)
+    const res = await fetch(`/api/vouches/${id}/resend-verification`, { method: 'POST' })
+    setActionLoading(null)
+    if (res.ok) {
+      setResentEmail(id)
+      setTimeout(() => setResentEmail(null), 3000)
+    }
   }
 
   const isApprovedTab = tab === 'approved'
@@ -319,6 +330,29 @@ export default function VouchesPage() {
                     <p style={{ fontSize: '.8rem', color: 'var(--ink2)', lineHeight: 1.6 }}>
                       &ldquo;{v.quote}&rdquo;
                     </p>
+                    {/* Resend verification email — shown for any unverified vouch */}
+                    {!v.verified && v.status !== 'hidden' && (
+                      <div style={{ marginTop: '.5rem' }}>
+                        {resentEmail === v.id ? (
+                          <span style={{ fontSize: '.7rem', color: 'var(--green2)', fontWeight: 600 }}>
+                            ✓ Verification email sent
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleResendEmail(v.id)}
+                            disabled={actionLoading === v.id}
+                            style={{
+                              background: 'none', border: 'none', padding: 0,
+                              fontSize: '.7rem', color: 'var(--muted)', cursor: 'pointer',
+                              textDecoration: 'underline', fontFamily: 'var(--sans)',
+                              opacity: actionLoading === v.id ? 0.5 : 1,
+                            }}
+                          >
+                            {actionLoading === v.id ? 'Sending…' : 'Resend verification email'}
+                          </button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

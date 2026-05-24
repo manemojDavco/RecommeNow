@@ -90,13 +90,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to save vouch.' }, { status: 500 })
   }
 
-  // Send verification email to giver
-  await sendVouchVerificationEmail({
-    to: giver_email.trim().toLowerCase(),
-    giverName: giver_name.trim(),
-    candidateName: profile.name,
-    token: verification_token,
-  }).catch(console.error)
+  // Send verification email to giver — always send a fresh email regardless of
+  // whether this email has submitted a vouch before. Each vouch gets its own token.
+  try {
+    await sendVouchVerificationEmail({
+      to: giver_email.trim().toLowerCase(),
+      giverName: giver_name.trim(),
+      candidateName: profile.name,
+      token: verification_token,
+    })
+  } catch (emailErr) {
+    // Non-fatal: vouch saved but email failed — profile owner can resend from dashboard
+    console.error('Verification email failed for vouch', vouch.id, emailErr)
+  }
 
   // Get candidate email from Clerk and send notification
   // We look up the candidate via the user_id stored on the profile
