@@ -134,6 +134,7 @@ export default async function PublicProfilePage({ params }: Props) {
   }
 
   const { profile, vouches, verificationRate, giverSlugMap } = data
+  const isOwner = !!userId && userId === profile.user_id
 
   const relationshipCounts = vouches.reduce<Record<string, number>>((acc, v) => {
     const r = v.giver_relationship ?? 'Other'
@@ -196,22 +197,44 @@ export default async function PublicProfilePage({ params }: Props) {
           >
             Vouch for {profile.name.split(' ')[0]}
           </Link>
-          <span className="rn-profile-nav-build"><Link
-            href="/sign-up"
-            style={{
-              border: '1px solid var(--rule)',
-              background: 'var(--white)',
-              borderRadius: 7,
-              padding: '.5rem 1rem',
-              fontFamily: 'var(--sans)',
-              fontSize: '.75rem',
-              fontWeight: 600,
-              color: 'var(--muted)',
-              textDecoration: 'none',
-            }}
-          >
-            Build my profile
-          </Link></span>
+          {isOwner ? (
+            <Link
+              href="/dashboard"
+              style={{
+                border: '1px solid var(--green-m)',
+                background: 'var(--green-l)',
+                borderRadius: 7,
+                padding: '.5rem 1rem',
+                fontFamily: 'var(--sans)',
+                fontSize: '.75rem',
+                fontWeight: 600,
+                color: 'var(--green2)',
+                textDecoration: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '.35rem',
+              }}
+            >
+              ← Dashboard
+            </Link>
+          ) : (
+            <span className="rn-profile-nav-build"><Link
+              href="/sign-up"
+              style={{
+                border: '1px solid var(--rule)',
+                background: 'var(--white)',
+                borderRadius: 7,
+                padding: '.5rem 1rem',
+                fontFamily: 'var(--sans)',
+                fontSize: '.75rem',
+                fontWeight: 600,
+                color: 'var(--muted)',
+                textDecoration: 'none',
+              }}
+            >
+              Build my profile
+            </Link></span>
+          )}
         </div>
       </nav>
 
