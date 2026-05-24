@@ -544,6 +544,16 @@ body {
   .rn-vouches-tabs::-webkit-scrollbar { display: none; }
   .rn-vouches-tabs button { flex-shrink: 0; }
 
+  /* Vouches page — tighter padding on mobile */
+  .rn-dash-content-page { padding: 1.25rem 1rem !important; }
+
+  /* Public profile nav buttons — smaller on mobile */
+  .rn-profile-nav-btn {
+    padding: .4rem .7rem !important;
+    font-size: .68rem !important;
+    border-radius: 6px !important;
+  }
+
   /* Sort bar — wrap chips */
   .rn-sort-bar { gap: .5rem !important; }
 

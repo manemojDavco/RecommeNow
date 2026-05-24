@@ -183,6 +183,7 @@ export default async function PublicProfilePage({ params }: Props) {
           <span className="rn-profile-nav-qr"><QrModal slug={profile.slug} name={profile.name.split(' ')[0]} /></span>
           <Link
             href={`/vouch/${profile.slug}`}
+            className="rn-profile-nav-btn rn-profile-nav-vouch"
             style={{
               background: 'var(--green)',
               color: '#fff',
@@ -200,6 +201,7 @@ export default async function PublicProfilePage({ params }: Props) {
           {isOwner ? (
             <Link
               href="/dashboard"
+              className="rn-profile-nav-btn rn-profile-nav-dash"
               style={{
                 border: '1px solid var(--green-m)',
                 background: 'var(--green-l)',

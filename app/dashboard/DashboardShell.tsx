@@ -451,20 +451,36 @@ export default function DashboardShell({
           flexDirection: 'column',
         }}
       >
-        {/* Mobile top bar — logo + hamburger */}
+        {/* Mobile top bar — logo + profile icon + hamburger */}
         <div className="rn-dash-topbar">
           <Logo variant="light" href="/" size={26} />
-          <button
-            className="rn-dash-hamburger"
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            onClick={() => setMobileMenuOpen((o) => !o)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              {mobileMenuOpen
-                ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
-                : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
-            </svg>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+            {/* Profile icon — quick link to public profile */}
+            <Link
+              href={`/${profile.slug}`}
+              aria-label="View public profile"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                width: 34, height: 34, borderRadius: 8,
+                background: 'rgba(255,255,255,.12)',
+                color: 'rgba(255,255,255,.85)',
+                textDecoration: 'none',
+              }}
+            >
+              <VouchesNavIcon color="rgba(255,255,255,.85)" size={18} />
+            </Link>
+            <button
+              className="rn-dash-hamburger"
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+              onClick={() => setMobileMenuOpen((o) => !o)}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                {mobileMenuOpen
+                  ? <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>
+                  : <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {children}

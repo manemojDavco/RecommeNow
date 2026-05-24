@@ -124,7 +124,7 @@ export default function VouchesPage() {
   const showDragHint = isApprovedTab && displayVouches.length > 1
 
   return (
-    <div style={{ padding: '2rem 2.5rem', flex: 1 }}>
+    <div className="rn-dash-content-page" style={{ padding: '2rem 2.5rem', flex: 1 }}>
       <div style={{ marginBottom: '1.5rem' }}>
         <h1 style={{ fontFamily: 'var(--sans)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ink)', marginBottom: '.25rem' }}>
           All vouches
