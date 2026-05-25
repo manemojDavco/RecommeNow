@@ -91,6 +91,22 @@ export default function VouchesPage() {
     })
   }
 
+  async function handleMoveVouch(id: string, direction: 'up' | 'down') {
+    const idx = localVouches.findIndex((v) => v.id === id)
+    if (idx === -1) return
+    const newIdx = direction === 'up' ? idx - 1 : idx + 1
+    if (newIdx < 0 || newIdx >= localVouches.length) return
+    const updated = [...localVouches]
+    const [moved] = updated.splice(idx, 1)
+    updated.splice(newIdx, 0, moved)
+    setLocalVouches(updated)
+    await fetch('/api/dashboard/vouches/reorder', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order: updated.map((v) => v.id) }),
+    })
+  }
+
   async function handleAction(id: string, action: 'approve' | 'hide') {
     setActionLoading(id)
     await fetch(`/api/vouches/${id}/${action}`, { method: 'POST' })
@@ -254,7 +270,23 @@ export default function VouchesPage() {
                   }}
                 >
                   {isApprovedTab && (
-                    <span style={{ fontSize: '1rem', color: 'var(--muted)', flexShrink: 0, alignSelf: 'center', cursor: 'grab' }}>⠿</span>
+                    <>
+                      {/* Drag handle — desktop only */}
+                      <span className="rn-drag-handle" style={{ fontSize: '1rem', color: 'var(--muted)', flexShrink: 0, alignSelf: 'center', cursor: 'grab' }}>⠿</span>
+                      {/* ↑↓ buttons — mobile only */}
+                      <div className="rn-reorder-btns" style={{ display: 'flex', flexDirection: 'column', gap: 2, flexShrink: 0, alignSelf: 'center' }}>
+                        <button
+                          onClick={() => handleMoveVouch(v.id, 'up')}
+                          disabled={i === 0}
+                          style={{ background: 'none', border: '1px solid var(--rule)', borderRadius: 4, width: 22, height: 22, fontSize: '.65rem', lineHeight: 1, cursor: 'pointer', color: i === 0 ? 'var(--rule)' : 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        >↑</button>
+                        <button
+                          onClick={() => handleMoveVouch(v.id, 'down')}
+                          disabled={i === displayVouches.length - 1}
+                          style={{ background: 'none', border: '1px solid var(--rule)', borderRadius: 4, width: 22, height: 22, fontSize: '.65rem', lineHeight: 1, cursor: 'pointer', color: i === displayVouches.length - 1 ? 'var(--rule)' : 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        >↓</button>
+                      </div>
+                    </>
                   )}
                   <div style={{
                     width: 38, height: 38, borderRadius: '50%',

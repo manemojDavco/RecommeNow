@@ -49,6 +49,7 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
   return (
     <Link href={`/${p.slug}`} style={{ textDecoration: 'none' }}>
       <div
+        className="rn-dir-card"
         style={{
           background: 'var(--white)',
           border: '1px solid var(--rule)',
@@ -147,7 +148,7 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
         </div>
 
         {/* RIGHT: vouch summary */}
-        <div style={{ borderLeft: '1px solid var(--rule)', paddingLeft: '1.5rem', minWidth: 0 }}>
+        <div className="rn-dir-card-quote" style={{ borderLeft: '1px solid var(--rule)', paddingLeft: '1.5rem', minWidth: 0 }}>
           {summary ? (
             <>
               <p style={{ fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--green2)', marginBottom: '.5rem' }}>

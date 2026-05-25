@@ -333,6 +333,12 @@ body {
 .rn-mobile-toggle { display: none; }
 .rn-mobile-only { display: none; }
 .rn-desktop-only { display: flex; }
+/* Vouch summary — desktop shows vertical card, mobile shows horizontal strip */
+.rn-vouch-summary-mobile { display: none; }
+.rn-vouch-summary-desktop { display: block; }
+/* Drag reorder — desktop shows drag handle, mobile shows ↑↓ buttons */
+.rn-drag-handle { display: inline; }
+.rn-reorder-btns { display: none !important; }
 
 /* Auth mobile logo — hidden on desktop (left panel has the logo) */
 .rn-auth-mobile-logo { display: none; }
@@ -495,6 +501,28 @@ body {
   .rn-profile-nav-qr { display: none !important; }
   .rn-profile-nav-build { display: none !important; }
   .rn-profile-nav { padding: .75rem 1rem !important; }
+
+  /* Drag reorder — hide drag handle, show ↑↓ buttons on mobile touch */
+  .rn-drag-handle { display: none !important; }
+  .rn-reorder-btns { display: flex !important; }
+
+  /* Vouch summary card — show horizontal strip on mobile, hide vertical layout */
+  .rn-vouch-summary-card { padding: 0 !important; border-radius: 12px !important; overflow: hidden; }
+  .rn-vouch-summary-desktop { display: none !important; }
+  .rn-vouch-summary-mobile {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-around;
+    padding: 1.1rem .5rem;
+  }
+  .rn-vouch-summary-stat { display: flex; flex-direction: column; align-items: center; gap: .2rem; flex: 1; }
+  .rn-vss-num { font-size: 1.35rem; font-weight: 800; color: #fff; font-family: var(--sans); line-height: 1; }
+  .rn-vss-label { font-size: .58rem; font-weight: 600; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: .08em; }
+  .rn-vss-divider { width: 1px; height: 32px; background: rgba(255,255,255,.2); flex-shrink: 0; }
+
+  /* Directory cards — stack vertically on mobile like native app */
+  .rn-dir-card { grid-template-columns: 1fr !important; gap: .75rem !important; }
+  .rn-dir-card-quote { border-left: none !important; padding-left: 0 !important; border-top: 1px solid var(--rule); padding-top: .75rem !important; }
 
   .rn-profile-grid {
     grid-template-columns: 1fr !important;

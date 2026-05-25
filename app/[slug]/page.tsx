@@ -470,39 +470,50 @@ export default async function PublicProfilePage({ params }: Props) {
 
         {/* ─── RIGHT SIDEBAR ─── */}
         <aside className="rn-profile-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          {/* Vouch summary card */}
+          {/* Vouch summary — horizontal strip on mobile, vertical card on desktop */}
           <div className="rn-profile-sidebar-top" style={{ display: 'contents' }}>
-          <div
-            style={{
-              background: 'var(--green)',
-              borderRadius: 14,
-              padding: '1.75rem',
-              color: '#fff',
-            }}
-          >
-            <p style={{ fontSize: '.62rem', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginBottom: '1.2rem' }}>
-              Vouch summary
-            </p>
-
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.4rem', marginBottom: '1.2rem' }}>
-              <span style={{ fontFamily: 'var(--sans)', fontSize: '3rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>
-                {vouches.length}
-              </span>
-              <span style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.5)', marginBottom: '.5rem' }}>
-                {vouches.length === 1 ? 'vouch' : 'vouches'}
-              </span>
+          <div className="rn-vouch-summary-card" style={{ background: 'var(--green)', borderRadius: 14, padding: '1.75rem', color: '#fff' }}>
+            {/* Desktop: vertical layout (hidden on mobile via CSS) */}
+            <div className="rn-vouch-summary-desktop">
+              <p style={{ fontSize: '.62rem', fontWeight: 600, letterSpacing: '.1em', textTransform: 'uppercase', color: 'rgba(255,255,255,.45)', marginBottom: '1.2rem' }}>
+                Vouch summary
+              </p>
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.4rem', marginBottom: '1.2rem' }}>
+                <span style={{ fontFamily: 'var(--sans)', fontSize: '3rem', fontWeight: 700, color: '#fff', lineHeight: 1 }}>{vouches.length}</span>
+                <span style={{ fontSize: '.85rem', color: 'rgba(255,255,255,.5)', marginBottom: '.5rem' }}>{vouches.length === 1 ? 'vouch' : 'vouches'}</span>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Email verified</span>
+                  <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{verificationRate}%</span>
+                </div>
+                {Object.keys(relationshipCounts).length > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Relationship types</span>
+                    <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{Object.keys(relationshipCounts).length}</span>
+                  </div>
+                )}
+              </div>
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '.7rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Email verified</span>
-                <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{verificationRate}%</span>
+            {/* Mobile: horizontal stats strip (hidden on desktop via CSS) */}
+            <div className="rn-vouch-summary-mobile">
+              <div className="rn-vouch-summary-stat">
+                <span className="rn-vss-num">{vouches.length}</span>
+                <span className="rn-vss-label">Vouches</span>
+              </div>
+              <div className="rn-vss-divider" />
+              <div className="rn-vouch-summary-stat">
+                <span className="rn-vss-num">{verificationRate}%</span>
+                <span className="rn-vss-label">Verified</span>
               </div>
               {Object.keys(relationshipCounts).length > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '.75rem', color: 'rgba(255,255,255,.5)' }}>Relationship types</span>
-                  <span style={{ fontSize: '.82rem', fontWeight: 600, color: '#fff' }}>{Object.keys(relationshipCounts).length}</span>
-                </div>
+                <>
+                  <div className="rn-vss-divider" />
+                  <div className="rn-vouch-summary-stat">
+                    <span className="rn-vss-num">{Object.keys(relationshipCounts).length}</span>
+                    <span className="rn-vss-label">Rel. types</span>
+                  </div>
+                </>
               )}
             </div>
           </div>
