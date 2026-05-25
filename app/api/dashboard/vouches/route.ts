@@ -21,9 +21,18 @@ export async function GET(req: NextRequest) {
     .from('vouches')
     .select('*')
     .eq('profile_id', profile.id)
-    .order('created_at', { ascending: false })
 
   if (status) query = query.eq('status', status)
+
+  // Approved vouches respect the manual drag-and-drop order (display_order nulls last),
+  // everything else falls back to newest-first.
+  if (status === 'approved') {
+    query = query
+      .order('display_order', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: false })
+  } else {
+    query = query.order('created_at', { ascending: false })
+  }
 
   const { data: vouches } = await query
   return NextResponse.json({ vouches: vouches ?? [] })
