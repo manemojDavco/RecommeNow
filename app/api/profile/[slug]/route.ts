@@ -29,6 +29,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     .select('*')
     .eq('profile_id', profile.id)
     .eq('status', 'approved')
+    .order('display_order', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
 
   const approved = vouches ?? []
