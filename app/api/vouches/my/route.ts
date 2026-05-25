@@ -20,7 +20,7 @@ export async function GET() {
 
   const { data: vouches, error } = await db
     .from('vouches')
-    .select('id, giver_name, giver_title, giver_company, giver_relationship, traits, quote, star_rating, verified, status, created_at')
+    .select('id, giver_name, giver_title, giver_company, giver_relationship, traits, quote, star_rating, verified, status, created_at, display_order')
     .eq('profile_id', profile.id)
     .order('created_at', { ascending: false })
 
