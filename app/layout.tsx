@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ClerkProvider } from '@clerk/nextjs'
+import CookieBanner from '@/components/CookieBanner'
 import './globals.css'
 
 export const dynamic = 'force-dynamic'
@@ -38,7 +39,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <ClerkProvider>
       <html lang="en">
         <head />
-        <body>{children}</body>
+        <body>
+          {children}
+          <CookieBanner />
+        </body>
       </html>
     </ClerkProvider>
   )
