@@ -27,8 +27,8 @@ export default function CookieBanner() {
   if (!visible) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6">
-      <div className="mx-auto max-w-2xl rounded-2xl border border-rule bg-white shadow-lg shadow-ink/10 p-6">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-full max-w-sm">
+      <div className="rounded-2xl border border-rule bg-white shadow-lg shadow-ink/10 p-6">
         <button
           onClick={decline}
           aria-label="Close"
