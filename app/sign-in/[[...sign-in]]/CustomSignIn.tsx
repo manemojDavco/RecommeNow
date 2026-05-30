@@ -21,7 +21,7 @@ export default function CustomSignIn() {
     await signIn.authenticateWithRedirect({
       strategy,
       redirectUrl: '/sso-callback',
-      redirectUrlComplete: '/dashboard',
+      redirectUrlComplete: '/my-profile',
     })
   }
 
@@ -40,7 +40,7 @@ export default function CustomSignIn() {
       const status = attempt.status as string
       if (status === 'complete') {
         await setActive({ session: attempt.createdSessionId })
-        router.push('/dashboard')
+        router.push('/my-profile')
       } else if (status === 'needs_client_trust' || status === 'needs_second_factor') {
         // Trigger email code for device verification
         await signIn.prepareSecondFactor({ strategy: 'email_code' })
@@ -70,7 +70,7 @@ export default function CustomSignIn() {
 
       if (attempt.status === 'complete') {
         await setActive({ session: attempt.createdSessionId })
-        router.push('/dashboard')
+        router.push('/my-profile')
       } else {
         setError('Verification failed. Please try again.')
       }

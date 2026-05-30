@@ -61,7 +61,7 @@ export default function Nav() {
         {/* Right: auth actions (desktop) + hamburger (mobile) */}
         <div className="rn-desktop-only" style={{ alignItems: 'center', gap: '1rem' }}>
           {isSignedIn ? (
-            <Link href="/dashboard" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>Dashboard</Link>
+            <Link href="/my-profile" className="btn-primary" style={{ padding: '.5rem 1.1rem', fontSize: '.78rem' }}>My Profile</Link>
           ) : (
             <>
               <Link href="/sign-in" style={navLinkStyle}>Sign in</Link>
@@ -96,7 +96,7 @@ export default function Nav() {
           <Link href="/faq" onClick={closeMenu}>FAQ</Link>
           <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', margin: '.5rem 0' }} />
           {isSignedIn ? (
-            <Link href="/dashboard" className="btn-primary" onClick={closeMenu}>Dashboard</Link>
+            <Link href="/my-profile" className="btn-primary" onClick={closeMenu}>My Profile</Link>
           ) : (
             <>
               <Link href="/sign-in" onClick={closeMenu}>Sign in</Link>
