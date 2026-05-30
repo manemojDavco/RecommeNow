@@ -157,6 +157,7 @@ export default function SignUpPage() {
             Create your account
           </p>
           <SignUp
+            fallbackRedirectUrl="/dashboard"
             appearance={{
               variables: {
                 colorPrimary: '#2D6A4F',

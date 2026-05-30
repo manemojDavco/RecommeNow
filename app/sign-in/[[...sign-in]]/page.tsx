@@ -1,5 +1,6 @@
 import { SignIn } from '@clerk/nextjs'
 import { Logo } from '@/components/Logo'
+import CustomSignIn from './CustomSignIn'
 
 export const metadata = { title: 'Sign in' }
 
@@ -157,22 +158,9 @@ export default function SignInPage() {
           >
             Welcome back
           </p>
-          <SignIn
-            appearance={{
-              variables: {
-                colorPrimary: '#2D6A4F',
-                colorBackground: '#ffffff',
-                colorText: '#1b4332',
-                colorTextSecondary: '#52705c',
-                borderRadius: '8px',
-                fontFamily: 'Manrope, sans-serif',
-              },
-              elements: {
-                card: { boxShadow: 'none', border: '1px solid #b7dfc6', borderRadius: '12px' },
-                footer: { background: '#ffffff' },
-              },
-            }}
-          />
+          <div style={{ border: '1px solid #b7dfc6', borderRadius: '12px', padding: '1.5rem' }}>
+            <CustomSignIn />
+          </div>
         </div>
       </div>
     </div>
