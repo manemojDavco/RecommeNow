@@ -37,14 +37,12 @@ export default function CustomSignIn() {
         password,
       })
 
-      if (attempt.status === 'complete') {
+      const status = attempt.status as string
+      if (status === 'complete') {
         await setActive({ session: attempt.createdSessionId })
         router.push('/dashboard')
-      } else if (attempt.status === 'needs_client_trust') {
+      } else if (status === 'needs_client_trust' || status === 'needs_second_factor') {
         // Trigger email code for device verification
-        await signIn.prepareSecondFactor({ strategy: 'email_code' })
-        setStep('verify_device')
-      } else if (attempt.status === 'needs_second_factor') {
         await signIn.prepareSecondFactor({ strategy: 'email_code' })
         setStep('verify_device')
       } else {
