@@ -8,24 +8,33 @@ export async function GET() {
 
   const db = createServiceClient()
 
-  // Get the current user's email from their profile's Clerk user
+  // Get the current user's primary email from Clerk
   const clerkRes = await fetch(`https://api.clerk.com/v1/users/${userId}`, {
     headers: { Authorization: `Bearer ${process.env.CLERK_SECRET_KEY}` },
   })
   if (!clerkRes.ok) return NextResponse.json({ vouches: [] })
 
   const clerkUser = await clerkRes.json()
-  const email = clerkUser.email_addresses?.find(
+  const primaryEmail = clerkUser.email_addresses?.find(
     (e: { id: string }) => e.id === clerkUser.primary_email_address_id
-  )?.email_address
+  )?.email_address?.toLowerCase()
 
-  if (!email) return NextResponse.json({ vouches: [] })
+  if (!primaryEmail) return NextResponse.json({ vouches: [] })
 
-  // Find vouches given by this email, join with profile name/slug
+  // Get all verified connected emails (including archived — past vouches still count)
+  const { data: connectedEmails } = await db
+    .from('user_emails')
+    .select('email')
+    .eq('user_id', userId)
+    .eq('verified', true)
+
+  const allEmails = [primaryEmail, ...(connectedEmails ?? []).map((e: { email: string }) => e.email)]
+
+  // Find vouches given by any of the user's emails, join with profile name/slug
   const { data: vouches } = await db
     .from('vouches')
     .select('id, profile_id, quote, traits, giver_relationship, verified, created_at, profiles!inner(name, slug)')
-    .eq('giver_email', email.toLowerCase())
+    .in('giver_email', allEmails)
     .order('created_at', { ascending: false })
 
   const formatted = (vouches ?? []).map((v: {
@@ -38,7 +47,6 @@ export async function GET() {
     created_at: string
     profiles: { name: string; slug: string } | { name: string; slug: string }[]
   }) => {
-    // Supabase may return the joined relation as an array or a single object
     const profile = Array.isArray(v.profiles) ? v.profiles[0] : v.profiles
     return {
       id: v.id,

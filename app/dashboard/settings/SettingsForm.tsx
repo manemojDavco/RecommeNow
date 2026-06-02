@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
@@ -248,6 +248,72 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   const [cancelLoading, setCancelLoading] = useState(false)
   const [cancelDone, setCancelDone] = useState(false)
   const [downgradeLoading, setDowngradeLoading] = useState(false)
+
+  // Connected emails
+  type ConnectedEmail = { id: string; email: string; verified: boolean; archived: boolean; verified_at: string | null; created_at: string }
+  const [connectedEmails, setConnectedEmails] = useState<ConnectedEmail[]>([])
+  const [newEmail, setNewEmail] = useState('')
+  const [emailAddStatus, setEmailAddStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [emailAddMsg, setEmailAddMsg] = useState('')
+
+  useEffect(() => {
+    fetch('/api/settings/emails')
+      .then((r) => r.json())
+      .then((d) => setConnectedEmails(d.emails ?? []))
+      .catch(() => {})
+
+    // Show success message if redirected back from email verification link
+    const params = new URLSearchParams(window.location.search)
+    const ev = params.get('email_verified')
+    if (ev === 'success') {
+      setEmailAddStatus('sent')
+      setEmailAddMsg('✓ Email verified and connected to your account!')
+      // Clean up URL
+      window.history.replaceState({}, '', '/dashboard/settings')
+    } else if (ev === 'invalid') {
+      setEmailAddStatus('error')
+      setEmailAddMsg('That verification link is invalid or has already been used.')
+      window.history.replaceState({}, '', '/dashboard/settings')
+    }
+  }, [])
+
+  async function addEmail() {
+    if (!newEmail.trim()) return
+    setEmailAddStatus('sending')
+    setEmailAddMsg('')
+    const res = await fetch('/api/settings/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: newEmail.trim() }),
+    })
+    const data = await res.json()
+    if (res.ok) {
+      setEmailAddStatus('sent')
+      setEmailAddMsg(data.message ?? 'Verification email sent — check your inbox.')
+      setNewEmail('')
+      // Refresh list
+      fetch('/api/settings/emails').then((r) => r.json()).then((d) => setConnectedEmails(d.emails ?? []))
+    } else {
+      setEmailAddStatus('error')
+      setEmailAddMsg(data.error ?? 'Failed to add email.')
+    }
+  }
+
+  async function removeEmail(id: string) {
+    await fetch(`/api/settings/emails/${id}`, { method: 'DELETE' })
+    setConnectedEmails((prev) => prev.filter((e) => e.id !== id))
+  }
+
+  async function toggleArchive(id: string, archived: boolean) {
+    const res = await fetch(`/api/settings/emails/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ archived }),
+    })
+    if (res.ok) {
+      setConnectedEmails((prev) => prev.map((e) => e.id === id ? { ...e, archived } : e))
+    }
+  }
 
   // Change password
   const { user } = useUser()
@@ -697,6 +763,68 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             placeholder="contact@example.com"
           />
           <p style={{ fontSize: '.7rem', color: 'var(--muted)', marginTop: '.3rem' }}>{showContactEmail ? 'Shown in your public contact info popup.' : 'Hidden — not shown publicly.'}</p>
+        </div>
+
+        {/* Connected Emails */}
+        <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.25rem', marginTop: '.25rem' }}>
+          <label className="field-label">Connected emails</label>
+          <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: '-.1rem', marginBottom: '.85rem', lineHeight: 1.6 }}>
+            Vouches you gave from these addresses will appear in your Given section. Useful if you've vouched from a work email that's different from your account email.
+          </p>
+
+          {/* Existing connected emails */}
+          {connectedEmails.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '.85rem' }}>
+              {connectedEmails.map((ce) => (
+                <div key={ce.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '.55rem .75rem', borderRadius: 8, border: '1px solid var(--rule)', background: ce.archived ? 'var(--bg)' : '#fff', gap: '1rem' }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <span style={{ fontSize: '.82rem', color: ce.archived ? 'var(--muted)' : 'var(--ink)', fontWeight: 500, wordBreak: 'break-all' }}>{ce.email}</span>
+                    <span style={{ marginLeft: '.5rem', fontSize: '.68rem', fontWeight: 600, padding: '.15rem .45rem', borderRadius: 4,
+                      background: !ce.verified ? 'var(--yellow-l, #fffbeb)' : ce.archived ? 'var(--bg)' : 'var(--green-l)',
+                      color: !ce.verified ? 'var(--yellow, #92400e)' : ce.archived ? 'var(--muted)' : 'var(--green2)',
+                      border: `1px solid ${!ce.verified ? 'var(--yellow-m, #fde68a)' : ce.archived ? 'var(--rule)' : 'var(--green-m)'}`,
+                    }}>
+                      {!ce.verified ? 'Pending verification' : ce.archived ? 'Archived' : 'Verified'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '.4rem', flexShrink: 0 }}>
+                    {ce.verified && (
+                      <button onClick={() => toggleArchive(ce.id, !ce.archived)}
+                        style={{ fontSize: '.72rem', padding: '.3rem .65rem', borderRadius: 6, border: '1px solid var(--rule)', background: '#fff', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'var(--sans)', fontWeight: 500 }}>
+                        {ce.archived ? 'Unarchive' : 'Archive'}
+                      </button>
+                    )}
+                    {!ce.verified && (
+                      <button onClick={() => removeEmail(ce.id)}
+                        style={{ fontSize: '.72rem', padding: '.3rem .65rem', borderRadius: 6, border: '1px solid var(--red)', background: 'var(--red-l)', color: 'var(--red)', cursor: 'pointer', fontFamily: 'var(--sans)', fontWeight: 500 }}>
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add new email */}
+          <div style={{ display: 'flex', gap: '.5rem' }}>
+            <input
+              className="field-input"
+              type="email"
+              value={newEmail}
+              onChange={(e) => { setNewEmail(e.target.value); setEmailAddStatus('idle'); setEmailAddMsg('') }}
+              onKeyDown={(e) => e.key === 'Enter' && addEmail()}
+              placeholder="another@email.com"
+              style={{ flex: 1 }}
+            />
+            <button onClick={addEmail} disabled={emailAddStatus === 'sending' || !newEmail.trim()}
+              style={{ padding: '.6rem 1.1rem', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.8rem', fontWeight: 600, cursor: emailAddStatus === 'sending' || !newEmail.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: !newEmail.trim() ? 0.5 : 1 }}>
+              {emailAddStatus === 'sending' ? 'Sending…' : 'Add email'}
+            </button>
+          </div>
+          {emailAddMsg && (
+            <p style={{ fontSize: '.75rem', marginTop: '.4rem', color: emailAddStatus === 'error' ? 'var(--red)' : 'var(--green2)', lineHeight: 1.5 }}>{emailAddMsg}</p>
+          )}
         </div>
 
         <div>

@@ -6,10 +6,35 @@ import { createPortal } from 'react-dom'
 export default function QrModal({ slug, name }: { slug: string; name: string }) {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const vouchUrl = `https://recommenow.com/vouch/${slug}`
-  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=1a4231&bgcolor=ffffff&data=${encodeURIComponent(vouchUrl)}&qzone=1`
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copying' | 'copied' | 'error'>('idle')
+
+  const profileUrl = `https://recommenow.com/${slug}`
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=1a4231&bgcolor=ffffff&data=${encodeURIComponent(profileUrl)}&qzone=1`
 
   useEffect(() => { setMounted(true) }, [])
+
+  async function copyQr() {
+    setCopyStatus('copying')
+    try {
+      const res = await fetch(qrSrc)
+      const blob = await res.blob()
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob }),
+      ])
+      setCopyStatus('copied')
+      setTimeout(() => setCopyStatus('idle'), 2500)
+    } catch {
+      // Fallback: copy the URL instead
+      try {
+        await navigator.clipboard.writeText(profileUrl)
+        setCopyStatus('copied')
+        setTimeout(() => setCopyStatus('idle'), 2500)
+      } catch {
+        setCopyStatus('error')
+        setTimeout(() => setCopyStatus('idle'), 2500)
+      }
+    }
+  }
 
   const modal = open ? (
     <div
@@ -29,10 +54,10 @@ export default function QrModal({ slug, name }: { slug: string; name: string }) 
         }}
       >
         <p style={{ fontSize: '.7rem', fontWeight: 700, letterSpacing: '.1em', color: 'var(--green2)', marginBottom: '.5rem', textTransform: 'uppercase' }}>
-          Vouch for {name}
+          {name}&apos;s profile
         </p>
         <p style={{ fontSize: '.85rem', color: 'var(--muted)', marginBottom: '1.25rem', lineHeight: 1.5 }}>
-          Scan to write a vouch — takes 2 minutes.
+          Scan to view {name}&apos;s public profile.
         </p>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -43,19 +68,38 @@ export default function QrModal({ slug, name }: { slug: string; name: string }) 
           style={{ borderRadius: 12, border: '1px solid var(--rule)' }}
         />
         <p style={{ fontSize: '.72rem', color: 'var(--muted)', marginTop: '1rem', wordBreak: 'break-all' }}>
-          {vouchUrl}
+          {profileUrl}
         </p>
-        <button
-          onClick={() => setOpen(false)}
-          style={{
-            marginTop: '1.25rem', width: '100%', padding: '.7rem',
-            background: 'var(--green)', color: '#fff', border: 'none',
-            borderRadius: 10, fontSize: '.85rem', fontWeight: 700,
-            cursor: 'pointer', fontFamily: 'var(--sans)',
-          }}
-        >
-          Close
-        </button>
+
+        {/* Action buttons */}
+        <div style={{ display: 'flex', gap: '.6rem', marginTop: '1.25rem' }}>
+          <button
+            onClick={copyQr}
+            disabled={copyStatus === 'copying'}
+            style={{
+              flex: 1, padding: '.7rem',
+              background: copyStatus === 'copied' ? 'var(--green-l)' : '#fff',
+              color: copyStatus === 'copied' ? 'var(--green2)' : 'var(--ink)',
+              border: `1.5px solid ${copyStatus === 'copied' ? 'var(--green-m)' : 'var(--rule)'}`,
+              borderRadius: 10, fontSize: '.82rem', fontWeight: 600,
+              cursor: copyStatus === 'copying' ? 'not-allowed' : 'pointer',
+              fontFamily: 'var(--sans)', transition: 'all .2s',
+            }}
+          >
+            {copyStatus === 'copying' ? 'Copying…' : copyStatus === 'copied' ? '✓ Copied!' : copyStatus === 'error' ? 'Failed' : '⬜ Copy QR'}
+          </button>
+          <button
+            onClick={() => setOpen(false)}
+            style={{
+              flex: 1, padding: '.7rem',
+              background: 'var(--green)', color: '#fff', border: 'none',
+              borderRadius: 10, fontSize: '.82rem', fontWeight: 700,
+              cursor: 'pointer', fontFamily: 'var(--sans)',
+            }}
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   ) : null

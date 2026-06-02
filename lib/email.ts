@@ -123,6 +123,42 @@ export async function sendVouchApprovedEmail({
   })
 }
 
+export async function sendConnectedEmailVerification({
+  to,
+  userName,
+  token,
+}: {
+  to: string
+  userName: string
+  token: string
+}) {
+  const link = `${APP_URL}/api/settings/emails/verify?token=${token}`
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: 'Verify your email address on RecommeNow',
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
+        <p style="font-size:14px;color:#6e6a64;margin:0 0 32px">
+          <a href="${APP_URL}" style="color:#1c3d2c;text-decoration:none;font-style:italic">RecommeNow</a>
+        </p>
+        <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
+          Verify your email address
+        </h1>
+        <p style="font-size:15px;line-height:1.7;color:#6e6a64;margin:0 0 24px">
+          Hi ${userName}, click below to verify <strong style="color:#141210">${to}</strong> and connect it to your RecommeNow account. Any vouches you've given from this address will appear in your Given section.
+        </p>
+        <a href="${link}" style="display:inline-block;background:#1c3d2c;color:#fff;text-decoration:none;padding:12px 24px;border-radius:7px;font-size:14px;font-weight:600">
+          Verify email address →
+        </a>
+        <p style="font-size:12px;color:#6e6a64;margin:32px 0 0;line-height:1.6">
+          If you didn't request this, you can safely ignore this email.
+        </p>
+      </div>
+    `,
+  })
+}
+
 export async function sendFlagReviewEmail({
   to,
   giverName,
