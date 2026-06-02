@@ -252,7 +252,7 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   // Connected emails
   type ConnectedEmail = { id: string; email: string; verified: boolean; archived: boolean; verified_at: string | null; created_at: string }
   const [connectedEmails, setConnectedEmails] = useState<ConnectedEmail[]>([])
-  const [newEmail, setNewEmail] = useState('')
+  const [addEmailInput, setAddEmailInput] = useState('')
   const [emailAddStatus, setEmailAddStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [emailAddMsg, setEmailAddMsg] = useState('')
 
@@ -278,19 +278,19 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
   }, [])
 
   async function addEmail() {
-    if (!newEmail.trim()) return
+    if (!addEmailInput.trim()) return
     setEmailAddStatus('sending')
     setEmailAddMsg('')
     const res = await fetch('/api/settings/emails', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: newEmail.trim() }),
+      body: JSON.stringify({ email: addEmailInput.trim() }),
     })
     const data = await res.json()
     if (res.ok) {
       setEmailAddStatus('sent')
       setEmailAddMsg(data.message ?? 'Verification email sent — check your inbox.')
-      setNewEmail('')
+      setAddEmailInput('')
       // Refresh list
       fetch('/api/settings/emails').then((r) => r.json()).then((d) => setConnectedEmails(d.emails ?? []))
     } else {
@@ -811,14 +811,14 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
             <input
               className="field-input"
               type="email"
-              value={newEmail}
-              onChange={(e) => { setNewEmail(e.target.value); setEmailAddStatus('idle'); setEmailAddMsg('') }}
+              value={addEmailInput}
+              onChange={(e) => { setAddEmailInput(e.target.value); setEmailAddStatus('idle'); setEmailAddMsg('') }}
               onKeyDown={(e) => e.key === 'Enter' && addEmail()}
               placeholder="another@email.com"
               style={{ flex: 1 }}
             />
-            <button onClick={addEmail} disabled={emailAddStatus === 'sending' || !newEmail.trim()}
-              style={{ padding: '.6rem 1.1rem', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.8rem', fontWeight: 600, cursor: emailAddStatus === 'sending' || !newEmail.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: !newEmail.trim() ? 0.5 : 1 }}>
+            <button onClick={addEmail} disabled={emailAddStatus === 'sending' || !addEmailInput.trim()}
+              style={{ padding: '.6rem 1.1rem', borderRadius: 8, border: 'none', background: 'var(--green)', color: '#fff', fontSize: '.8rem', fontWeight: 600, cursor: emailAddStatus === 'sending' || !addEmailInput.trim() ? 'not-allowed' : 'pointer', fontFamily: 'var(--sans)', whiteSpace: 'nowrap', opacity: !addEmailInput.trim() ? 0.5 : 1 }}>
               {emailAddStatus === 'sending' ? 'Sending…' : 'Add email'}
             </button>
           </div>
