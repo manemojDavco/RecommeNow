@@ -7,6 +7,20 @@ function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? 'placeholder')
 }
 
+// ── Reusable branded email header ─────────────────────────────────────────────
+const EMAIL_LOGO = `
+<table cellpadding="0" cellspacing="0" border="0" style="margin:0 0 36px">
+  <tr>
+    <td style="padding-right:10px;vertical-align:middle;">
+      <img src="https://recommenow.com/favicon-32.png" width="32" height="32"
+           style="display:block;border-radius:7px;" alt="RecommeNow" />
+    </td>
+    <td style="vertical-align:middle;line-height:1;">
+      <span style="font-size:18px;font-weight:800;color:#1c3d2c;font-family:-apple-system,Helvetica,Arial,sans-serif;letter-spacing:-0.4px;">Recomme</span><span style="font-size:18px;font-weight:800;color:#2D6A4F;font-family:-apple-system,Helvetica,Arial,sans-serif;letter-spacing:-0.4px;">Now</span>
+    </td>
+  </tr>
+</table>`
+
 export async function sendVouchVerificationEmail({
   to,
   giverName,
@@ -25,9 +39,7 @@ export async function sendVouchVerificationEmail({
     subject: `Please verify your vouch for ${candidateName}`,
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
-        <p style="font-size:14px;color:#6e6a64;margin:0 0 32px">
-          <a href="${APP_URL}" style="color:#1c3d2c;text-decoration:none;font-style:italic">RecommeNow</a>
-        </p>
+        ${EMAIL_LOGO}
         <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
           Thanks for vouching for ${candidateName}
         </h1>
@@ -68,9 +80,7 @@ export async function sendNewVouchNotification({
     subject: `You have a new vouch from ${giverName}`,
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
-        <p style="font-size:14px;color:#6e6a64;margin:0 0 32px">
-          <a href="${APP_URL}" style="color:#1c3d2c;text-decoration:none;font-style:italic">RecommeNow</a>
-        </p>
+        ${EMAIL_LOGO}
         <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
           New vouch from ${giverName}
         </h1>
@@ -106,9 +116,7 @@ export async function sendVouchApprovedEmail({
     subject: `Your vouch for ${candidateName} is now live`,
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
-        <p style="font-size:14px;color:#6e6a64;margin:0 0 32px">
-          <a href="${APP_URL}" style="color:#1c3d2c;text-decoration:none;font-style:italic">RecommeNow</a>
-        </p>
+        ${EMAIL_LOGO}
         <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
           Your vouch is live
         </h1>
@@ -139,9 +147,7 @@ export async function sendConnectedEmailVerification({
     subject: 'Verify your email address on RecommeNow',
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
-        <p style="font-size:14px;color:#6e6a64;margin:0 0 32px">
-          <a href="${APP_URL}" style="color:#1c3d2c;text-decoration:none;font-style:italic">RecommeNow</a>
-        </p>
+        ${EMAIL_LOGO}
         <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
           Verify your email address
         </h1>
@@ -174,9 +180,7 @@ export async function sendFlagReviewEmail({
     subject: `Your vouch has been flagged for review`,
     html: `
       <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
-        <p style="font-size:14px;color:#6e6a64;margin:0 0 32px">
-          <a href="${APP_URL}" style="color:#1c3d2c;text-decoration:none;font-style:italic">RecommeNow</a>
-        </p>
+        ${EMAIL_LOGO}
         <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
           Your vouch is under review
         </h1>
