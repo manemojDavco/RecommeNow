@@ -217,9 +217,9 @@ export default function ShareEmbed({ profile }: { profile: Profile }) {
             >
               {sendStatus === 'sending' ? 'Sending…' : 'Send request'}
             </button>
-            {sendStatus === 'done' && sendResult && (
+            {sendStatus === 'done' && (
               <span style={{ fontSize: '.78rem', color: 'var(--green2)', fontWeight: 600 }}>
-                ✓ Sent to {sendResult.sent} {sendResult.sent === 1 ? 'person' : 'people'}
+                ✓ Sent
               </span>
             )}
             {sendStatus === 'error' && (

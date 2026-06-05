@@ -7,6 +7,16 @@ export default function ApprovalsPage() {
   const [vouches, setVouches] = useState<Vouch[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [resendLoading, setResendLoading] = useState<string | null>(null)
+  const [resendDone, setResendDone]       = useState<string | null>(null)
+
+  async function handleResendEmail(id: string) {
+    setResendLoading(id)
+    await fetch(`/api/vouches/${id}/resend-verification`, { method: 'POST' })
+    setResendLoading(null)
+    setResendDone(id)
+    setTimeout(() => setResendDone(d => d === id ? null : d), 3000)
+  }
 
   useEffect(() => {
     fetch('/api/dashboard/vouches?status=pending')
@@ -103,6 +113,26 @@ export default function ApprovalsPage() {
                   {v.traits.map((t) => (
                     <span key={t} className="trait-pill">{t}</span>
                   ))}
+                </div>
+              )}
+
+              {/* Resend verification — shown for unverified vouches */}
+              {!v.verified && (
+                <div style={{ marginBottom: '.75rem' }}>
+                  <button
+                    onClick={() => handleResendEmail(v.id)}
+                    disabled={resendLoading === v.id}
+                    style={{
+                      background: 'none', border: 'none', padding: 0,
+                      fontSize: '.78rem', fontWeight: 500,
+                      color: resendDone === v.id ? 'var(--green2)' : 'var(--muted)',
+                      cursor: resendLoading === v.id ? 'not-allowed' : 'pointer',
+                      fontFamily: 'var(--sans)', textDecoration: resendDone === v.id ? 'none' : 'underline',
+                      textUnderlineOffset: '3px',
+                    }}
+                  >
+                    {resendLoading === v.id ? 'Sending…' : resendDone === v.id ? '✓ Verification email sent' : 'Resend verification email'}
+                  </button>
                 </div>
               )}
 
