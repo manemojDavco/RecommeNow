@@ -272,36 +272,42 @@ export default function DashboardShell({
                 }}
               >
                 <span style={{ fontSize: '1rem', opacity: 1 }}>{item.icon}</span>
-                {item.label}
-                {badge > 0 && (
-                  <span style={{
-                    marginLeft: 'auto',
-                    minWidth: 18,
-                    height: 18,
-                    borderRadius: 9,
-                    background: '#ef4444',
-                    color: '#fff',
-                    fontSize: '.65rem',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '0 5px',
-                    lineHeight: 1,
-                  }}>
-                    {badge > 99 ? '99+' : badge}
-                  </span>
-                )}
-                {billingAlert && (
-                  <span style={{
-                    marginLeft: 'auto',
-                    width: 8,
-                    height: 8,
-                    borderRadius: '50%',
-                    background: '#f59e0b',
-                    flexShrink: 0,
-                  }} />
-                )}
+                <span style={{ position: 'relative', display: 'inline-flex' }}>
+                  {item.label}
+                  {badge > 0 && (
+                    <span style={{
+                      position: 'absolute',
+                      top: -7,
+                      right: -12,
+                      minWidth: 15,
+                      height: 15,
+                      borderRadius: 8,
+                      background: '#ef4444',
+                      color: '#fff',
+                      fontSize: '.58rem',
+                      fontWeight: 700,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 4px',
+                      lineHeight: 1,
+                    }}>
+                      {badge > 99 ? '99+' : badge}
+                    </span>
+                  )}
+                  {billingAlert && (
+                    <span style={{
+                      position: 'absolute',
+                      top: -4,
+                      right: -8,
+                      width: 7,
+                      height: 7,
+                      borderRadius: '50%',
+                      background: '#f59e0b',
+                      flexShrink: 0,
+                    }} />
+                  )}
+                </span>
               </Link>
             )
           })}
