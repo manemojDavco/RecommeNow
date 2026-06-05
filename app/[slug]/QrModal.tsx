@@ -86,7 +86,7 @@ export default function QrModal({ slug, name }: { slug: string; name: string }) 
               fontFamily: 'var(--sans)', transition: 'all .2s',
             }}
           >
-            {copyStatus === 'copying' ? 'Copying…' : copyStatus === 'copied' ? '✓ Copied!' : copyStatus === 'error' ? 'Failed' : '⬜ Copy QR'}
+            {copyStatus === 'copying' ? 'Copying…' : copyStatus === 'copied' ? '✓ QR Code Copied!' : copyStatus === 'error' ? 'Failed' : 'Share QR'}
           </button>
           <button
             onClick={() => setOpen(false)}
