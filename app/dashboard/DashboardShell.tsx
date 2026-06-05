@@ -61,9 +61,11 @@ const RECRUITER_NAV_ITEMS: { label: string; href: string; icon: React.ReactNode 
 export default function DashboardShell({
   children,
   profile,
+  navBadges = { vouches: 0, approvals: 0, flagged: 0, billing: false },
 }: {
   children: React.ReactNode
   profile: Profile
+  navBadges?: { vouches: number; approvals: number; flagged: number; billing: boolean }
 }) {
   const pathname = usePathname()
   const { signOut } = useClerk()
@@ -242,6 +244,12 @@ export default function DashboardShell({
           </p>
           {NAV_ITEMS.map((item) => {
             const active = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
+            const badge =
+              item.label === 'Vouches' ? navBadges.vouches :
+              item.label === 'Approvals' ? navBadges.approvals :
+              item.label === 'Flagged' ? navBadges.flagged :
+              0
+            const billingAlert = item.label === 'Billing' && navBadges.billing
             return (
               <Link
                 key={item.href}
@@ -265,6 +273,35 @@ export default function DashboardShell({
               >
                 <span style={{ fontSize: '1rem', opacity: 1 }}>{item.icon}</span>
                 {item.label}
+                {badge > 0 && (
+                  <span style={{
+                    marginLeft: 'auto',
+                    minWidth: 18,
+                    height: 18,
+                    borderRadius: 9,
+                    background: '#ef4444',
+                    color: '#fff',
+                    fontSize: '.65rem',
+                    fontWeight: 700,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '0 5px',
+                    lineHeight: 1,
+                  }}>
+                    {badge > 99 ? '99+' : badge}
+                  </span>
+                )}
+                {billingAlert && (
+                  <span style={{
+                    marginLeft: 'auto',
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: '#f59e0b',
+                    flexShrink: 0,
+                  }} />
+                )}
               </Link>
             )
           })}

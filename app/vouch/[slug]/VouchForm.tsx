@@ -27,17 +27,16 @@ const TRAITS = [
   'Cross-functional',
 ]
 
-const RELATIONSHIPS = [
-  'Direct manager',
-  'Skip-level manager',
-  'Peer / colleague',
-  'Ex-colleague',
-  'Direct report',
-  'Friend',
-  'Client',
-  'Vendor / partner',
-  'Investor',
-  'Other',
+const RELATIONSHIPS: { value: string; label: string }[] = [
+  { value: 'Manager',          label: '...is/was my Manager' },
+  { value: 'Direct Report',    label: 'I am/was a Direct Report' },
+  { value: 'Peer / Colleague', label: 'Peer / Colleague' },
+  { value: 'Ex-Colleague',     label: 'Ex-Colleague' },
+  { value: 'Friend',           label: 'Friend' },
+  { value: 'Client',           label: 'Client' },
+  { value: 'Vendor / Partner', label: 'Vendor / Partner' },
+  { value: 'Investor',         label: 'Investor' },
+  { value: 'Other',            label: 'Other' },
 ]
 
 type Profile = {
@@ -312,14 +311,14 @@ export default function VouchForm({ profile }: { profile: Profile }) {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', marginTop: '.4rem' }}>
                   {RELATIONSHIPS.map((r) => (
                     <button
-                      key={r}
-                      onClick={() => setForm((f) => ({ ...f, giver_relationship: r }))}
+                      key={r.value}
+                      onClick={() => setForm((f) => ({ ...f, giver_relationship: r.value }))}
                       style={{
                         padding: '.45rem .9rem',
                         borderRadius: 100,
-                        border: `1.5px solid ${form.giver_relationship === r ? 'var(--green)' : 'var(--rule)'}`,
-                        background: form.giver_relationship === r ? 'var(--green-l)' : 'var(--white)',
-                        color: form.giver_relationship === r ? 'var(--green)' : 'var(--muted)',
+                        border: `1.5px solid ${form.giver_relationship === r.value ? 'var(--green)' : 'var(--rule)'}`,
+                        background: form.giver_relationship === r.value ? 'var(--green-l)' : 'var(--white)',
+                        color: form.giver_relationship === r.value ? 'var(--green)' : 'var(--muted)',
                         fontSize: '.78rem',
                         fontWeight: 600,
                         cursor: 'pointer',
@@ -327,7 +326,7 @@ export default function VouchForm({ profile }: { profile: Profile }) {
                         transition: 'all .15s',
                       }}
                     >
-                      {r}
+                      {r.label}
                     </button>
                   ))}
                 </div>

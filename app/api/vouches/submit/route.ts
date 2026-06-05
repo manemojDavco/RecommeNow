@@ -134,7 +134,12 @@ export async function POST(req: NextRequest) {
 
   // Send mobile push notification if the profile owner has the app installed
   if ((profile as any).push_token) {
-    await sendPushNewVouch((profile as any).push_token, giver_name.trim()).catch(console.error)
+    const { count: pendingCount } = await db
+      .from('vouches')
+      .select('id', { count: 'exact', head: true })
+      .eq('profile_id', profile.id)
+      .eq('status', 'pending')
+    await sendPushNewVouch((profile as any).push_token, giver_name.trim(), pendingCount ?? 1).catch(console.error)
   }
 
   return NextResponse.json({ success: true, vouch_id: vouch.id })
