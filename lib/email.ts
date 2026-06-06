@@ -12,7 +12,7 @@ const EMAIL_LOGO = `
 <table cellpadding="0" cellspacing="0" border="0" style="margin:0 0 36px">
   <tr>
     <td style="padding-right:10px;vertical-align:middle;">
-      <img src="https://recommenow.com/favicon-32.png" width="32" height="32"
+      <img src="https://recommenow.com/favicon-180.png" width="32" height="32"
            style="display:block;border-radius:7px;" alt="RecommeNow" />
     </td>
     <td style="vertical-align:middle;line-height:1;">
