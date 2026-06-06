@@ -1,9 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Vouch } from '@/types'
 
 export default function ApprovalsPage() {
+  const router = useRouter()
   const [vouches, setVouches] = useState<Vouch[]>([])
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
@@ -32,6 +34,7 @@ export default function ApprovalsPage() {
     await fetch(`/api/vouches/${id}/${action}`, { method: 'POST' })
     setVouches((v) => v.filter((x) => x.id !== id))
     setActionLoading(null)
+    router.refresh()
   }
 
   return (
