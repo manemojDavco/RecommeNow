@@ -34,7 +34,7 @@ export async function sendPushNotification(msg: PushMessage): Promise<void> {
 export async function sendNewVouchNotification(pushToken: string, giverName: string, pendingCount?: number): Promise<void> {
   await sendPushNotification({
     to: pushToken,
-    title: '🎉 New vouch received!',
+    title: 'New vouch received',
     body: `${giverName} just vouched for you. Tap to review it.`,
     data: { screen: 'vouches', tab: 'pending' },
     badge: pendingCount,
