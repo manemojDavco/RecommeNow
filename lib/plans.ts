@@ -63,10 +63,10 @@ export const RECRUITER_PRICES: Record<string, { amount: number; display: string 
   eur: { amount: 1799, display: '€17.99 EUR' },
 }
 
-// Recruiter yearly = 10 × monthly
+// Recruiter yearly — whole-number prices matching the App Store price points
 export const RECRUITER_PRICES_YEARLY: Record<string, { amount: number; display: string; monthly: string }> = {
-  usd: { amount: 19990, display: '$199.90 USD', monthly: '$16.66' },
-  aud: { amount: 29990, display: '$299.90 AUD', monthly: '$24.99' },
-  gbp: { amount: 14990, display: '£149.90 GBP', monthly: '£12.49' },
-  eur: { amount: 17990, display: '€179.90 EUR', monthly: '€14.99' },
+  usd: { amount: 19900, display: '$199 USD', monthly: '$16.58' },
+  aud: { amount: 29900, display: '$299 AUD', monthly: '$24.92' },
+  gbp: { amount: 14900, display: '£149 GBP', monthly: '£12.42' },
+  eur: { amount: 17900, display: '€179 EUR', monthly: '€14.92' },
 }
