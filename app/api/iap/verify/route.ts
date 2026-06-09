@@ -15,11 +15,12 @@ import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 
 // Map App Store product IDs → internal plan names
+// Must match the Product IDs created in App Store Connect → Subscriptions
 const PRODUCT_TO_PLAN: Record<string, { plan: string; recruiter: boolean }> = {
-  'com.recommenow.app.pro.monthly':       { plan: 'pro',       recruiter: false },
-  'com.recommenow.app.pro.yearly':        { plan: 'pro',       recruiter: false },
-  'com.recommenow.app.recruiter.monthly': { plan: 'recruiter', recruiter: true  },
-  'com.recommenow.app.recruiter.yearly':  { plan: 'recruiter', recruiter: true  },
+  'PRO.monthly':       { plan: 'pro',       recruiter: false },
+  'PRO.yearly':        { plan: 'pro',       recruiter: false },
+  'RECRUITER.monthly': { plan: 'recruiter', recruiter: true  },
+  'RECRUITER.yearly':  { plan: 'recruiter', recruiter: true  },
 }
 
 const BUNDLE_ID = 'com.recommenow.app'
