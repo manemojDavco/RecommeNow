@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { useUser } from '@clerk/nextjs'
+import { useUser, useClerk } from '@clerk/nextjs'
 import type { Profile } from '@/types'
 import LocationInput from '@/components/LocationInput'
 
@@ -1068,7 +1068,87 @@ export default function SettingsForm({ profile }: { profile: Profile }) {
           )}
         </div>
 
+        <DangerZone />
+
       </div>
+    </div>
+  )
+}
+
+// ── Danger Zone — permanent account deletion (App Store guideline 5.1.1v) ────
+function DangerZone() {
+  const { signOut } = useClerk()
+  const [open, setOpen] = useState(false)
+  const [confirmText, setConfirmText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+
+  async function handleDelete() {
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      const res = await fetch('/api/account/delete', { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data?.error ?? 'Failed to delete account')
+      }
+      await signOut()
+      window.location.href = '/'
+    } catch (e: any) {
+      setDeleteError(e?.message ?? 'Failed to delete account. Please try again.')
+      setDeleting(false)
+    }
+  }
+
+  return (
+    <div style={{ borderTop: '1px solid var(--rule)', paddingTop: '1.5rem' }}>
+      <label className="field-label" style={{ color: 'var(--red)' }}>Danger zone</label>
+      <p style={{ fontSize: '.78rem', color: 'var(--muted)', marginTop: '.35rem', marginBottom: '.75rem' }}>
+        Permanently delete your account, profile and all vouches. This cannot be undone.
+      </p>
+
+      {!open ? (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{ background: 'none', border: '1.5px solid var(--red)', borderRadius: 8, padding: '.5rem 1rem', fontSize: '.8rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--sans)', color: 'var(--red)' }}
+        >
+          Delete account
+        </button>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', maxWidth: 380 }}>
+          <p style={{ fontSize: '.78rem', color: 'var(--red)' }}>
+            Type <strong>DELETE</strong> to confirm:
+          </p>
+          <input
+            type="text"
+            value={confirmText}
+            onChange={e => setConfirmText(e.target.value)}
+            placeholder="DELETE"
+            style={{ padding: '.55rem .8rem', borderRadius: 8, border: '1.5px solid var(--rule)', fontSize: '.85rem', fontFamily: 'var(--sans)' }}
+          />
+          {deleteError && (
+            <p style={{ fontSize: '.75rem', color: 'var(--red)', background: 'var(--red-l)', padding: '.4rem .75rem', borderRadius: 7 }}>{deleteError}</p>
+          )}
+          <div style={{ display: 'flex', gap: '.6rem' }}>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={confirmText !== 'DELETE' || deleting}
+              style={{ padding: '.55rem 1.25rem', borderRadius: 8, border: 'none', background: 'var(--red)', color: '#fff', fontSize: '.82rem', fontWeight: 600, fontFamily: 'var(--sans)', cursor: confirmText !== 'DELETE' || deleting ? 'not-allowed' : 'pointer', opacity: confirmText !== 'DELETE' || deleting ? 0.5 : 1 }}
+            >
+              {deleting ? 'Deleting…' : 'Permanently delete account'}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setOpen(false); setConfirmText(''); setDeleteError('') }}
+              style={{ padding: '.55rem 1rem', borderRadius: 8, border: '1.5px solid var(--rule)', background: 'none', fontSize: '.82rem', fontWeight: 600, fontFamily: 'var(--sans)', color: 'var(--ink)', cursor: 'pointer' }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
