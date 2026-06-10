@@ -62,10 +62,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
     .order('display_order', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
 
-  const approved = vouches ?? []
+  const approved = (vouches ?? []) as Array<Record<string, any>>
   const verificationRate =
     approved.length > 0
-      ? Math.round((approved.filter((v: { verified: boolean }) => v.verified).length / approved.length) * 100)
+      ? Math.round((approved.filter((v) => v.verified).length / approved.length) * 100)
       : 0
 
   return NextResponse.json({ profile, vouches: approved, verificationRate })
