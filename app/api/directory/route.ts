@@ -3,7 +3,12 @@ import { createServiceClient } from '@/lib/supabase-server'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const search = searchParams.get('search')?.trim() ?? ''
+  // Strip characters that have special meaning in a PostgREST .or() filter
+  // string ( , ( ) . : * ) to prevent filter injection. Keep letters,
+  // numbers, spaces, and basic punctuation used in real names/titles.
+  const search = (searchParams.get('search')?.trim() ?? '')
+    .replace(/[,()*:.\\%]/g, '')
+    .slice(0, 100)
   const industry = searchParams.get('industry')?.trim() ?? ''
   const remote = searchParams.get('remote')?.trim() ?? ''
   const location = searchParams.get('location')?.trim() ?? ''
