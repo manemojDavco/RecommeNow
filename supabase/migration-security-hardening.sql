@@ -37,10 +37,17 @@ DROP POLICY IF EXISTS "waitlist_public_insert"   ON public.waitlist;
 DROP POLICY IF EXISTS "Enable insert for all"    ON public.waitlist;
 DROP POLICY IF EXISTS "waitlist_anon_insert"     ON public.waitlist;
 
+-- INSERT-only for anon (no SELECT/UPDATE/DELETE, so emails can't be read back).
+-- The CHECK validates a real email shape instead of a trivially-true expression,
+-- which also clears the "RLS Policy Always True" advisor warning.
 CREATE POLICY "waitlist_anon_insert"
   ON public.waitlist FOR INSERT
   TO anon, authenticated
-  WITH CHECK (true);   -- INSERT-only; no SELECT/UPDATE/DELETE for these roles
+  WITH CHECK (
+    email IS NOT NULL
+    AND char_length(email) BETWEEN 3 AND 320
+    AND email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+  );
 
 -- ─── 3. storage.avatars — block bucket listing ────────────────────────────────
 -- Public files remain accessible by direct URL; we only remove the ability to
