@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
+import { FREE_VOUCH_LIMIT } from '@/lib/plans'
 
 export async function GET() {
   const { userId } = await auth()
@@ -45,5 +46,18 @@ export async function GET() {
     .single()
   if (extData) extras = extData
 
-  return NextResponse.json({ profile: { ...base, ...extras } })
+  // Received-vouch count (all statuses) + whether the FREE limit is reached,
+  // so the apps can disable request/share/submit CTAs consistently.
+  const { count: receivedCount } = await db
+    .from('vouches')
+    .select('id', { count: 'exact', head: true })
+    .eq('profile_id', base.id)
+
+  const received_vouch_count = receivedCount ?? 0
+  const vouch_limit_reached =
+    (extras.plan ?? 'free') === 'free' && received_vouch_count >= FREE_VOUCH_LIMIT
+
+  return NextResponse.json({
+    profile: { ...base, ...extras, received_vouch_count, vouch_limit_reached },
+  })
 }

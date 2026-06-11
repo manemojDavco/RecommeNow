@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase-server'
+import { FREE_VOUCH_LIMIT } from '@/lib/plans'
 import type { Vouch } from '@/types'
 import UpgradedBanner from './UpgradedBanner'
 import RecruiterBanner from './RecruiterBanner'
@@ -27,6 +28,9 @@ export default async function DashboardOverviewPage({
     .order('created_at', { ascending: false })
 
   const vouches = (allVouches ?? []) as Vouch[]
+  // FREE accounts capped at receiving 2 vouches (any status). At the limit,
+  // vouch-request/share surfaces are disabled until one is deleted.
+  const atVouchLimit = (profile.plan ?? 'free') === 'free' && vouches.length >= FREE_VOUCH_LIMIT
   const approved = vouches.filter((v) => v.status === 'approved')
   const pending = vouches.filter((v) => v.status === 'pending')
   const flagged = vouches.filter((v) => v.status === 'flagged')
@@ -152,12 +156,18 @@ export default async function DashboardOverviewPage({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
           <div style={{ background: 'var(--white)', border: '1px solid var(--rule)', borderRadius: 10, padding: '1rem' }}>
             <p style={{ fontSize: '.65rem', fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '.6rem' }}>Your vouch link</p>
-            <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 7, padding: '.5rem .75rem', fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div style={{ background: 'var(--paper)', border: '1px solid var(--rule)', borderRadius: 7, padding: '.5rem .75rem', fontSize: '.72rem', color: 'var(--muted)', marginBottom: '.6rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', opacity: atVouchLimit ? 0.5 : 1 }}>
               {process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'}/vouch/{profile.slug}
             </div>
+            {atVouchLimit ? (
+              <div style={{ fontSize: '.72rem', color: 'var(--muted)', fontStyle: 'italic', textAlign: 'center', padding: '.5rem .9rem', background: 'var(--paper)', borderRadius: 7 }}>
+                Vouch link inactive — FREE limit (2) reached. Delete a vouch or upgrade.
+              </div>
+            ) : (
             <Link href="/dashboard/share" className="btn-primary" style={{ fontSize: '.75rem', padding: '.5rem .9rem', display: 'block', textAlign: 'center' }}>
               Share & Embed options
             </Link>
+            )}
           </div>
 
           {(profile.plan === 'pro' || profile.recruiter_active) && (

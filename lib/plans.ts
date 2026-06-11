@@ -1,9 +1,14 @@
 // Client-safe plan/pricing constants — no Stripe SDK import here
 
+// FREE accounts can RECEIVE at most this many vouches (counting every received
+// vouch regardless of status). At the limit, all request/share/submit actions
+// are disabled until one is deleted.
+export const FREE_VOUCH_LIMIT = 2
+
 export const PLANS = {
   free: {
     name: 'Free',
-    vouchLimit: 10,
+    vouchLimit: FREE_VOUCH_LIMIT,
     customSlug: false,
   },
   pro: {

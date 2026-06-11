@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { getVouchRateLimit } from '@/lib/rate-limit'
+import { FREE_VOUCH_LIMIT } from '@/lib/plans'
 import { sendVouchVerificationEmail, sendNewVouchNotification } from '@/lib/email'
 import { sendNewVouchNotification as sendPushNewVouch } from '@/lib/push'
 import { nanoid } from 'nanoid'
@@ -49,15 +50,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Profile not found.' }, { status: 404 })
   }
 
-  // Enforce free plan vouch limit
+  // Enforce free plan vouch limit. FREE accounts can RECEIVE at most 2 vouches
+  // total — counting every received vouch regardless of status (pending,
+  // approved, hidden, flagged). Once 2 are received, no more can be submitted
+  // until one is deleted.
   if (profile.plan === 'free') {
     const { count } = await db
       .from('vouches')
       .select('id', { count: 'exact', head: true })
       .eq('profile_id', profile_id)
-      .eq('status', 'approved')
 
-    if ((count ?? 0) >= 10) {
+    if ((count ?? 0) >= FREE_VOUCH_LIMIT) {
       return NextResponse.json(
         { error: 'This profile has reached its vouch limit. Ask them to upgrade to Pro for unlimited vouches.' },
         { status: 403 }
