@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { Resend } from 'resend'
 import { createServiceClient } from '@/lib/supabase-server'
+import { enforceRateLimit, getContactRateLimit } from '@/lib/rate-limit'
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY ?? 'placeholder')
@@ -10,6 +11,10 @@ function getResend() {
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const limited = await enforceRateLimit(req, getContactRateLimit(),
+    'Too many contact requests. Please try again in an hour.')
+  if (limited) return limited
 
   const db = createServiceClient()
 

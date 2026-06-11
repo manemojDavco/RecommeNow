@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { sendFlagReviewEmail } from '@/lib/email'
+import { enforceRateLimit, getFlagRateLimit } from '@/lib/rate-limit'
 
 const FLAG_THRESHOLD = 3
 
 export async function POST(req: NextRequest) {
+  const limited = await enforceRateLimit(req, getFlagRateLimit(),
+    'Too many reports. Please try again in an hour.')
+  if (limited) return limited
+
   const body = await req.json()
   const { vouch_id, reason, reporter_email } = body
 

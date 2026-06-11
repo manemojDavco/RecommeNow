@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { createServiceClient } from '@/lib/supabase-server'
+import { enforceRateLimit, getAiSearchRateLimit } from '@/lib/rate-limit'
 
 const INDUSTRIES = [
   'Accounting & Tax', 'Advertising & Marketing', 'Aerospace & Defence', 'Agriculture & Farming',
@@ -75,6 +76,10 @@ Respond with ONLY valid JSON, no explanation:
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const limited = await enforceRateLimit(req, getAiSearchRateLimit(),
+    'Too many searches. Please try again in a little while.')
+  if (limited) return limited
 
   const body = await req.json()
   const query: string = (body.query ?? '').trim()

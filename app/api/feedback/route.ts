@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
+import { enforceRateLimit, getFeedbackRateLimit } from '@/lib/rate-limit'
 
 const resend = new Resend(process.env.RESEND_API_KEY ?? 'placeholder')
 
 export async function POST(req: NextRequest) {
+  const limited = await enforceRateLimit(req, getFeedbackRateLimit(),
+    'Too many feedback submissions. Please try again in an hour.')
+  if (limited) return limited
+
   const { email, message } = await req.json()
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
