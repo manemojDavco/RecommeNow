@@ -40,6 +40,7 @@ export default function TermsPage() {
               <li>Spam, unsolicited advertising, or promotional material</li>
             </ul>
             <p style={{ marginTop: '.75rem' }}>RecommeNow reserves the right to remove any content that violates these terms or that we determine is otherwise inappropriate, without prior notice.</p>
+            <p style={{ marginTop: '.75rem' }}><strong>Zero tolerance for objectionable content and abusive behaviour.</strong> RecommeNow has no tolerance for objectionable, offensive, or abusive content or for abusive users. You can report any vouch or profile using the report (flag) control in the app or by emailing <a href="mailto:support@recommenow.com" style={{ color: 'var(--green)' }}>support@recommenow.com</a>. We review reports and remove violating content, and may suspend or block abusive users, within 24 hours. Each profile owner also reviews and approves every vouch before it appears publicly, and can hide, remove, or block any contributor at any time.</p>
           </section>
 
           <section>
