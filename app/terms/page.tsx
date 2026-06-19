@@ -46,7 +46,8 @@ export default function TermsPage() {
           <section>
             <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>5. Subscriptions and billing</h2>
             <p style={{ marginBottom: '.75rem' }}>Paid plans are billed monthly in advance. Prices are listed on our pricing page and may change with 30 days&apos; notice. All payments are processed securely by Stripe.</p>
-            <p style={{ marginBottom: '.75rem' }}><strong>Cancellation:</strong> You may cancel your subscription at any time from your account settings. Cancellation takes effect at the end of your current billing period. You retain full access until that date and will not be charged again.</p>
+            <p style={{ marginBottom: '.75rem' }}><strong>Purchases made in the iOS app</strong> are billed through your Apple ID, not Stripe. Payment is charged to your Apple ID at confirmation, and the subscription renews automatically unless you cancel at least 24 hours before the end of the period. Manage or cancel these subscriptions in your Apple ID Settings &gt; Subscriptions.</p>
+            <p style={{ marginBottom: '.75rem' }}><strong>Cancellation:</strong> Subscriptions bought on the web can be cancelled at any time from your account settings; subscriptions bought in the iOS app are cancelled in Apple ID Settings. Cancellation takes effect at the end of your current billing period. You retain full access until that date and will not be charged again.</p>
             <p>We do not offer refunds for partial billing periods.</p>
           </section>
 

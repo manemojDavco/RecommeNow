@@ -50,6 +50,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Profile not found.' }, { status: 404 })
   }
 
+  // Guideline 1.2: a contributor the owner has blocked may not submit again.
+  // Fetched separately and fault-tolerantly so a missing column (pre-migration)
+  // never breaks vouch submission. Generic message so a blocked sender isn't
+  // told they were specifically blocked.
+  const { data: blockRow } = await db
+    .from('profiles')
+    .select('blocked_giver_emails')
+    .eq('id', profile_id)
+    .single()
+  const blockedEmails: string[] = (blockRow as { blocked_giver_emails?: string[] } | null)?.blocked_giver_emails ?? []
+  if (blockedEmails.includes(giver_email.trim().toLowerCase())) {
+    return NextResponse.json(
+      { error: 'This profile is not accepting a vouch from this email address.' },
+      { status: 403 }
+    )
+  }
+
   // Enforce free plan vouch limit. FREE accounts can RECEIVE at most 2 vouches
   // total — counting every received vouch regardless of status (pending,
   // approved, hidden, flagged). Once 2 are received, no more can be submitted
