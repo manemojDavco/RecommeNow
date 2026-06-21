@@ -168,6 +168,17 @@ export async function POST(req: NextRequest) {
       // Fallback if optional columns don't exist yet (pre-migration)
       if (error.code === '42703') {
         await db.from('profiles').update({ plan: planInfo.plan }).eq('user_id', userId)
+      } else if (error.code === '23505') {
+        // Unique-constraint clash on iap_transaction_id — this transaction id is
+        // already recorded (common when re-verifying, restoring, or a sandbox
+        // renewal returns a known id). The entitlement is still valid, so we
+        // activate the plan WITHOUT re-stamping the transaction id instead of
+        // failing the whole request.
+        const { error: retryErr } = await db
+          .from('profiles')
+          .update({ plan: planInfo.plan, recruiter_active: planInfo.recruiter, iap_product_id: productId })
+          .eq('user_id', userId)
+        if (retryErr) throw retryErr
       } else {
         throw error
       }
