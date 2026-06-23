@@ -137,6 +137,23 @@ export default function TermsPage() {
             <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>16. Contact</h2>
             <p>For questions about these Terms of Use, please contact us at <a href="mailto:hello@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>hello@recommenow.com</a>.</p>
           </section>
+
+          <section>
+            <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>17. Apple App Store — Additional Terms</h2>
+            <p style={{ marginBottom: '.75rem' }}>These additional terms apply when you obtain or use RecommeNow through the Apple App Store and satisfy Apple&apos;s minimum end user license agreement terms. In the event of any conflict, this section governs for App Store downloads.</p>
+            <ul style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+              <li><strong>Acknowledgement:</strong> This agreement is concluded between RecommeNow and you only, and not with Apple. RecommeNow, not Apple, is solely responsible for the app and its content.</li>
+              <li><strong>Scope of license:</strong> The license granted to you is a non-transferable license to use the app on any Apple-branded products that you own or control, as permitted by the App Store Usage Rules.</li>
+              <li><strong>Maintenance and support:</strong> RecommeNow is solely responsible for providing maintenance and support for the app. Apple has no obligation to furnish any maintenance and support services.</li>
+              <li><strong>Warranty:</strong> RecommeNow is solely responsible for any product warranties. If the app fails to conform to any applicable warranty, you may notify Apple, and Apple will refund the purchase price (if any); to the maximum extent permitted by law, Apple has no other warranty obligation with respect to the app.</li>
+              <li><strong>Product claims:</strong> RecommeNow, not Apple, is responsible for addressing any claims relating to the app, including product liability, legal or regulatory non-compliance, consumer protection, and intellectual property infringement claims.</li>
+              <li><strong>Intellectual property:</strong> In the event of any third-party claim that the app infringes intellectual property rights, RecommeNow, not Apple, is solely responsible for the investigation, defense, settlement, and discharge of such claim.</li>
+              <li><strong>Legal compliance:</strong> You represent that you are not located in a country subject to a U.S. Government embargo or designated as a &quot;terrorist supporting&quot; country, and that you are not listed on any U.S. Government list of prohibited or restricted parties.</li>
+              <li><strong>Developer contact:</strong> For questions, complaints, or claims regarding the app, contact RecommeNow at <a href="mailto:support@recommenow.com" style={{ color: 'var(--green)', textDecoration: 'none' }}>support@recommenow.com</a>.</li>
+              <li><strong>Third-party terms:</strong> You must comply with applicable third-party terms of agreement when using the app.</li>
+              <li><strong>Third-party beneficiary:</strong> Apple and Apple&apos;s subsidiaries are third-party beneficiaries of this agreement and, upon your acceptance, will have the right to enforce this agreement against you.</li>
+            </ul>
+          </section>
         </div>
 
         <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--rule)', display: 'flex', gap: '1.5rem' }}>
