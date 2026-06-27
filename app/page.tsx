@@ -646,47 +646,35 @@ export default async function LandingPage() {
             </a>
           </div>
 
-          {/* Get the app — hidden until app is ready */}
-          <div style={{ display: 'none' }}>
-            <div>
-              <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', marginBottom: '.4rem' }}>Get the app</p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=72x72&color=1a4231&bgcolor=ffffff&data=${encodeURIComponent('https://recommenow.com')}&qzone=1`}
-                alt="Download app QR"
-                width={72}
-                height={72}
-                style={{ borderRadius: 8, border: '1px solid var(--rule)', display: 'block' }}
-              />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
+          {/* Get the app — App Store link + QR */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/app-store-qr.png"
+              alt="Scan to download RecommeNow on the App Store"
+              width={72}
+              height={72}
+              style={{ borderRadius: 8, border: '1px solid var(--rule)', display: 'block' }}
+            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '.35rem' }}>
+              <p style={{ fontSize: '.65rem', fontWeight: 700, color: 'var(--muted)', letterSpacing: '.06em', textTransform: 'uppercase', margin: 0 }}>Get the app</p>
               <a
-                href="https://apps.apple.com/app/recommenow"
+                href="https://apps.apple.com/app/id6769583849"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Download RecommeNow on the App Store"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: '.4rem',
-                  background: '#000', color: '#fff', borderRadius: 7,
-                  padding: '.35rem .7rem', textDecoration: 'none',
-                  fontSize: '.62rem', fontWeight: 600, whiteSpace: 'nowrap',
+                  display: 'flex', alignItems: 'center', gap: '.5rem',
+                  background: '#000', color: '#fff', borderRadius: 9,
+                  padding: '.5rem .85rem', textDecoration: 'none',
+                  fontSize: '.72rem', fontWeight: 600, whiteSpace: 'nowrap',
                 }}
               >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                App Store
-              </a>
-              <a
-                href="https://play.google.com/store/apps/recommenow"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '.4rem',
-                  background: '#000', color: '#fff', borderRadius: 7,
-                  padding: '.35rem .7rem', textDecoration: 'none',
-                  fontSize: '.62rem', fontWeight: 600, whiteSpace: 'nowrap',
-                }}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M3.18 23.76c.3.17.64.24.99.21l12.47-7.2-2.75-2.75-10.71 9.74zM.48 1.61C.18 1.94 0 2.44 0 3.09v17.82c0 .65.18 1.15.49 1.48l.08.07 9.98-9.98v-.24L.56 1.54l-.08.07zM20.12 10.1l-2.83-1.63-3.08 3.08 3.08 3.08 2.85-1.64c.81-.47.81-1.23-.02-1.89zM3.18.24L15.65 7.44l-2.75 2.75L2.19.45c.28-.23.64-.3.99-.21z"/></svg>
-                Google Play
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.1 }}>
+                  <span style={{ fontSize: '.55rem', fontWeight: 500, opacity: .85 }}>Download on the</span>
+                  <span style={{ fontSize: '.82rem', fontWeight: 700 }}>App Store</span>
+                </span>
               </a>
             </div>
           </div>
