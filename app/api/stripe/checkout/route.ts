@@ -1,23 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
-import { getStripe, PRO_PRICES, RECRUITER_PRICES, PRO_PRICES_YEARLY, RECRUITER_PRICES_YEARLY, DEFAULT_CURRENCY } from '@/lib/stripe'
+import { getStripe } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase-server'
-import { isProTrial } from '@/lib/plans'
+import { PLAN_PRICES, PLAN_TIERS, DEFAULT_CURRENCY, isProTrial, type Currency, type Interval } from '@/lib/plans'
+
+type PaidPlan = 'member' | 'pro' | 'proplus' | 'recruiter'
+const PAID_PLANS: PaidPlan[] = ['member', 'pro', 'proplus', 'recruiter']
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  const currency: string = (body.currency ?? DEFAULT_CURRENCY).toLowerCase()
-  const planType: 'pro' | 'recruiter' = body.planType === 'recruiter' ? 'recruiter' : 'pro'
-  const interval: 'month' | 'year' = body.interval === 'year' ? 'year' : 'month'
-  const withTrial: boolean = body.trial === true
+  const currency = ((body.currency ?? DEFAULT_CURRENCY).toLowerCase()) as Currency
+  const planType = (PAID_PLANS.includes(body.planType) ? body.planType : 'pro') as PaidPlan
+  const interval: Interval = body.interval === 'year' ? 'year' : 'month'
 
-  const priceMap = interval === 'year'
-    ? (planType === 'recruiter' ? RECRUITER_PRICES_YEARLY : PRO_PRICES_YEARLY)
-    : (planType === 'recruiter' ? RECRUITER_PRICES : PRO_PRICES)
-  const priceConfig = priceMap[currency]
+  const priceConfig = PLAN_PRICES[planType][interval][currency]
   if (!priceConfig) return NextResponse.json({ error: 'Unsupported currency' }, { status: 400 })
 
   const db = createServiceClient()
@@ -28,12 +27,10 @@ export async function POST(req: NextRequest) {
     .single()
 
   if (!profile) return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
-  // Allow trial users (plan='pro' but no paid subscription) to upgrade to paid
-  if (planType === 'pro' && profile.plan === 'pro' && !isProTrial(profile)) {
-    return NextResponse.json({ error: 'Already on Pro plan' }, { status: 400 })
-  }
-  if (planType === 'recruiter' && profile.recruiter_active) {
-    return NextResponse.json({ error: 'Already on Recruiter plan' }, { status: 400 })
+  // Block only if the user is already on this exact paid plan (switching between
+  // different paid tiers is allowed — Stripe handles the proration/change).
+  if (profile.plan === planType && !isProTrial(profile)) {
+    return NextResponse.json({ error: `Already on the ${PLAN_TIERS[planType].name} plan` }, { status: 400 })
   }
 
   const stripe = getStripe()
@@ -62,10 +59,11 @@ export async function POST(req: NextRequest) {
     await db.from('profiles').update({ stripe_customer_id: customerId }).eq('id', profile.id)
   }
 
-  const productName = planType === 'recruiter' ? 'RecommeNow Recruiter' : 'RecommeNow Pro'
+  const def = PLAN_TIERS[planType]
+  const productName = `RecommeNow ${def.name}`
   const productDesc = planType === 'recruiter'
-    ? 'Contact candidates & access full talent directory'
-    : 'Unlimited vouches + custom slug'
+    ? 'Publish up to 5 vouches + full talent directory'
+    : `Publish up to ${def.publicVouchCap} vouch${def.publicVouchCap === 1 ? '' : 'es'}${def.canPrint ? ' + PDF one-pager + QR code' : ''}`
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
@@ -80,9 +78,7 @@ export async function POST(req: NextRequest) {
       },
       quantity: 1,
     }],
-    ...(withTrial && planType === 'pro' ? {
-      subscription_data: { trial_period_days: 30 },
-    } : {}),
+    subscription_data: { metadata: { plan_type: planType, user_id: userId, profile_id: profile.id } },
     success_url: `${appUrl}/dashboard?${planType === 'recruiter' ? 'recruiter=1' : 'upgraded=1'}`,
     cancel_url: `${appUrl}/pricing`,
     metadata: { user_id: userId, profile_id: profile.id, plan_type: planType },

@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase-server'
+import { PLAN_TIERS, type PlanTier } from '@/lib/plans'
 import type Stripe from 'stripe'
+
+// Map a Stripe product name ("RecommeNow Pro+") back to a plan tier, as a
+// fallback when subscription metadata is unavailable.
+function planFromProductName(name: string | undefined): PlanTier | undefined {
+  const n = (name ?? '').toLowerCase()
+  // Longest names first so "Pro+" matches before "Pro".
+  const keys = (Object.keys(PLAN_TIERS) as PlanTier[])
+    .filter(k => k !== 'free')
+    .sort((a, b) => PLAN_TIERS[b].name.length - PLAN_TIERS[a].name.length)
+  for (const key of keys) {
+    if (n.includes(PLAN_TIERS[key].name.toLowerCase())) return key
+  }
+  return undefined
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -24,19 +39,22 @@ export async function POST(req: NextRequest) {
     case 'checkout.session.completed': {
       const session = event.data.object as Stripe.Checkout.Session
       const profileId = session.metadata?.profile_id
-      const planType = session.metadata?.plan_type ?? 'pro'
+      const planType = (session.metadata?.plan_type ?? 'pro') as PlanTier
       const subscriptionId = session.subscription as string | null
       if (!profileId || !subscriptionId) break
 
-      if (planType === 'recruiter') {
-        await db.from('profiles')
-          .update({ recruiter_active: true, recruiter_subscription_id: subscriptionId })
-          .eq('id', profileId)
-      } else {
-        await db.from('profiles')
-          .update({ plan: 'pro', stripe_subscription_id: subscriptionId })
-          .eq('id', profileId)
-      }
+      // Set the plan tier, and reopen the account + clear the FREE expiry timer.
+      await db.from('profiles')
+        .update({
+          plan: planType,
+          stripe_subscription_id: subscriptionId,
+          recruiter_active: planType === 'recruiter',
+          recruiter_subscription_id: planType === 'recruiter' ? subscriptionId : null,
+          free_expires_at: null,
+          account_closed_at: null,
+          free_reminders_sent: [],
+        })
+        .eq('id', profileId)
       break
     }
 
@@ -44,19 +62,15 @@ export async function POST(req: NextRequest) {
       const sub = event.data.object as Stripe.Subscription
       const customerId = sub.customer as string
       const active = sub.status === 'active' || sub.status === 'trialing'
+      const planType = (sub.metadata?.plan_type as PlanTier | undefined) ?? planFromProductName((sub.items?.data?.[0]?.price?.product as Stripe.Product | undefined)?.name)
 
-      // Determine which product this sub belongs to by checking metadata on the subscription
-      const productName = (sub.items?.data?.[0]?.price?.product as Stripe.Product | undefined)?.name ?? ''
-      const isRecruiter = productName.toLowerCase().includes('recruiter')
-        || sub.metadata?.plan_type === 'recruiter'
-
-      if (isRecruiter) {
+      if (active && planType) {
         await db.from('profiles')
-          .update({ recruiter_active: active })
-          .eq('recruiter_subscription_id', sub.id)
-      } else {
+          .update({ plan: planType, recruiter_active: planType === 'recruiter', free_expires_at: null, account_closed_at: null })
+          .eq('stripe_customer_id', customerId)
+      } else if (!active) {
         await db.from('profiles')
-          .update({ plan: active ? 'pro' : 'free' })
+          .update({ plan: 'free', recruiter_active: false })
           .eq('stripe_customer_id', customerId)
       }
       break
@@ -64,22 +78,10 @@ export async function POST(req: NextRequest) {
 
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
-      // Try recruiter first, then candidate pro
-      const { count: recruiterCount } = await db
-        .from('profiles')
-        .select('id', { count: 'exact', head: true })
-        .eq('recruiter_subscription_id', sub.id)
-
-      if ((recruiterCount ?? 0) > 0) {
-        await db.from('profiles')
-          .update({ recruiter_active: false, recruiter_subscription_id: null })
-          .eq('recruiter_subscription_id', sub.id)
-      } else {
-        const customerId = sub.customer as string
-        await db.from('profiles')
-          .update({ plan: 'free', stripe_subscription_id: null })
-          .eq('stripe_customer_id', customerId)
-      }
+      const customerId = sub.customer as string
+      await db.from('profiles')
+        .update({ plan: 'free', recruiter_active: false, stripe_subscription_id: null, recruiter_subscription_id: null })
+        .eq('stripe_customer_id', customerId)
       break
     }
   }
