@@ -10,7 +10,7 @@ export default function TermsPage() {
       <main style={{ maxWidth: 740, margin: '0 auto', padding: '8rem 2.5rem 6rem', fontFamily: 'var(--sans)' }}>
         <p style={{ fontSize: '.72rem', fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem' }}>Legal</p>
         <h1 style={{ fontFamily: 'var(--sans)', fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 800, color: 'var(--ink)', marginBottom: '.75rem', lineHeight: 1.2 }}>Terms of Use</h1>
-        <p style={{ fontSize: '.82rem', color: 'var(--muted)', marginBottom: '3rem' }}>Last updated: 15 May 2026</p>
+        <p style={{ fontSize: '.82rem', color: 'var(--muted)', marginBottom: '3rem' }}>Last updated: 3 July 2026</p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', fontSize: '.9rem', lineHeight: 1.75, color: 'var(--ink)' }}>
 
@@ -45,7 +45,9 @@ export default function TermsPage() {
 
           <section>
             <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>5. Subscriptions and billing</h2>
-            <p style={{ marginBottom: '.75rem' }}>Paid plans are billed monthly in advance. Prices are listed on our pricing page and may change with 30 days&apos; notice. All payments are processed securely by Stripe.</p>
+            <p style={{ marginBottom: '.75rem' }}><strong>Plans.</strong> RecommeNow offers a free plan and paid subscription plans (Member, Pro, Pro+, and Recruiter). All plans let you receive vouches; the number of vouches you may publish on your public profile depends on your plan: Free and Member up to 1, Pro up to 5, Pro+ up to 10, and Recruiter up to 5. Pro, Pro+, and Recruiter also include the PDF one-pager and QR code; Recruiter additionally includes access to the talent directory. Current plans, features, and prices are shown on our pricing page and may change with 30 days&apos; notice.</p>
+            <p style={{ marginBottom: '.75rem' }}><strong>Free plan.</strong> The free plan lets a new account receive one vouch and lasts for one month. We will remind you by email and in-app before it ends. If you do not start a paid subscription before the month ends, your account will be closed: your public profile is taken offline and access to features is paused. Your data is retained and not deleted, and your account is reactivated as soon as you subscribe. Accounts created before this policy took effect keep their prior free allowance and are not subject to the one-month limit.</p>
+            <p style={{ marginBottom: '.75rem' }}>Paid plans are billed in advance for the chosen period (monthly or yearly). Web payments are processed securely by Stripe.</p>
             <p style={{ marginBottom: '.75rem' }}><strong>Purchases made in the iOS app</strong> are billed through your Apple ID, not Stripe. Payment is charged to your Apple ID at confirmation, and the subscription renews automatically unless you cancel at least 24 hours before the end of the period. Manage or cancel these subscriptions in your Apple ID Settings &gt; Subscriptions.</p>
             <p style={{ marginBottom: '.75rem' }}><strong>Cancellation:</strong> Subscriptions bought on the web can be cancelled at any time from your account settings; subscriptions bought in the iOS app are cancelled in Apple ID Settings. Cancellation takes effect at the end of your current billing period. You retain full access until that date and will not be charged again.</p>
             <p>We do not offer refunds for partial billing periods.</p>

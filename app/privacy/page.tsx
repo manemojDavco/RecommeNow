@@ -60,7 +60,8 @@ export default function PrivacyPage() {
 
           <section>
             <h2 style={{ fontFamily: 'var(--sans)', fontSize: '1.15rem', fontWeight: 700, marginBottom: '.6rem' }}>6. Data retention</h2>
-            <p>We retain your data for as long as your account is active. If you delete your account, we will delete your profile, vouches, and associated data within 30 days. Billing records may be retained for up to 7 years as required by applicable law.</p>
+            <p style={{ marginBottom: '.75rem' }}>We retain your data for as long as your account is active. If you delete your account, we will delete your profile, vouches, and associated data within 30 days. Billing records may be retained for up to 7 years as required by applicable law.</p>
+            <p>If your free account is closed at the end of its one-month free period because you did not subscribe, your data is <strong>retained, not deleted</strong> — your public profile is simply taken offline, and your account and data are restored as soon as you start a subscription. You can still request deletion of your data at any time (see your rights below).</p>
           </section>
 
           <section>
