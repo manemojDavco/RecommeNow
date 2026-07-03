@@ -57,6 +57,40 @@ export async function sendVouchVerificationEmail({
   })
 }
 
+export async function sendFreeExpiryReminderEmail({
+  to,
+  name,
+  daysLeft,
+}: {
+  to: string
+  name: string
+  daysLeft: number
+}) {
+  const dayLabel = daysLeft === 1 ? '1 day' : `${daysLeft} days`
+  return getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `Your RecommeNow free month ends in ${dayLabel}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">
+        ${EMAIL_LOGO}
+        <h1 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em">
+          ${name ? `Hi ${name}, your` : 'Your'} free month ends in ${dayLabel}
+        </h1>
+        <p style="font-size:15px;line-height:1.7;color:#6e6a64;margin:0 0 24px">
+          To keep your profile and vouch live — and to receive more vouches — start a subscription before your free month ends. If you don't subscribe, your profile is taken offline; your data is kept and restored the moment you subscribe.
+        </p>
+        <a href="${APP_URL}/pricing" style="display:inline-block;background:#1c3d2c;color:#fff;text-decoration:none;padding:12px 24px;border-radius:7px;font-size:14px;font-weight:600">
+          Choose a plan →
+        </a>
+        <p style="font-size:12px;color:#6e6a64;margin:32px 0 0;line-height:1.6">
+          Member keeps 1 vouch, Pro up to 5, Pro+ up to 10, and Recruiter adds the talent directory.
+        </p>
+      </div>
+    `,
+  })
+}
+
 export async function sendNewVouchNotification({
   to,
   candidateName,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { generateSlug } from '@/lib/slug'
+import { FREE_TIER_DAYS } from '@/lib/plans'
 import { nanoid } from 'nanoid'
 
 export async function POST(req: NextRequest) {
@@ -76,6 +77,10 @@ export async function POST(req: NextRequest) {
       photo_url: photo_url || null,
       referral_code: nanoid(8),
       referred_by: referredBy,
+      // New FREE accounts have a one-month window before they auto-close unless
+      // the user subscribes. free_legacy stays false (only existing users at
+      // migration time were grandfathered).
+      free_expires_at: new Date(Date.now() + FREE_TIER_DAYS * 24 * 60 * 60 * 1000).toISOString(),
     })
     .select()
     .single()
