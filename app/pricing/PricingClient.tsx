@@ -123,7 +123,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
                             <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)' }}>{short(price!.display)}</div>
                             <div style={{ fontSize: '.68rem', color: 'var(--muted)' }}>
                               {interval === 'year'
-                                ? <>per year · {(price as { monthly: string }).monthly}/mo</>
+                                ? <>per year{price && 'monthly' in price ? ` · ${price.monthly}/mo` : ''}</>
                                 : <>per month{p === 'recruiter' ? ' · per seat' : ''}</>}
                             </div>
                           </div>
