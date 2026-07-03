@@ -44,7 +44,8 @@ type DirectoryProfile = {
 function ProfileCard({ p }: { p: DirectoryProfile }) {
   const initials = p.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
   const summary = p.bio || p.top_quote || null
-  const planLabel = p.recruiter_active ? 'RECRUITER' : p.plan === 'pro' ? 'PRO' : null
+  const PLAN_LABELS: Record<string, string> = { member: 'MEMBER', pro: 'PRO', proplus: 'PRO+', recruiter: 'RECRUITER' }
+  const planLabel = p.recruiter_active ? 'RECRUITER' : (PLAN_LABELS[p.plan] ?? null)
 
   return (
     <Link href={`/${p.slug}`} style={{ textDecoration: 'none' }}>

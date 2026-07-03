@@ -313,29 +313,30 @@ export default async function PublicProfilePage({ params }: Props) {
                       Verified
                     </span>
                   )}
-                  {((profile as any).recruiter_active || (profile as any).plan === 'pro') && (
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" style={{ flexShrink: 0 }}>
-                      {(profile as any).recruiter_active ? <>
-                        <circle cx="9" cy="10" r="4" fill="#5B21B6"/>
-                        <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#5B21B6"/>
-                        <path d="M14 20 Q18 17 20 17" stroke="#A78BFA" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                        <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#A78BFA"/>
-                        <circle cx="23" cy="10" r="4" fill="#A78BFA"/>
-                        <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#A78BFA"/>
-                        <circle cx="28" cy="5" r="4" fill="#5B21B6"/>
+                  {(() => {
+                    const plan = (profile as any).recruiter_active ? 'recruiter' : (profile as any).plan
+                    const PAIRS: Record<string, [string, string]> = {
+                      member:    ['#B0885A', '#D9C0A3'],
+                      pro:       ['#2D6A4F', '#52B788'],
+                      proplus:   ['#C8931F', '#F1D28A'],
+                      recruiter: ['#5B21B6', '#A78BFA'],
+                    }
+                    const pair = PAIRS[plan as string]
+                    if (!pair) return null
+                    const [dark, light] = pair
+                    return (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" style={{ flexShrink: 0 }}>
+                        <circle cx="9" cy="10" r="4" fill={dark}/>
+                        <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill={dark}/>
+                        <path d="M14 20 Q18 17 20 17" stroke={light} strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                        <polygon points="20,17 16.5,14.5 16.5,19.5" fill={light}/>
+                        <circle cx="23" cy="10" r="4" fill={light}/>
+                        <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill={light}/>
+                        <circle cx="28" cy="5" r="4" fill={dark}/>
                         <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                      </> : <>
-                        <circle cx="9" cy="10" r="4" fill="#2D6A4F"/>
-                        <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#2D6A4F"/>
-                        <path d="M14 20 Q18 17 20 17" stroke="#52B788" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                        <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#52B788"/>
-                        <circle cx="23" cy="10" r="4" fill="#52B788"/>
-                        <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#52B788"/>
-                        <circle cx="28" cy="5" r="4" fill="#2D6A4F"/>
-                        <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                      </>}
-                    </svg>
-                  )}
+                      </svg>
+                    )
+                  })()}
                 </div>
                 {profile.title && (
                   <p style={{ fontSize: '.9rem', color: 'var(--muted)', fontWeight: 400, marginBottom: '.4rem' }}>
