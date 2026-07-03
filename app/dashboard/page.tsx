@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase-server'
-import { freeReceivedCap } from '@/lib/plans'
+import { freeReceivedCap, planCanPrint, planHasDirectory } from '@/lib/plans'
 import type { Vouch } from '@/types'
 import UpgradedBanner from './UpgradedBanner'
 import RecruiterBanner from './RecruiterBanner'
@@ -58,7 +58,7 @@ export default async function DashboardOverviewPage({
       </div>
 
       {/* Recruiter directory shortcut — full width */}
-      {profile.recruiter_active && <RecruiterDirectoryCard />}
+      {(profile.recruiter_active || planHasDirectory(profile.plan)) && <RecruiterDirectoryCard />}
 
       {/* Stats row — full width */}
       <div className="rn-dash-stats" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '.75rem', marginBottom: '1rem' }}>
@@ -170,7 +170,7 @@ export default async function DashboardOverviewPage({
             )}
           </div>
 
-          {(profile.plan === 'pro' || profile.recruiter_active) && (
+          {(planCanPrint(profile.plan) || profile.recruiter_active) && (
             <a
               href={`/${profile.slug}/print`}
               target="_blank"

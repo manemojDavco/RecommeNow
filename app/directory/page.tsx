@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase-server'
 import DirectoryClient from './DirectoryClient'
 import { Logo } from '@/components/Logo'
+import { planHasDirectory } from '@/lib/plans'
 
 export const metadata: Metadata = {
   title: 'Talent Directory',
@@ -26,9 +27,9 @@ export default async function DirectoryPage() {
     .eq('user_id', userId)
     .single()
 
-  const isRecruiter = profile?.recruiter_active === true
+  // Directory access = the Recruiter plan (or a grandfathered recruiter flag).
+  const isRecruiter = profile?.recruiter_active === true || planHasDirectory(profile?.plan)
 
-  // Not a recruiter — show upgrade wall instead of the directory
   if (!isRecruiter) {
     return (
       <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)', display: 'flex', flexDirection: 'column' }}>

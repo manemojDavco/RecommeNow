@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useClerk } from '@clerk/nextjs'
 import { useState } from 'react'
 import type { Profile } from '@/types'
-import { isProTrial, proTrialDaysLeft } from '@/lib/plans'
+import { isProTrial, proTrialDaysLeft, planCanPrint, planHasDirectory } from '@/lib/plans'
 import { Logo } from '@/components/Logo'
 
 // Inline SVG icon for the Vouches nav item — two people + verified badge,
@@ -94,7 +94,9 @@ export default function DashboardShell({
   const isPro = profile.plan === 'pro'
   const isTrial = isProTrial(profile)
   const trialDaysLeft = proTrialDaysLeft(profile.pro_trial_until)
-  const isRecruiter = profile.recruiter_active
+  const isRecruiter = profile.recruiter_active || planHasDirectory(profile.plan)
+  // Print/QR features are available on Pro, Pro+ and Recruiter.
+  const canPrint = planCanPrint(profile.plan) || profile.recruiter_active
 
   const initials = profile.name
     .split(' ')
@@ -416,7 +418,7 @@ export default function DashboardShell({
             flexShrink: 0,
           }}
         >
-          {(isPro || isRecruiter) && (
+          {canPrint && (
             <Link
               href={`/${profile.slug}/print`}
               target="_blank"
