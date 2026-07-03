@@ -60,30 +60,34 @@ export async function POST(req: NextRequest) {
     if (referrer) referredBy = referrer.user_id
   }
 
-  const { data: profile, error } = await db
+  const baseRow = {
+    user_id: userId,
+    name: name.trim(),
+    slug,
+    title: title?.trim() || null,
+    years_experience: years_experience?.trim() || null,
+    location: location?.trim() || null,
+    remote_preference: remote_preference || null,
+    availability: availability || null,
+    bio: bio?.trim() || null,
+    industries: industries ?? [],
+    stages: stages ?? [],
+    photo_url: photo_url || null,
+    referral_code: nanoid(8),
+    referred_by: referredBy,
+  }
+  // New FREE accounts have a one-month window before they auto-close unless the
+  // user subscribes. If the column doesn't exist yet (pre-migration), retry
+  // without it so profile creation never breaks.
+  const freeExpiresAt = new Date(Date.now() + FREE_TIER_DAYS * 24 * 60 * 60 * 1000).toISOString()
+  let { data: profile, error } = await db
     .from('profiles')
-    .insert({
-      user_id: userId,
-      name: name.trim(),
-      slug,
-      title: title?.trim() || null,
-      years_experience: years_experience?.trim() || null,
-      location: location?.trim() || null,
-      remote_preference: remote_preference || null,
-      availability: availability || null,
-      bio: bio?.trim() || null,
-      industries: industries ?? [],
-      stages: stages ?? [],
-      photo_url: photo_url || null,
-      referral_code: nanoid(8),
-      referred_by: referredBy,
-      // New FREE accounts have a one-month window before they auto-close unless
-      // the user subscribes. free_legacy stays false (only existing users at
-      // migration time were grandfathered).
-      free_expires_at: new Date(Date.now() + FREE_TIER_DAYS * 24 * 60 * 60 * 1000).toISOString(),
-    })
+    .insert({ ...baseRow, free_expires_at: freeExpiresAt })
     .select()
     .single()
+  if (error?.code === '42703') {
+    ;({ data: profile, error } = await db.from('profiles').insert(baseRow).select().single())
+  }
 
   // Increment referrer's referral_count
   if (!error && referredBy) {
