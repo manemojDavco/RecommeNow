@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Nav from '@/components/Nav'
+import SiteFooter from '@/components/SiteFooter'
 import { PLAN_TIERS, PLAN_PRICES, type PlanTier, type Currency, type Interval } from '@/lib/plans'
 
 const CURRENCY_LABELS: Record<Currency, string> = {
@@ -70,7 +71,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 2.8rem)', fontWeight: 700, color: 'var(--ink)', marginBottom: '.75rem' }}>Simple, honest pricing</h1>
-          <p style={{ fontSize: '1rem', color: 'var(--muted)', maxWidth: 520, margin: '0 auto' }}>Receive as many vouches as you like — publish the number your plan allows. Choose the plan that fits.</p>
+          <p style={{ fontSize: '1rem', color: 'var(--muted)', maxWidth: 520, margin: '0 auto' }}>Receive as many vouches as you like. Publish the number your plan allows. Choose the plan that fits.</p>
         </div>
 
         {/* Toggles */}
@@ -171,14 +172,11 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
         </div>
 
         <p style={{ textAlign: 'center', color: 'var(--muted)', fontSize: '.78rem', marginTop: '1.5rem', maxWidth: 620, marginLeft: 'auto', marginRight: 'auto' }}>
-          The Free plan includes 1 vouch for one month. To keep it and receive more, choose a subscription. You can receive unlimited vouches on any paid plan — the number shown is how many you can publish on your public profile.
+          The Free plan includes 1 vouch for one month. To keep it and receive more, choose a subscription. You can receive unlimited vouches on any paid plan. The number shown is how many you can publish on your public profile.
         </p>
 
-        <div style={{ textAlign: 'center', marginTop: '2rem', display: 'flex', gap: '1.5rem', justifyContent: 'center' }}>
-          <a href="/terms" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: '.8rem' }}>Terms of Use</a>
-          <a href="/privacy" style={{ color: 'var(--muted)', textDecoration: 'none', fontSize: '.8rem' }}>Privacy Policy</a>
-        </div>
       </div>
+      <SiteFooter />
     </div>
   )
 }
