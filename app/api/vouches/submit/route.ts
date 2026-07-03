@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
 import { getVouchRateLimit } from '@/lib/rate-limit'
-import { FREE_VOUCH_LIMIT } from '@/lib/plans'
+import { freeReceivedCap } from '@/lib/plans'
 import { sendVouchVerificationEmail, sendNewVouchNotification } from '@/lib/email'
 import { sendNewVouchNotification as sendPushNewVouch } from '@/lib/push'
 import { nanoid } from 'nanoid'
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   // Verify profile exists
   const { data: profile } = await db
     .from('profiles')
-    .select('id, name, slug, user_id, plan, push_token')
+    .select('id, name, slug, user_id, plan, push_token, free_legacy')
     .eq('id', profile_id)
     .single()
 
@@ -67,19 +67,19 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  // Enforce free plan vouch limit. FREE accounts can RECEIVE at most 2 vouches
-  // total — counting every received vouch regardless of status (pending,
-  // approved, hidden, flagged). Once 2 are received, no more can be submitted
-  // until one is deleted.
+  // Enforce the FREE plan received-vouch cap (grandfathered users keep their
+  // legacy allowance). Counts every received vouch regardless of status. Paid
+  // plans can receive unlimited vouches.
   if (profile.plan === 'free') {
+    const cap = freeReceivedCap(profile as { free_legacy?: boolean | null })
     const { count } = await db
       .from('vouches')
       .select('id', { count: 'exact', head: true })
       .eq('profile_id', profile_id)
 
-    if ((count ?? 0) >= FREE_VOUCH_LIMIT) {
+    if ((count ?? 0) >= cap) {
       return NextResponse.json(
-        { error: 'This profile has reached its vouch limit. Ask them to upgrade to Pro for unlimited vouches.' },
+        { error: 'This profile has reached its vouch limit on the free plan. Ask them to upgrade to receive more.' },
         { status: 403 }
       )
     }

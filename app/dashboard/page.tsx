@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase-server'
-import { FREE_VOUCH_LIMIT } from '@/lib/plans'
+import { freeReceivedCap } from '@/lib/plans'
 import type { Vouch } from '@/types'
 import UpgradedBanner from './UpgradedBanner'
 import RecruiterBanner from './RecruiterBanner'
@@ -30,7 +30,7 @@ export default async function DashboardOverviewPage({
   const vouches = (allVouches ?? []) as Vouch[]
   // FREE accounts capped at receiving 2 vouches (any status). At the limit,
   // vouch-request/share surfaces are disabled until one is deleted.
-  const atVouchLimit = (profile.plan ?? 'free') === 'free' && vouches.length >= FREE_VOUCH_LIMIT
+  const atVouchLimit = (profile.plan ?? 'free') === 'free' && vouches.length >= freeReceivedCap(profile)
   const approved = vouches.filter((v) => v.status === 'approved')
   const pending = vouches.filter((v) => v.status === 'pending')
   const flagged = vouches.filter((v) => v.status === 'flagged')

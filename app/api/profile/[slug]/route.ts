@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
+import { publicVouchCap, LEGACY_FREE_RECEIVED_CAP } from '@/lib/plans'
 
 // Public profile columns safe to expose. NEVER include user_id (Clerk ID),
 // stripe_customer_id, stripe_subscription_id, iap_transaction_id,
@@ -10,6 +11,7 @@ const PROFILE_COLUMNS = [
   'linkedin_url', 'contact_email', 'phone', 'availability',
   'show_phone', 'show_linkedin', 'show_contact_email',
   'show_working_pref', 'show_availability', 'created_at',
+  'plan', 'recruiter_active',
 ].join(', ')
 
 // Public vouch columns. Excludes giver_email and verification_token
@@ -52,15 +54,38 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
 
   if (!profile) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  applyVisibility(profile as Record<string, any>)
+  const prof = profile as Record<string, any>
+
+  // Internal-only fields (not exposed): whether the account is closed (a lapsed
+  // FREE account) and whether it's a grandfathered FREE user.
+  const { data: internal } = await db
+    .from('profiles')
+    .select('account_closed_at, free_legacy')
+    .eq('id', prof.id)
+    .single()
+
+  // A closed FREE account is taken offline — its public profile 404s until the
+  // user subscribes again.
+  if (internal?.account_closed_at) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  applyVisibility(prof)
+
+  // Publish at most the number of vouches the plan allows. Grandfathered FREE
+  // users keep their legacy allowance.
+  const cap = (prof.plan === 'free' && internal?.free_legacy)
+    ? LEGACY_FREE_RECEIVED_CAP
+    : publicVouchCap(prof.plan)
 
   const { data: vouches } = await db
     .from('vouches')
     .select(VOUCH_COLUMNS)
-    .eq('profile_id', (profile as Record<string, any>).id)
+    .eq('profile_id', prof.id)
     .eq('status', 'approved')
     .order('display_order', { ascending: true, nullsFirst: false })
     .order('created_at', { ascending: false })
+    .limit(cap)
 
   const approved = (vouches ?? []) as Array<Record<string, any>>
   const verificationRate =
