@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       <main style={{ maxWidth: 740, margin: '0 auto', padding: '8rem 2.5rem 6rem', fontFamily: 'var(--sans)' }}>
         <p style={{ fontSize: '.72rem', fontWeight: 600, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: '1rem' }}>Legal</p>
         <h1 style={{ fontFamily: 'var(--sans)', fontSize: 'clamp(2rem, 4vw, 2.8rem)', fontWeight: 800, color: 'var(--ink)', marginBottom: '.75rem', lineHeight: 1.2 }}>Privacy Policy</h1>
-        <p style={{ fontSize: '.82rem', color: 'var(--muted)', marginBottom: '3rem' }}>Last updated: 15 May 2026</p>
+        <p style={{ fontSize: '.82rem', color: 'var(--muted)', marginBottom: '3rem' }}>Last updated: 3 July 2026</p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', fontSize: '.9rem', lineHeight: 1.75, color: 'var(--ink)' }}>
 
