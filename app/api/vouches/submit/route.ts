@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   // Verify profile exists
   const { data: profile } = await db
     .from('profiles')
-    .select('id, name, slug, user_id, plan, push_token, free_legacy')
+    .select('id, name, slug, user_id, plan, push_token')
     .eq('id', profile_id)
     .single()
 
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
   // told they were specifically blocked.
   const { data: blockRow } = await db
     .from('profiles')
-    .select('blocked_giver_emails')
+    .select('blocked_giver_emails, free_legacy')
     .eq('id', profile_id)
     .single()
   const blockedEmails: string[] = (blockRow as { blocked_giver_emails?: string[] } | null)?.blocked_giver_emails ?? []
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
   // legacy allowance). Counts every received vouch regardless of status. Paid
   // plans can receive unlimited vouches.
   if (profile.plan === 'free') {
-    const cap = freeReceivedCap(profile as { free_legacy?: boolean | null })
+    const cap = freeReceivedCap({ free_legacy: (blockRow as { free_legacy?: boolean | null } | null)?.free_legacy })
     const { count } = await db
       .from('vouches')
       .select('id', { count: 'exact', head: true })
