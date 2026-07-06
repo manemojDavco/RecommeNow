@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
+import { cookies } from 'next/headers'
 import { createServiceClient } from '@/lib/supabase-server'
 import { generateSlug } from '@/lib/slug'
 import { FREE_TIER_DAYS } from '@/lib/plans'
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, photo_url, referred_by_slug: refSlug } = body
+  const { name, title, years_experience, location, remote_preference, availability, bio, industries, stages, photo_url, referred_by_slug: refSlug, referral_code: bodyPartnerCode } = body
 
   if (!name?.trim()) {
     return NextResponse.json({ error: 'Name is required.' }, { status: 400 })
@@ -60,6 +61,25 @@ export async function POST(req: NextRequest) {
     if (referrer) referredBy = referrer.user_id
   }
 
+  // ── Partner attribution ────────────────────────────────────────────────────
+  // Resolve a partner code (mobile passes `referral_code`; web carries the
+  // `rn_partner` cookie from /r/CODE) to a partner id, written ONCE to the
+  // account. A code that isn't a partner is ignored here (it may be a
+  // user-to-user referral slug, handled above).
+  let partnerCode: string | null = (typeof bodyPartnerCode === 'string' && bodyPartnerCode.trim()) || null
+  if (!partnerCode) {
+    try { partnerCode = (await cookies()).get('rn_partner')?.value ?? null } catch { /* no cookie ctx */ }
+  }
+  let referredByPartnerId: string | null = null
+  if (partnerCode) {
+    const { data: partner } = await db
+      .from('partners')
+      .select('id')
+      .ilike('code', partnerCode.trim())
+      .maybeSingle()
+    if (partner) referredByPartnerId = partner.id
+  }
+
   const baseRow = {
     user_id: userId,
     name: name.trim(),
@@ -80,12 +100,17 @@ export async function POST(req: NextRequest) {
   // user subscribes. If the column doesn't exist yet (pre-migration), retry
   // without it so profile creation never breaks.
   const freeExpiresAt = new Date(Date.now() + FREE_TIER_DAYS * 24 * 60 * 60 * 1000).toISOString()
+  const attribution = referredByPartnerId
+    ? { referred_by_partner_id: referredByPartnerId, referred_at: new Date().toISOString() }
+    : {}
   let { data: profile, error } = await db
     .from('profiles')
-    .insert({ ...baseRow, free_expires_at: freeExpiresAt })
+    .insert({ ...baseRow, ...attribution, free_expires_at: freeExpiresAt })
     .select()
     .single()
   if (error?.code === '42703') {
+    // Some optional column (free_expires_at / partner attribution) isn't
+    // migrated yet — retry with only base-schema columns so signup never breaks.
     ;({ data: profile, error } = await db.from('profiles').insert(baseRow).select().single())
   }
 

@@ -21,6 +21,16 @@ export async function requireAdmin() {
   return { userId, email }
 }
 
+// Boolean admin check for API routes (no redirect).
+export async function isAdmin(): Promise<boolean> {
+  const { userId } = await auth()
+  if (!userId) return false
+  const user = await currentUser()
+  const email = user?.emailAddresses?.[0]?.emailAddress ?? ''
+  const adminEmails = (process.env.ADMIN_EMAILS ?? '').split(',').map(e => e.trim().toLowerCase())
+  return adminEmails.includes(email.toLowerCase())
+}
+
 export async function getSiteSettings(): Promise<Record<string, string>> {
   const db = adminDb()
   const { data } = await db.from('site_settings').select('key, value')

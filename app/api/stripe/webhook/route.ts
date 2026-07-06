@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getStripe } from '@/lib/stripe'
 import { createServiceClient } from '@/lib/supabase-server'
 import { PLAN_TIERS, type PlanTier } from '@/lib/plans'
+import { recordCommissionEvent, partnerRefByStripeCustomer } from '@/lib/partner-events'
 import type Stripe from 'stripe'
 
 // Map a Stripe product name ("RecommeNow Pro+") back to a plan tier, as a
@@ -82,6 +83,67 @@ export async function POST(req: NextRequest) {
       await db.from('profiles')
         .update({ plan: 'free', recruiter_active: false, stripe_subscription_id: null, recruiter_subscription_id: null })
         .eq('stripe_customer_id', customerId)
+      break
+    }
+
+    // ── Partner commission: a payment cleared ────────────────────────────────
+    case 'invoice.paid': {
+      const invoice = event.data.object as Stripe.Invoice
+      const customerId = invoice.customer as string | null
+      if (!customerId || invoice.amount_paid <= 0) break
+      const ref = await partnerRefByStripeCustomer(db, customerId)
+      if (!ref) break // not partner-referred — nothing to record
+
+      // Processor fee → net. Retrieve the charge's balance transaction; fall
+      // back to gross if unavailable.
+      let feeCents = 0
+      const chargeId = (invoice as unknown as { charge?: string }).charge
+      if (chargeId) {
+        try {
+          const charge = await stripe.charges.retrieve(chargeId, { expand: ['balance_transaction'] })
+          const bt = charge.balance_transaction
+          if (bt && typeof bt !== 'string') feeCents = bt.fee ?? 0
+        } catch { /* fee stays 0 */ }
+      }
+
+      const isFirst = invoice.billing_reason === 'subscription_create'
+      const plan = (invoice.lines?.data?.[0]?.price?.metadata?.plan_type as string | undefined)
+        ?? planFromProductName((invoice.lines?.data?.[0]?.price?.product as Stripe.Product | undefined)?.name)
+      await recordCommissionEvent(db, {
+        referredByPartnerId: ref.partnerId,
+        profileId: ref.profileId,
+        userId: ref.userId,
+        source: 'stripe',
+        eventType: isFirst ? 'conversion' : 'renewal',
+        plan: plan ?? null,
+        currency: invoice.currency,
+        grossCents: invoice.amount_paid,
+        feeCents,
+        subscriptionId: (invoice as unknown as { subscription?: string }).subscription ?? null,
+        externalEventId: `stripe:invoice:${invoice.id}`,
+      })
+      break
+    }
+
+    // ── Partner commission: a refund (clawback) ──────────────────────────────
+    case 'charge.refunded': {
+      const charge = event.data.object as Stripe.Charge
+      const customerId = charge.customer as string | null
+      if (!customerId || charge.amount_refunded <= 0) break
+      const ref = await partnerRefByStripeCustomer(db, customerId)
+      if (!ref) break
+      await recordCommissionEvent(db, {
+        referredByPartnerId: ref.partnerId,
+        profileId: ref.profileId,
+        userId: ref.userId,
+        source: 'stripe',
+        eventType: 'refund',
+        currency: charge.currency,
+        grossCents: -charge.amount_refunded, // negative → clawback
+        feeCents: 0,
+        subscriptionId: null,
+        externalEventId: `stripe:refund:${charge.id}:${charge.amount_refunded}`,
+      })
       break
     }
   }

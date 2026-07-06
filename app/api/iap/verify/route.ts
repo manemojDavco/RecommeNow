@@ -13,6 +13,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
+import { recordCommissionEvent, partnerRefByUserId } from '@/lib/partner-events'
 
 // Map App Store product IDs → internal plan names
 // Must match the Product IDs created in App Store Connect → Subscriptions
@@ -182,6 +183,26 @@ export async function POST(req: NextRequest) {
       } else {
         throw error
       }
+    }
+
+    // ── Partner commission (mobile conversion) ─────────────────────────────
+    // Record one bounty per referred user. Idempotency key is per-profile so
+    // restores / re-verifies (which re-hit this route) never double-pay.
+    // Renewals arrive via App Store Server Notifications, not here.
+    const ref = await partnerRefByUserId(db, userId)
+    if (ref) {
+      await recordCommissionEvent(db, {
+        referredByPartnerId: ref.partnerId,
+        profileId: ref.profileId,
+        userId,
+        source: 'apple',
+        eventType: 'conversion',
+        plan: planInfo.plan,
+        currency: ref.currency,
+        grossCents: 0, // flat-bounty channel; net not used for the bounty
+        subscriptionId: transactionId,
+        externalEventId: `apple:conversion:${ref.profileId}`,
+      })
     }
 
     return NextResponse.json({ success: true, plan: planInfo.plan })
