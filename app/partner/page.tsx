@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import Nav from '@/components/Nav'
+import SiteFooter from '@/components/SiteFooter'
 import { getPartnerForCurrentUser } from '@/lib/partner-auth'
 import { createServiceClient } from '@/lib/supabase-server'
 import { computePartnerStats, money } from '@/lib/partner-stats'
+import { currencyForLocation } from '@/lib/partners'
 import { planName } from '@/lib/plans'
 
 export const dynamic = 'force-dynamic'
@@ -27,13 +29,20 @@ export default async function PartnerPage() {
             get in touch at <a href="mailto:social@recommenow.com" style={{ color: 'var(--green)' }}>social@recommenow.com</a>.
           </p>
         </div>
+        <SiteFooter />
       </div>
     )
   }
 
   const db = createServiceClient()
   const stats = await computePartnerStats(db, partner.id)
-  const cur = partner.currency
+  // Display amounts in the currency for the partner's own country (from their
+  // profile location), falling back to the partner's configured currency.
+  let cur = partner.currency
+  if (partner.user_id) {
+    const { data: prof } = await db.from('profiles').select('location').eq('user_id', partner.user_id).maybeSingle()
+    if (prof?.location) cur = currencyForLocation(prof.location)
+  }
   const isRecruiter = partner.partner_type === 'recruiter'
   const link = `https://recommenow.com/r/${partner.code}`
 
@@ -120,6 +129,7 @@ export default async function PartnerPage() {
           {' '}Referred plans include {planName('member')}, {planName('pro')} and {planName('proplus')}.
         </p>
       </div>
+      <SiteFooter />
     </div>
   )
 }

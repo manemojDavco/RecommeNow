@@ -1,4 +1,5 @@
 import Nav from '@/components/Nav'
+import SiteFooter from '@/components/SiteFooter'
 import { createServiceClient } from '@/lib/supabase-server'
 
 // Public student-ambassador leaderboard. Ranks active student partners by paid
@@ -58,6 +59,7 @@ export default async function LeaderboardPage() {
           ))}
         </div>
       </div>
+      <SiteFooter />
     </div>
   )
 }

@@ -104,6 +104,24 @@ export function computeShareDue(
   return 0
 }
 
+// Eurozone member states (lowercase) — used to map a location to EUR.
+const EUROZONE = [
+  'austria', 'belgium', 'croatia', 'cyprus', 'estonia', 'finland', 'france',
+  'germany', 'greece', 'ireland', 'italy', 'latvia', 'lithuania', 'luxembourg',
+  'malta', 'netherlands', 'portugal', 'slovakia', 'slovenia', 'spain',
+]
+
+// Pick a payout currency from a profile location string, e.g.
+// "Miami, Florida, United States" -> 'usd', "London, England, UK" -> 'gbp'.
+export function currencyForLocation(location: string | null | undefined): PartnerCurrency {
+  const loc = (location ?? '').toLowerCase()
+  if (!loc) return 'usd'
+  if (/united kingdom|england|scotland|wales|northern ireland|\buk\b|britain/.test(loc)) return 'gbp'
+  if (/australia/.test(loc)) return 'aud'
+  if (EUROZONE.some(c => loc.includes(c))) return 'eur'
+  return 'usd'
+}
+
 // Current period key, e.g. "2026-07".
 export function periodOf(date: Date | string = new Date()): string {
   const d = typeof date === 'string' ? new Date(date) : date
