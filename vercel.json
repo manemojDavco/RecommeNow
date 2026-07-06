@@ -15,6 +15,10 @@
     {
       "path": "/api/cron/free-lifecycle",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/partner-daily",
+      "schedule": "0 5 * * *"
     }
   ]
 }

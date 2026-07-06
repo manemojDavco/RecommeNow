@@ -228,3 +228,123 @@ export async function sendFlagReviewEmail({
     `,
   })
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Partner program emails (Sprint 3)
+// ═══════════════════════════════════════════════════════════════════════════
+
+function partnerShell(inner: string): string {
+  return `<div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:40px 24px;color:#141210">${EMAIL_LOGO}${inner}</div>`
+}
+function partnerBtn(href: string, label: string): string {
+  return `<a href="${href}" style="display:inline-block;background:#1c3d2c;color:#fff;text-decoration:none;padding:12px 24px;border-radius:7px;font-size:14px;font-weight:600">${label}</a>`
+}
+const h1 = 'font-family:Georgia,serif;font-size:24px;font-weight:400;margin:0 0 16px;letter-spacing:-0.02em'
+const p = 'font-size:15px;line-height:1.7;color:#6e6a64;margin:0 0 24px'
+
+// 1 — Welcome (on approval): code, link, terms summary.
+export async function sendPartnerWelcomeEmail({ to, name, code, dealLine }: {
+  to: string; name: string; code: string; dealLine: string
+}) {
+  const link = `${APP_URL}/r/${code}`
+  return getResend().emails.send({
+    from: FROM, to, subject: 'Welcome to the RecommeNow partner program',
+    html: partnerShell(`
+      <h1 style="${h1}">Welcome aboard, ${name}</h1>
+      <p style="${p}">Your partner account is live. Share your link below — anyone who signs up through it is attributed to you for 12 months.</p>
+      <p style="font-size:15px;font-weight:700;color:#141210;margin:0 0 8px">Your link</p>
+      <p style="font-size:16px;font-weight:700;color:#1c3d2c;margin:0 0 24px;word-break:break-all">${link}</p>
+      <p style="${p}">${dealLine} Payouts are on cleared, non-refunded revenue, 30 days in arrears. Track everything anytime on your dashboard.</p>
+      ${partnerBtn(`${APP_URL}/partner`, 'Open my dashboard →')}
+    `),
+  })
+}
+
+// 2 — First referred signup (real time, once).
+export async function sendPartnerFirstSignupEmail({ to, name }: { to: string; name: string }) {
+  return getResend().emails.send({
+    from: FROM, to, subject: 'Your first RecommeNow referral just signed up 🎉',
+    html: partnerShell(`
+      <h1 style="${h1}">You're on the board, ${name}</h1>
+      <p style="${p}">Your first referred user just created an account. You'll earn when they convert to a paid plan — we'll keep the running total on your dashboard.</p>
+      ${partnerBtn(`${APP_URL}/partner`, 'See my dashboard →')}
+    `),
+  })
+}
+
+// 3 — Paid conversions digest (daily, never per-event).
+export async function sendPartnerConversionsDigestEmail({ to, name, count }: {
+  to: string; name: string; count: number
+}) {
+  return getResend().emails.send({
+    from: FROM, to, subject: `${count} new paid conversion${count === 1 ? '' : 's'} on RecommeNow`,
+    html: partnerShell(`
+      <h1 style="${h1}">${count} new conversion${count === 1 ? '' : 's'} yesterday</h1>
+      <p style="${p}">Nice work — ${count} referred user${count === 1 ? '' : 's'} started a paid plan. Commission is added to your next statement once it clears the 30-day window.</p>
+      ${partnerBtn(`${APP_URL}/partner`, 'View my dashboard →')}
+    `),
+  })
+}
+
+// 4 — Monthly statement (1st of month) — the trust anchor.
+export async function sendPartnerStatementEmail({ to, name, period, signups, conversions, clearedDisplay, dueDisplay, isRecruiter }: {
+  to: string; name: string; period: string; signups: number; conversions: number
+  clearedDisplay: string; dueDisplay: string; isRecruiter: boolean
+}) {
+  const row = (k: string, v: string) => `<tr><td style="padding:8px 0;color:#6e6a64;font-size:14px">${k}</td><td style="padding:8px 0;text-align:right;font-weight:700;color:#141210;font-size:14px">${v}</td></tr>`
+  return getResend().emails.send({
+    from: FROM, to, subject: `Your RecommeNow statement — ${period}`,
+    html: partnerShell(`
+      <h1 style="${h1}">Statement for ${period}</h1>
+      <p style="${p}">Hi ${name}, here's your summary for the month. Full detail and CSV export are on your dashboard.</p>
+      <table style="width:100%;border-collapse:collapse;margin:0 0 24px">
+        ${row('Signups', String(signups))}
+        ${row('Paid conversions', String(conversions))}
+        ${row(isRecruiter ? 'Cleared net revenue' : 'Cleared conversions', clearedDisplay)}
+        ${row(isRecruiter ? 'Share due' : 'Bounties due', dueDisplay)}
+      </table>
+      ${partnerBtn(`${APP_URL}/partner`, 'Open dashboard →')}
+      <p style="font-size:12px;color:#6e6a64;margin:24px 0 0;line-height:1.6">Amounts due are on cleared, non-refunded revenue and are paid 30 days in arrears.</p>
+    `),
+  })
+}
+
+// 5 — Payout sent (on transfer).
+export async function sendPartnerPayoutSentEmail({ to, name, amountDisplay, period }: {
+  to: string; name: string; amountDisplay: string; period: string
+}) {
+  return getResend().emails.send({
+    from: FROM, to, subject: `Your RecommeNow payout is on its way — ${amountDisplay}`,
+    html: partnerShell(`
+      <h1 style="${h1}">Payout sent: ${amountDisplay}</h1>
+      <p style="${p}">Hi ${name}, your ${period} payout of ${amountDisplay} has been sent. Thank you for the reach you've built — it should reach your account shortly.</p>
+      ${partnerBtn(`${APP_URL}/partner`, 'View statement →')}
+    `),
+  })
+}
+
+// 6 — Inactivity nudge (influencer/student, no signups 30 days).
+export async function sendPartnerInactivityEmail({ to, name }: { to: string; name: string }) {
+  return getResend().emails.send({
+    from: FROM, to, subject: 'A few ideas to get your RecommeNow referrals moving',
+    html: partnerShell(`
+      <h1 style="${h1}">Let's get you some conversions, ${name}</h1>
+      <p style="${p}">No new signups in the last month — totally normal early on. What tends to work: share your link in a post about job-hunting or references, add it to your bio, and mention it where people are actively applying for roles.</p>
+      ${partnerBtn(`${APP_URL}/partner`, 'Grab my link →')}
+    `),
+  })
+}
+
+// 7 — Milestone (10th / 50th / 100th conversion).
+export async function sendPartnerMilestoneEmail({ to, name, milestone }: {
+  to: string; name: string; milestone: number
+}) {
+  return getResend().emails.send({
+    from: FROM, to, subject: `🏆 ${milestone} paid conversions on RecommeNow`,
+    html: partnerShell(`
+      <h1 style="${h1}">${milestone} conversions — nice milestone, ${name}!</h1>
+      <p style="${p}">You've now driven ${milestone} paid conversions. Thank you for the momentum. Keep sharing your link — every conversion counts toward your next statement.</p>
+      ${partnerBtn(`${APP_URL}/partner`, 'See my dashboard →')}
+    `),
+  })
+}
