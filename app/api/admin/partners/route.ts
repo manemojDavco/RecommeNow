@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { isAdmin } from '@/lib/admin'
 import { createServiceClient } from '@/lib/supabase-server'
 import { defaultConfig, type PartnerType, type PartnerCurrency } from '@/lib/partners'
+import { notifyPartnerWelcome } from '@/lib/partner-notify'
 import { nanoid } from 'nanoid'
 
 // Admin: create and list partners. Commission config is seeded from the
@@ -58,6 +59,11 @@ export async function POST(req: NextRequest) {
   if (error) {
     if (error.code === '23505') return NextResponse.json({ error: 'That code is already taken' }, { status: 409 })
     return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  // Welcome email on approval (active partners only).
+  if (data.status === 'active') {
+    await notifyPartnerWelcome(db, data)
   }
   return NextResponse.json({ partner: data })
 }

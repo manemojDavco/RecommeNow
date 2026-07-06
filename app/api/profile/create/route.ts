@@ -4,6 +4,7 @@ import { cookies } from 'next/headers'
 import { createServiceClient } from '@/lib/supabase-server'
 import { generateSlug } from '@/lib/slug'
 import { FREE_TIER_DAYS } from '@/lib/plans'
+import { notifyPartnerFirstSignup } from '@/lib/partner-notify'
 import { nanoid } from 'nanoid'
 
 export async function POST(req: NextRequest) {
@@ -112,6 +113,11 @@ export async function POST(req: NextRequest) {
     // Some optional column (free_expires_at / partner attribution) isn't
     // migrated yet — retry with only base-schema columns so signup never breaks.
     ;({ data: profile, error } = await db.from('profiles').insert(baseRow).select().single())
+  }
+
+  // Notify the partner of their first referred signup (once).
+  if (!error && referredByPartnerId) {
+    await notifyPartnerFirstSignup(db, referredByPartnerId)
   }
 
   // Increment referrer's referral_count

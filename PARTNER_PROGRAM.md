@@ -71,10 +71,49 @@ conversions, clawed back on refunds).
    ```
    Share `recommenow.com/r/rec-xxxxxx`.
 
-## Not yet built (next sprints)
+## Sprint 2 — partner dashboard
 
-- Sprint 2: partner dashboard at `/partner` (auth + RLS, widgets, CSV statements).
-- Sprint 3: the seven partner emails (welcome, first signup, conversions digest,
-  monthly statement, payout sent, inactivity nudge, milestones).
-- Apple App Store Server Notifications v2 endpoint (renewals/refunds for mobile).
-- Mobile signup `referral_code` UI field.
+- **`/partner`** (Clerk-authed): resolves the partner by linked `user_id`, else by
+  email (and links it). Widgets: signups (month + total), paid conversions,
+  cleared revenue, share/bounty due; a monthly statement table; and **Download CSV**
+  (`/api/partner/statement`, scoped to the signed-in partner). Non-partners see a
+  contact prompt.
+- **`/partner/leaderboard`** — public student-ambassador ranking by conversions,
+  first names only (no candidate data).
+- Scoping is enforced server-side (every query filters by the authenticated
+  `partner_id`); the service-role key is never exposed to the client.
+
+## Sprint 3 — notifications (seven events, email-first)
+
+| # | Event | Trigger |
+|---|-------|---------|
+| 1 | Welcome + link | on partner create (active) — `admin/partners` |
+| 2 | First referred signup | real-time, once — `profile/create` |
+| 3 | Paid conversions digest | daily (never per-event) — `partner-daily` |
+| 4 | Monthly statement | 1st of month — `partner-daily` + draft payout |
+| 5 | Payout sent | `POST /api/admin/partners/payout` |
+| 6 | Inactivity nudge | daily, influencer/student, 30-day quiet |
+| 7 | Milestone (10/50/100…) | daily — `partner-daily` |
+
+All partner background work runs in **one** daily cron `/api/cron/partner-daily`
+(clearing + notify, plus statements on the 1st) to stay within the Vercel cron
+limit. Individual routes (`partner-clearing`, `partner-notify`,
+`partner-statements`) remain for manual/independent triggering.
+
+### Paying a partner
+```
+POST /api/admin/partners/payout   { "partner_id": "...", "period": "2026-07" }
+```
+Flips that period's cleared events → paid, records the payout, emails the partner.
+
+### Extra migration for Sprint 3
+Run **`supabase/migration-partners-notify.sql`** (adds `welcomed_at`,
+`first_signup_notified_at`, `last_digest_at`, `last_milestone`, `last_nudge_at`).
+Until it's applied, notification state can't be tracked (emails may repeat / not
+fire) — apply it before relying on the emails.
+
+## Still open
+
+- Apple App Store Server Notifications v2 endpoint (mobile renewals/refunds).
+- Mobile signup `referral_code` UI field (backend already accepts it).
+- Partner-scoped Supabase RLS SELECT policies (currently scoped in app code).
