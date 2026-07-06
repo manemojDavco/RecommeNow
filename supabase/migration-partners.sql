@@ -37,7 +37,12 @@ create index if not exists profiles_referred_by_partner_idx on profiles(referred
 -- Lock attribution: once a partner is set on a profile it can never change.
 -- One user, one referrer, for the life of the account. Silently keeps the
 -- original values rather than erroring, so unrelated profile updates never fail.
-create or replace function lock_partner_attribution() returns trigger as $$
+-- SECURITY: pinned empty search_path (function only touches NEW/OLD, no object
+-- lookups) so it can't be hijacked via a mutable role search_path.
+create or replace function lock_partner_attribution() returns trigger
+  language plpgsql
+  set search_path = ''
+as $$
 begin
   if OLD.referred_by_partner_id is not null then
     NEW.referred_by_partner_id := OLD.referred_by_partner_id;
@@ -45,7 +50,7 @@ begin
   end if;
   return NEW;
 end;
-$$ language plpgsql;
+$$;
 
 drop trigger if exists profiles_lock_partner_attr on profiles;
 create trigger profiles_lock_partner_attr
