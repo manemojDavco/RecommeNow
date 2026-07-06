@@ -84,6 +84,30 @@ export async function partnerRefByUserId(
 }
 
 /**
+ * Look up a profile's partner attribution by Apple original transaction id.
+ * At first purchase we store the (original) transaction id in iap_transaction_id,
+ * so renewal/refund notifications match on it. Returns null if not partner-referred.
+ */
+export async function partnerRefByOriginalTx(
+  db: SupabaseClient,
+  originalTransactionId: string,
+): Promise<{ profileId: string; userId: string | null; partnerId: string; currency: string } | null> {
+  try {
+    const { data } = await db
+      .from('profiles')
+      .select('id, user_id, referred_by_partner_id')
+      .eq('iap_transaction_id', originalTransactionId)
+      .maybeSingle()
+    if (!data?.referred_by_partner_id) return null
+    const { data: partner } = await db
+      .from('partners').select('currency').eq('id', data.referred_by_partner_id).maybeSingle()
+    return { profileId: data.id, userId: data.user_id ?? null, partnerId: data.referred_by_partner_id, currency: partner?.currency ?? 'usd' }
+  } catch {
+    return null
+  }
+}
+
+/**
  * Look up a profile's partner attribution by Stripe customer id.
  * Returns null if unmigrated, not found, or not partner-referred.
  */

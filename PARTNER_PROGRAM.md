@@ -112,8 +112,20 @@ Run **`supabase/migration-partners-notify.sql`** (adds `welcomed_at`,
 Until it's applied, notification state can't be tracked (emails may repeat / not
 fire) — apply it before relying on the emails.
 
+## Apple Server Notifications (mobile renewals/refunds)
+
+`/api/iap/notifications` receives Apple App Store Server Notifications V2, decodes
+the signed transaction, matches the profile by `originalTransactionId`
+(= the `iap_transaction_id` stored at first purchase), and records `renewal` /
+`refund` commission events — mirroring the Stripe webhook.
+
+**Setup:** App Store Connect → your app → **App Information → App Store Server
+Notifications** → set both Production and Sandbox URLs to
+`https://recommenow.com/api/iap/notifications` (Version 2).
+
 ## Still open
 
-- Apple App Store Server Notifications v2 endpoint (mobile renewals/refunds).
 - Mobile signup `referral_code` UI field (backend already accepts it).
 - Partner-scoped Supabase RLS SELECT policies (currently scoped in app code).
+- Full x5c signature verification on the notifications endpoint (currently
+  decodes + trusts, same posture as `iap/verify`; fraud surface is limited).
