@@ -24,7 +24,7 @@ export default async function PartnerPage() {
           <p style={{ color: 'var(--muted)', marginTop: '1rem', lineHeight: 1.7 }}>
             This account isn&apos;t linked to a partner. If you run a recruitment agency, create
             career content, or represent a student society and want to partner with RecommeNow,
-            get in touch at <a href="mailto:nick@omnispoc.com" style={{ color: 'var(--green)' }}>nick@omnispoc.com</a>.
+            get in touch at <a href="mailto:social@recommenow.com" style={{ color: 'var(--green)' }}>social@recommenow.com</a>.
           </p>
         </div>
       </div>
