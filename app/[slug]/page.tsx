@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
+import { publicVouchCap, LEGACY_FREE_RECEIVED_CAP } from '@/lib/plans'
 import type { Profile, Vouch } from '@/types'
 import VouchCard from '@/components/VouchCard'
 import FlagVouchButton from './FlagVouchButton'
@@ -33,12 +34,21 @@ async function getProfileData(slug: string) {
     .order('created_at', { ascending: false })
 
   // Sort by display_order in JS so missing column doesn't break the page
-  const approved = ((vouchesRaw ?? []) as Vouch[]).sort((a, b) => {
+  const sorted = ((vouchesRaw ?? []) as Vouch[]).sort((a, b) => {
     if (a.display_order == null && b.display_order == null) return 0
     if (a.display_order == null) return 1
     if (b.display_order == null) return -1
     return a.display_order - b.display_order
   })
+
+  // Publish at most the number of vouches the plan allows — identical to the
+  // /api/profile/[slug] cap the mobile app uses, so web and app match exactly.
+  // Grandfathered FREE accounts keep their legacy allowance.
+  const cap = ((profile as { plan?: string }).plan === 'free' && (profile as { free_legacy?: boolean }).free_legacy)
+    ? LEGACY_FREE_RECEIVED_CAP
+    : publicVouchCap((profile as { plan?: string }).plan)
+  const approved = sorted.slice(0, cap)
+
   const verificationRate =
     approved.length > 0
       ? Math.round((approved.filter((v) => v.verified).length / approved.length) * 100)
