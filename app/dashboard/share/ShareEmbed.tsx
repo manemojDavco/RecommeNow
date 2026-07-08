@@ -2,6 +2,7 @@
 
 import { useState, useRef, KeyboardEvent } from 'react'
 import Link from 'next/link'
+import { planCanQR } from '@/lib/plans'
 import type { Profile } from '@/types'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://recommenow.com'
@@ -11,7 +12,8 @@ function isValidEmail(v: string) {
 }
 
 export default function ShareEmbed({ profile }: { profile: Profile }) {
-  const isPro = profile.plan === 'pro' || profile.recruiter_active
+  // Pro feature set (embed widget) = Pro, Pro+ and Recruiter.
+  const isPro = planCanQR(profile.plan) || profile.recruiter_active
   const profileUrl = `${APP_URL}/${profile.slug}`
   const vouchUrl = `${APP_URL}/vouch/${profile.slug}`
   const referralUrl = profile.slug ? `${APP_URL}/referredby/${profile.slug}` : null

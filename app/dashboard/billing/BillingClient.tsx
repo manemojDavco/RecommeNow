@@ -2,10 +2,16 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { planName } from '@/lib/plans'
 
-function PlanBadge({ variant, size = 22 }: { variant: 'pro' | 'recruiter'; size?: number }) {
-  const dark  = variant === 'recruiter' ? '#5B21B6' : '#2D6A4F'
-  const light = variant === 'recruiter' ? '#A78BFA' : '#52B788'
+// Two-tone badge colours per tier — matches the public profile / mobile badges.
+const BADGE_PAIRS: Record<string, [string, string]> = {
+  member: ['#B0885A', '#D9C0A3'], pro: ['#2D6A4F', '#52B788'],
+  proplus: ['#C8931F', '#F1D28A'], recruiter: ['#5B21B6', '#A78BFA'],
+}
+
+function PlanBadge({ variant, size = 22 }: { variant: string; size?: number }) {
+  const [dark, light] = BADGE_PAIRS[variant] ?? BADGE_PAIRS.pro
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={size} height={size} style={{ flexShrink: 0 }}>
       <circle cx="9" cy="10" r="4" fill={dark}/>
@@ -72,9 +78,7 @@ function formatAmount(amount: number, currency: string) {
 }
 
 function planLabel(plan: string) {
-  if (plan === 'recruiter') return 'Recruiter'
-  if (plan === 'pro') return 'Pro'
-  return 'Free'
+  return planName(plan)
 }
 
 function statusColor(status: string) {

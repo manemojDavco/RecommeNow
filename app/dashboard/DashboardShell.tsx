@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useClerk } from '@clerk/nextjs'
 import { useState } from 'react'
 import type { Profile } from '@/types'
-import { isProTrial, proTrialDaysLeft, planCanPrint, planHasDirectory } from '@/lib/plans'
+import { isProTrial, proTrialDaysLeft, planCanPrint, planHasDirectory, isPaidPlan } from '@/lib/plans'
 import { Logo } from '@/components/Logo'
 
 // Inline SVG icon for the Vouches nav item — two people + verified badge,
@@ -91,10 +91,12 @@ export default function DashboardShell({
     }
   }
 
-  const isPro = profile.plan === 'pro'
+  const isRecruiter = profile.recruiter_active || planHasDirectory(profile.plan)
+  // Any paid non-recruiter tier (Member, Pro, Pro+) — drives the plan badge,
+  // the badge colour, and hides the upgrade CTA. Recruiter is handled separately.
+  const isPro = isPaidPlan(profile.plan) && !isRecruiter
   const isTrial = isProTrial(profile)
   const trialDaysLeft = proTrialDaysLeft(profile.pro_trial_until)
-  const isRecruiter = profile.recruiter_active || planHasDirectory(profile.plan)
   // Print/QR features are available on Pro, Pro+ and Recruiter.
   const canPrint = planCanPrint(profile.plan) || profile.recruiter_active
 

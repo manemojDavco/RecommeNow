@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { auth } from '@clerk/nextjs/server'
 import { createServiceClient } from '@/lib/supabase-server'
+import { planCanPrint } from '@/lib/plans'
 import type { Profile, Vouch } from '@/types'
 import PrintButton from './PrintButton'
 import { Logo, LocationPin } from '@/components/Logo'
@@ -28,11 +29,11 @@ export default async function PrintPage({ params }: Props) {
 
   const profile = profileData as Profile
 
-  // Only the profile owner (who must have Pro) can access the print view
+  // Only the profile owner on a print-capable plan (Pro, Pro+, Recruiter).
   if (!userId || profile.user_id !== userId) notFound()
 
-  const isPro = profile.plan === 'pro' || profile.recruiter_active
-  if (!isPro) notFound()
+  const canPrint = planCanPrint(profile.plan) || profile.recruiter_active
+  if (!canPrint) notFound()
 
   const { data: vouchData } = await db
     .from('vouches')
