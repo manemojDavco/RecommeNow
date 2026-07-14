@@ -80,11 +80,28 @@ export async function ensureVouchSummaries(
   if (profileIds.length === 0) return out
 
   try {
-    const { data: profiles } = await db
+    // Base columns only — so a missing cache column can never break this.
+    const { data: profiles, error: profErr } = await db
       .from('profiles')
-      .select('id, name, plan, free_legacy, vouch_summary, vouch_summary_key')
+      .select('id, name, plan, free_legacy')
       .in('id', profileIds)
+    if (profErr) { console.error('[vouch-summary] profile fetch failed:', profErr.message); return out }
     if (!profiles?.length) return out
+
+    // Cache columns are optional (added by migration-vouch-summary.sql). If they
+    // aren't there yet we still generate — we just can't persist the result.
+    let cacheOk = true
+    const cache = new Map<string, { summary: string | null; key: string | null }>()
+    const { data: cached, error: cacheErr } = await db
+      .from('profiles')
+      .select('id, vouch_summary, vouch_summary_key')
+      .in('id', profileIds)
+    if (cacheErr) {
+      cacheOk = false
+      console.error('[vouch-summary] cache columns unavailable (run migration-vouch-summary.sql):', cacheErr.message)
+    } else {
+      for (const c of cached ?? []) cache.set(c.id, { summary: c.vouch_summary, key: c.vouch_summary_key })
+    }
 
     const { data: vouches } = await db
       .from('vouches')
@@ -104,21 +121,27 @@ export async function ensureVouchSummaries(
       if (published.length === 0) return
 
       const key = published.map(v => v.id).join(',')
-      // Cached and still matching the live set → reuse.
-      if (p.vouch_summary && p.vouch_summary_key === key) {
-        out[p.id] = p.vouch_summary
+      const prev = cache.get(p.id)
+
+      // Cached and still matching the live set → reuse, no model call.
+      if (prev?.summary && prev.key === key) {
+        out[p.id] = prev.summary
         return
       }
 
       const summary = await generate(p.name, published)
       if (!summary) {
-        if (p.vouch_summary) out[p.id] = p.vouch_summary // keep the old one rather than nothing
+        if (prev?.summary) out[p.id] = prev.summary // keep the old one rather than nothing
         return
       }
       out[p.id] = summary
-      await db.from('profiles')
-        .update({ vouch_summary: summary, vouch_summary_key: key })
-        .eq('id', p.id)
+
+      if (cacheOk) {
+        const { error: upErr } = await db.from('profiles')
+          .update({ vouch_summary: summary, vouch_summary_key: key })
+          .eq('id', p.id)
+        if (upErr) console.error('[vouch-summary] cache write failed:', upErr.message)
+      }
     }))
   } catch (e) {
     console.error('[vouch-summary] ensure failed:', e)
