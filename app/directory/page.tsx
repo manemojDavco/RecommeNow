@@ -6,6 +6,11 @@ import { createServiceClient } from '@/lib/supabase-server'
 import DirectoryClient from './DirectoryClient'
 import { Logo } from '@/components/Logo'
 import { planHasDirectory } from '@/lib/plans'
+import { ensureVouchSummaries } from '@/lib/vouch-summary'
+
+// First render for a profile whose vouches changed generates its summary; give
+// that headroom. Cached thereafter, so steady-state is instant.
+export const maxDuration = 60
 
 export const metadata: Metadata = {
   title: 'Talent Directory',
@@ -72,7 +77,11 @@ export default async function DirectoryPage() {
     .order('vouch_count', { ascending: false })
     .limit(24)
 
-  const initial = data ?? []
+  const rows = data ?? []
+  // AI summary of each person's PUBLISHED vouches (cached; auto-regenerates
+  // when the live set of vouches changes).
+  const summaries = await ensureVouchSummaries(db, rows.map(r => r.id))
+  const initial = rows.map(r => ({ ...r, vouch_summary: summaries[r.id] ?? null }))
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)' }}>

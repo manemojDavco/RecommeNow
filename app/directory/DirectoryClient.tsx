@@ -36,6 +36,7 @@ type DirectoryProfile = {
   trust_score: number
   verification_rate: number
   top_quote: string | null
+  vouch_summary: string | null
   photo_url: string | null
   plan: string
   recruiter_active: boolean
@@ -43,7 +44,9 @@ type DirectoryProfile = {
 
 function ProfileCard({ p }: { p: DirectoryProfile }) {
   const initials = p.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
-  const summary = p.bio || p.top_quote || null
+  // A short AI summary of the vouches published on their profile; falls back to
+  // the first published vouch if a summary hasn't been generated yet.
+  const summary = p.vouch_summary || p.top_quote || null
   const PLAN_LABELS: Record<string, string> = { member: 'MEMBER', pro: 'PRO', proplus: 'PRO+', recruiter: 'RECRUITER' }
   const planLabel = p.recruiter_active ? 'RECRUITER' : (PLAN_LABELS[p.plan] ?? null)
 
@@ -153,7 +156,7 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
           {summary ? (
             <>
               <p style={{ fontSize: '.62rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--green2)', marginBottom: '.5rem' }}>
-                {p.bio ? 'About' : 'From their vouches'}
+                From their vouches
               </p>
               <p style={{
                 fontFamily: 'var(--sans)',
@@ -165,7 +168,7 @@ function ProfileCard({ p }: { p: DirectoryProfile }) {
                 WebkitBoxOrient: 'vertical' as const,
                 overflow: 'hidden',
               }}>
-                {p.top_quote && !p.bio ? `"${summary}"` : summary}
+                {p.vouch_summary ? summary : `"${summary}"`}
               </p>
             </>
           ) : (
