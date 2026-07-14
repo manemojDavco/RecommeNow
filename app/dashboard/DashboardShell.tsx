@@ -335,29 +335,34 @@ export default function DashboardShell({
               </p>
               {RECRUITER_NAV_ITEMS.map((item) => {
                 const active = pathname.startsWith(item.href)
+                // Prominent, highlighted button (matches the "View public profile"
+                // CTA) so the recruiter's key feature stands out from plain nav.
                 return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '.65rem',
-                      padding: '.6rem 1rem',
-                      fontSize: '.78rem',
-                      fontWeight: active ? 600 : 500,
-                      color: active ? '#95D5B2' : '#fff',
-                      textDecoration: 'none',
-                      background: active ? 'rgba(255,255,255,.1)' : 'transparent',
-                      borderRadius: 7,
-                      margin: '0 .5rem',
-                      transition: 'all .15s',
-                    }}
-                  >
-                    <span style={{ fontSize: '.85rem', opacity: 1 }}>{item.icon}</span>
-                    {item.label}
-                  </Link>
+                  <div key={item.href} style={{ padding: '.15rem .5rem' }}>
+                    <Link
+                      href={item.href}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '.5rem',
+                        padding: '.6rem .75rem',
+                        fontSize: '.82rem',
+                        fontWeight: 600,
+                        color: '#5B21B6',
+                        textDecoration: 'none',
+                        background: '#ede9fe',
+                        border: active ? '1.5px solid #5B21B6' : '1.5px solid transparent',
+                        borderRadius: 10,
+                        width: '100%',
+                        boxSizing: 'border-box',
+                        transition: 'all .15s',
+                      }}
+                    >
+                      <span style={{ fontSize: '.9rem' }}>{item.icon}</span>
+                      {item.label}
+                    </Link>
+                  </div>
                 )
               })}
             </>

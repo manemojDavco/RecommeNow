@@ -49,7 +49,8 @@ export async function GET(req: NextRequest) {
   const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Fetch top quote for each profile (most recent approved vouch)
+  // Fetch the representative quote — the FIRST published vouch (same ordering as
+  // the public profile), so it's always one that's visible on the profile.
   const profiles = data ?? []
   if (profiles.length > 0) {
     const profileIds = profiles.map((p: { id: string }) => p.id)
@@ -58,6 +59,7 @@ export async function GET(req: NextRequest) {
       .select('profile_id, quote')
       .in('profile_id', profileIds)
       .eq('status', 'approved')
+      .order('display_order', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: false })
 
     const topQuoteMap: Record<string, string> = {}
