@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase-server'
-import { ensureVouchSummaries } from '@/lib/vouch-summary'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
@@ -54,11 +53,8 @@ export async function GET(req: NextRequest) {
   if (profiles.length > 0) {
     const profileIds = profiles.map((p: { id: string }) => p.id)
 
-    // AI summary of the PUBLISHED vouches (cached; regenerates when they change).
-    const summaries = await ensureVouchSummaries(db, profileIds)
-
-    // Fallback quote — the FIRST published vouch (same ordering as the public
-    // profile), used only if a summary isn't available.
+    // Representative quote — the FIRST vouch published on the profile (same
+    // ordering the public profile uses: display_order, then most recent).
     const { data: quotes } = await db
       .from('vouches')
       .select('profile_id, quote')
@@ -75,7 +71,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       profiles: profiles.map((p: { id: string }) => ({
         ...p,
-        vouch_summary: summaries[p.id] ?? null,
         top_quote: topQuoteMap[p.id] ?? null,
       }))
     })
