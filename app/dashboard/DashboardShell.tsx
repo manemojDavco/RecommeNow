@@ -95,6 +95,12 @@ export default function DashboardShell({
   // Any paid non-recruiter tier (Member, Pro, Pro+) — drives the plan badge,
   // the badge colour, and hides the upgrade CTA. Recruiter is handled separately.
   const isPro = isPaidPlan(profile.plan) && !isRecruiter
+  // Tier-accurate badge colours — identical to the public profile / mobile.
+  const BADGE_PAIRS: Record<string, [string, string]> = {
+    member: ['#B0885A', '#D9C0A3'], pro: ['#2D6A4F', '#52B788'],
+    proplus: ['#C8931F', '#F1D28A'], recruiter: ['#5B21B6', '#A78BFA'],
+  }
+  const [badgeDark, badgeLight] = BADGE_PAIRS[isRecruiter ? 'recruiter' : profile.plan] ?? BADGE_PAIRS.pro
   const isTrial = isProTrial(profile)
   const trialDaysLeft = proTrialDaysLeft(profile.pro_trial_until)
   // Print/QR features are available on Pro, Pro+ and Recruiter.
@@ -194,25 +200,14 @@ export default function DashboardShell({
             </div>
             {(isPro || isRecruiter) && (
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="15" height="15" style={{ flexShrink: 0 }}>
-                {isRecruiter ? <>
-                  <circle cx="9" cy="10" r="4" fill="#5B21B6"/>
-                  <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#5B21B6"/>
-                  <path d="M14 20 Q18 17 20 17" stroke="#A78BFA" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                  <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#A78BFA"/>
-                  <circle cx="23" cy="10" r="4" fill="#A78BFA"/>
-                  <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#A78BFA"/>
-                  <circle cx="28" cy="5" r="4" fill="#5B21B6"/>
-                  <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                </> : <>
-                  <circle cx="9" cy="10" r="4" fill="#95D5B2"/>
-                  <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#95D5B2"/>
-                  <path d="M14 20 Q18 17 20 17" stroke="#F0EAD6" strokeWidth="1.8" fill="none" strokeLinecap="round"/>
-                  <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#F0EAD6"/>
-                  <circle cx="23" cy="10" r="4" fill="#F0EAD6"/>
-                  <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#F0EAD6"/>
-                  <circle cx="28" cy="5" r="4" fill="#95D5B2"/>
-                  <polyline points="25.8,5 27,6.3 30.2,3" stroke="#2D6A4F" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-                </>}
+                <circle cx="9" cy="10" r="4" fill={badgeDark}/>
+                <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill={badgeDark}/>
+                <path d="M14 20 Q18 17 20 17" stroke={badgeLight} strokeWidth="1.8" fill="none" strokeLinecap="round"/>
+                <polygon points="20,17 16.5,14.5 16.5,19.5" fill={badgeLight}/>
+                <circle cx="23" cy="10" r="4" fill={badgeLight}/>
+                <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill={badgeLight}/>
+                <circle cx="28" cy="5" r="4" fill={badgeDark}/>
+                <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             )}
           </div>
