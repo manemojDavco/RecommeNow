@@ -23,10 +23,10 @@ export default function IntroAnimation() {
 
     const t = [
       setTimeout(() => setStage(1), 2600), // right "Job searcher" bubble held ~2.6s
-      setTimeout(() => setStage(2), 4700), // left bubble held ~2.1s
-      setTimeout(() => setStage(3), 6100), // wordmark
-      setTimeout(() => setStage(4), 7200), // fly to corner
-      setTimeout(() => setShow(false), 8500),
+      setTimeout(() => setStage(2), 5700), // left bubble held ~3.1s (+1s)
+      setTimeout(() => setStage(3), 7100), // wordmark
+      setTimeout(() => setStage(4), 8200), // fly to corner
+      setTimeout(() => setShow(false), 9500),
     ]
     return () => t.forEach(clearTimeout)
   }, [])
