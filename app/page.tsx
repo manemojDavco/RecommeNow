@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Nav from '@/components/Nav'
+import IntroAnimation from '@/components/IntroAnimation'
 import SiteFooter from '@/components/SiteFooter'
 import { FeedbackSection } from '@/components/FeedbackSection'
 import { currentUser } from '@clerk/nextjs/server'
@@ -9,6 +10,7 @@ export default async function LandingPage() {
   const prefillEmail = user?.emailAddresses?.[0]?.emailAddress
   return (
     <>
+      <IntroAnimation />
       <Nav />
 
       <main>
