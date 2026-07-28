@@ -39,11 +39,11 @@ export default function IntroAnimation() {
     window.addEventListener('resize', measure)
 
     const t = [
-      setTimeout(() => setStage(1), 2200), // bubble 2 appears; bubble 1 stays → both shown
-      setTimeout(() => setStage(2), 4000), // ~1.8s overlap, then both clear
-      setTimeout(() => setStage(3), 5300), // wordmark
-      setTimeout(() => setStage(4), 6400), // fly to corner
-      setTimeout(() => setShow(false), 7600),
+      setTimeout(() => setStage(1), 1600), // right "Job searcher" bubble held ~1.6s (1s shorter)
+      setTimeout(() => setStage(2), 4700), // left bubble held ~3.1s
+      setTimeout(() => setStage(3), 6100), // wordmark
+      setTimeout(() => setStage(4), 7200), // fly to corner
+      setTimeout(() => setShow(false), 8500),
     ]
     return () => { window.removeEventListener('resize', measure); t.forEach(clearTimeout) }
   }, [])
@@ -114,7 +114,7 @@ export default function IntroAnimation() {
             </g>
           </svg>
 
-          <Bubble side="right" show={stage <= 1} text="Job searcher" />
+          <Bubble side="right" show={stage === 0} text="Job searcher" />
           <Bubble side="left" show={stage === 1} text="Hey, you are the best resource that I know, for any company" />
         </div>
 
