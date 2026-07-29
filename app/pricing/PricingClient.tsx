@@ -18,11 +18,49 @@ type PaidPlan = 'member' | 'pro' | 'proplus' | 'recruiter'
 // Strip the trailing currency code from a display string ("€2.99 EUR" -> "€2.99").
 const short = (display: string) => display.split(' ').slice(0, -1).join(' ')
 
-function Dot({ color }: { color: string }) {
-  return <span style={{ display: 'inline-block', width: 12, height: 12, borderRadius: 999, background: color, verticalAlign: 'middle' }} />
-}
 const Check = () => <span style={{ color: 'var(--green)', fontWeight: 800 }}>✓</span>
 const Dash = () => <span style={{ color: 'var(--muted)', opacity: 0.5 }}>—</span>
+
+// Two-tone badge colours + solid button colour per tier (match app / public profile).
+const BADGE_PAIRS: Record<string, [string, string]> = {
+  member: ['#B0885A', '#D9C0A3'], pro: ['#2D6A4F', '#52B788'],
+  proplus: ['#C8931F', '#F1D28A'], recruiter: ['#5B21B6', '#A78BFA'],
+}
+const BTN_COLOR: Record<string, string> = { member: '#B0885A', pro: '#2D6A4F', proplus: '#C8931F', recruiter: '#5B21B6' }
+
+// The exact plan badge used across the app (two people + Approved check).
+function PlanMark({ tier, size = 24 }: { tier: string; size?: number }) {
+  const [dark, light] = BADGE_PAIRS[tier] ?? BADGE_PAIRS.pro
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+      <circle cx="9" cy="10" r="4" fill={dark} />
+      <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill={dark} />
+      <path d="M14 20 Q18 17 20 17" stroke={light} strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <polygon points="20,17 16.5,14.5 16.5,19.5" fill={light} />
+      <circle cx="23" cy="10" r="4" fill={light} />
+      <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill={light} />
+      <circle cx="28" cy="5" r="4" fill={dark} />
+      <polyline points="25.8,5 27,6.3 30.2,3" stroke="#fff" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+// The full RecommeNow brand mark (dark-green icon) for the table corner.
+function BrandMark({ size = 46 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" style={{ display: 'block' }}>
+      <rect width="32" height="32" rx="7" fill="#2D6A4F" />
+      <circle cx="9" cy="10" r="4" fill="#F0EAD6" />
+      <path d="M3 26 Q3 18 9 18 Q15 18 15 26 Z" fill="#F0EAD6" />
+      <path d="M14 20 Q18 17 20 17" stroke="#95D5B2" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+      <polygon points="20,17 16.5,14.5 16.5,19.5" fill="#95D5B2" />
+      <circle cx="23" cy="10" r="4" fill="#95D5B2" />
+      <path d="M17 26 Q17 18 23 18 Q29 18 29 26 Z" fill="#95D5B2" />
+      <circle cx="28" cy="5" r="4" fill="#F0EAD6" />
+      <polyline points="25.8,5 27,6.3 30.2,3" stroke="#2D6A4F" strokeWidth="1.3" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
 export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; trial?: boolean }) {
   const router = useRouter()
@@ -62,6 +100,9 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
 
   const cell: React.CSSProperties = { padding: '.85rem .75rem', textAlign: 'center', borderBottom: '1px solid var(--rule)', fontSize: '.85rem' }
   const rowLabel: React.CSSProperties = { padding: '.85rem .75rem', textAlign: 'left', borderBottom: '1px solid var(--rule)', fontSize: '.85rem', fontWeight: 600, color: 'var(--ink)', whiteSpace: 'nowrap' }
+  // Highlight the whole Pro column green (the recommended plan).
+  const PRO_BG = 'var(--green-l, #eaf5ee)'
+  const proCell = (p: PlanTier): React.CSSProperties => (p === 'pro' ? { background: PRO_BG } : {})
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--paper)', fontFamily: 'var(--sans)' }}>
@@ -107,15 +148,17 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
           <table style={{ width: '100%', minWidth: 720, borderCollapse: 'collapse', background: '#fff', borderRadius: 14, overflow: 'hidden', border: '1px solid var(--rule)' }}>
             <thead>
               <tr>
-                <th style={{ ...rowLabel, borderBottom: '1px solid var(--rule)', background: 'var(--paper2, #f8f7f2)' }}></th>
+                <th style={{ ...rowLabel, textAlign: 'center', borderBottom: '1px solid var(--rule)', background: 'var(--paper2, #f8f7f2)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'center' }}><BrandMark size={46} /></div>
+                </th>
                 {COLS.map(p => {
                   const def = PLAN_TIERS[p]
                   const price = p === 'free' ? null : priceFor(p as PaidPlan)
                   return (
-                    <th key={p} style={{ ...cell, verticalAlign: 'top', background: p === 'pro' ? 'var(--green-l, #f0f7f2)' : 'var(--paper2, #f8f7f2)' }}>
+                    <th key={p} style={{ ...cell, verticalAlign: 'top', background: p === 'pro' ? PRO_BG : 'var(--paper2, #f8f7f2)' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.4rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '.35rem', fontWeight: 800, color: 'var(--ink)', fontSize: '.95rem' }}>
-                          {def.badgeColor && <Dot color={def.badgeColor} />}{def.name}
+                        <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: '.95rem' }}>
+                          {def.name}
                         </div>
                         {p === 'free' ? (
                           <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--ink)' }}>Free</div>
@@ -135,7 +178,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
                           style={{
                             marginTop: '.3rem', cursor: 'pointer', border: p === 'free' ? '1px solid var(--rule)' : 'none',
                             borderRadius: 9, padding: '.5rem .8rem', fontSize: '.75rem', fontWeight: 700, whiteSpace: 'nowrap',
-                            background: p === 'free' ? '#fff' : 'var(--green)', color: p === 'free' ? 'var(--ink)' : '#fff',
+                            background: p === 'free' ? '#fff' : (BTN_COLOR[p] ?? 'var(--green)'), color: p === 'free' ? 'var(--ink)' : '#fff',
                           }}
                         >
                           {loading === p ? '…' : p === 'free' ? 'Get started' : `Choose ${def.name}`}
@@ -149,25 +192,37 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
             <tbody>
               <tr>
                 <td style={rowLabel}>Public vouches</td>
-                {COLS.map(p => <td key={p} style={{ ...cell, fontWeight: 700 }}>{PLAN_TIERS[p].publicVouchCap}</td>)}
+                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p), fontWeight: 700 }}>{PLAN_TIERS[p].publicVouchCap}</td>)}
               </tr>
               <tr>
                 <td style={rowLabel}>Profile badge</td>
-                {COLS.map(p => <td key={p} style={cell}>{PLAN_TIERS[p].badgeColor ? <Dot color={PLAN_TIERS[p].badgeColor!} /> : <Dash />}</td>)}
+                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p) }}>{PLAN_TIERS[p].badgeColor ? <PlanMark tier={p} size={26} /> : <Dash />}</td>)}
               </tr>
               <tr>
                 <td style={rowLabel}>QR code</td>
-                {COLS.map(p => <td key={p} style={cell}>{PLAN_TIERS[p].canQR ? <Check /> : <Dash />}</td>)}
+                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p) }}>{PLAN_TIERS[p].canQR ? <Check /> : <Dash />}</td>)}
               </tr>
               <tr>
                 <td style={rowLabel}>PDF one-pager (print)</td>
-                {COLS.map(p => <td key={p} style={cell}>{PLAN_TIERS[p].canPrint ? <Check /> : <Dash />}</td>)}
+                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p) }}>{PLAN_TIERS[p].canPrint ? <Check /> : <Dash />}</td>)}
               </tr>
               <tr>
                 <td style={rowLabel}>Talent directory</td>
-                {COLS.map(p => <td key={p} style={{ ...cell, borderBottom: 'none' }}>{PLAN_TIERS[p].hasDirectory ? <Check /> : <Dash />}</td>)}
+                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p), borderBottom: 'none' }}>{PLAN_TIERS[p].hasDirectory ? <Check /> : <Dash />}</td>)}
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <td style={{ ...rowLabel, borderBottom: 'none' }}></td>
+                {COLS.map(p => (
+                  <td key={p} style={{ ...cell, ...proCell(p), borderBottom: 'none', paddingTop: 0, paddingBottom: '.9rem', verticalAlign: 'top' }}>
+                    {p === 'pro' ? (
+                      <span style={{ fontSize: '.72rem', fontWeight: 800, letterSpacing: '.04em', color: 'var(--green)', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>★ Recommended</span>
+                    ) : null}
+                  </td>
+                ))}
+              </tr>
+            </tfoot>
           </table>
         </div>
 
