@@ -161,7 +161,10 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
                           {def.name}
                         </div>
                         {p === 'free' ? (
-                          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--ink)' }}>Free</div>
+                          <div>
+                            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)' }}>Free</div>
+                            <div style={{ fontSize: '.68rem', color: 'var(--muted)' }}>&nbsp;</div>
+                          </div>
                         ) : (
                           <div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--ink)' }}>{short(price!.display)}</div>
@@ -208,7 +211,7 @@ export default function PricingClient({ isSignedIn }: { isSignedIn: boolean; tri
               </tr>
               <tr>
                 <td style={rowLabel}>Talent directory</td>
-                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p), borderBottom: 'none' }}>{PLAN_TIERS[p].hasDirectory ? <Check /> : <Dash />}</td>)}
+                {COLS.map(p => <td key={p} style={{ ...cell, ...proCell(p) }}>{PLAN_TIERS[p].hasDirectory ? <Check /> : <Dash />}</td>)}
               </tr>
             </tbody>
             <tfoot>
