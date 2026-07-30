@@ -100,7 +100,7 @@ export default async function LandingPage() {
               Build your profile free →
             </Link>
             <Link
-              href="/nick-baker-demo"
+              href="/finn-recomme-demo"
               style={{
                 background: 'transparent',
                 color: 'var(--muted)',

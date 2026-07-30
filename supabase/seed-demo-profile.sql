@@ -9,7 +9,7 @@ INSERT INTO profiles (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'demo_user_nick_baker',
   'Finn Recomme',
-  'nick-baker-demo',
+  'finn-recomme-demo',
   'Head of Product',
   '9',
   'London, UK',
