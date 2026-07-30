@@ -8,7 +8,7 @@ INSERT INTO profiles (
 ) VALUES (
   'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   'demo_user_nick_baker',
-  'Nick Baker',
+  'Finn Recomme',
   'nick-baker-demo',
   'Head of Product',
   '9',
@@ -39,7 +39,7 @@ INSERT INTO vouches (
   'sarah.chen@example.com',
   'Former manager',
   ARRAY['Strategic thinker', 'Cross-functional leadership', 'Data-driven'],
-  'Nick has an exceptional ability to translate complex user problems into elegant product solutions. In three years at FinFlow he shipped our core payments product and grew it to $4M ARR. I''d hire him again without hesitation.',
+  'Finn has an exceptional ability to translate complex user problems into elegant product solutions. In three years at FinFlow he shipped our core payments product and grew it to $4M ARR. I''d hire him again without hesitation.',
   5, true, 'approved', 0
 ),
 (
@@ -51,7 +51,7 @@ INSERT INTO vouches (
   'james.okafor@example.com',
   'Former colleague',
   ARRAY['Collaborative', 'Clear communicator', 'Technical depth'],
-  'Working with Nick was genuinely one of the highlights of my career at FinFlow. He writes the best PRDs I''ve ever seen — clear, opinionated, and always grounded in evidence. He made engineers feel heard and valued.',
+  'Working with Finn was genuinely one of the highlights of my career at FinFlow. He writes the best PRDs I''ve ever seen — clear, opinionated, and always grounded in evidence. He made engineers feel heard and valued.',
   5, true, 'approved', 0
 ),
 (
@@ -63,7 +63,7 @@ INSERT INTO vouches (
   'priya.sharma@example.com',
   'Former colleague',
   ARRAY['Growth mindset', 'User empathy', 'Execution'],
-  'Nick joined Healthara at a critical inflection point and brought exactly the product rigour we needed. He ran discovery, aligned clinical and commercial stakeholders, and shipped a v1 in 4 months. Rare combination of strategic and execution skills.',
+  'Finn joined Healthara at a critical inflection point and brought exactly the product rigour we needed. He ran discovery, aligned clinical and commercial stakeholders, and shipped a v1 in 4 months. Rare combination of strategic and execution skills.',
   4, true, 'approved', 0
 )
 ON CONFLICT (id) DO NOTHING;
